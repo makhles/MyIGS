@@ -18,8 +18,11 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     int xc = width / 2;
     int yc = height / 2;
 
-    cr->set_line_width(1.0);
+    /* Set stroke properties */
+    cr->set_line_width(0.5);
     cr->set_source_rgb(0.0, 0.0, 0.0);
+    std::vector<double> dashes{5.0};
+    cr->set_dash(dashes, 0.0);
 
     /* Create horizontal and vertical axis centered on the screen */
     cr->move_to(0, yc);
