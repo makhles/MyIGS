@@ -10,6 +10,7 @@
 
 class MyIGS : public Gtk::Window {
     private:
+        std::list<GraphicalObject> _objects;
         Gtk::Box _mainBox;
         Gtk::Frame _controlFrame;
         Gtk::Frame _viewportFrame;
@@ -30,17 +31,27 @@ class MyIGS : public Gtk::Window {
         Gtk::Box _viewportBox;
         Canvas _canvas;
         OutputBoard _board;
-        std::list<GraphicalObject> objects;
+        /* Widgets used in the objects frame */
+        Gtk::Box _objectsBox;
+        Gtk::ScrolledWindow _objectsWindow;
+        Gtk::Button _buttonCreatePoint;
+        Gtk::Button _buttonCreateLine;
+        Gtk::Button _buttonCreateWireframe;
     private:
         void createControlFrame();
         void createViewportFrame();
         void createObjectsFrame();
+        /* Control */
         void zoom_in();
         void zoom_out();
         void displaceUp();
         void displaceRight();
         void displaceDown();
         void displaceLeft();
+        /* Objects creation */
+        void createPoint();
+        void createLine();
+        void createWireframe();
     public:
         MyIGS();
         virtual ~MyIGS();

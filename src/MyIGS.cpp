@@ -10,7 +10,10 @@ MyIGS::MyIGS() :
         _dispButtonUp("Up"),
         _dispButtonDown("Down"),
         _dispButtonLeft("Left"),
-        _dispButtonRight("Right") {
+        _dispButtonRight("Right"),
+        _buttonCreatePoint("Point"),
+        _buttonCreateLine("Line"),
+        _buttonCreateWireframe("Wireframe") {
 
     /* Main window */
     set_title("My IGS");
@@ -80,8 +83,21 @@ void MyIGS::createViewportFrame() {
 }
 
 void MyIGS::createObjectsFrame() {
+    /* Objects frame */
     _objectsFrame.set_label("Objects");
     _objectsFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    _objectsFrame.add(_objectsBox);
+
+    /* New objects buttons */
+    _buttonCreatePoint.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createPoint));
+    _buttonCreateLine.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createLine));
+    _buttonCreateWireframe.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createWireframe));
+
+    /* Pack everything */
+    _objectsBox.pack_start(_buttonCreatePoint, Gtk::PACK_SHRINK, 1);
+    _objectsBox.pack_start(_buttonCreateLine, Gtk::PACK_SHRINK, 1);
+    _objectsBox.pack_start(_buttonCreateWireframe, Gtk::PACK_SHRINK, 1);
+    _objectsBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
     _mainBox.pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
 
@@ -94,17 +110,29 @@ void MyIGS::zoom_out() {
 }
 
 void MyIGS::displaceUp() {
-
+    std::cout << "Going up..." << std::endl;
 }
 
 void MyIGS::displaceRight() {
-
+    std::cout << "Going right..." << std::endl;
 }
 
 void MyIGS::displaceDown() {
-
+    std::cout << "Going down..." << std::endl;
 }
 
 void MyIGS::displaceLeft() {
+    std::cout << "Going left..." << std::endl;
+}
 
+void MyIGS::createPoint() {
+    std::cout << "New point created." << std::endl;
+}
+
+void MyIGS::createLine() {
+    std::cout << "New line created." << std::endl;
+}
+
+void MyIGS::createWireframe() {
+    std::cout << "New wireframe created." << std::endl;
 }
