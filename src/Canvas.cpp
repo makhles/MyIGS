@@ -4,6 +4,7 @@
 #include "Canvas.h"
 
 Canvas::Canvas() {
+    set_size_request(300,300);
 }
 
 Canvas::~Canvas() {
