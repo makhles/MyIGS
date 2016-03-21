@@ -15,7 +15,8 @@ MyIGS::MyIGS() :
     /* Main window */
     set_title("My IGS");
     set_border_width(10);
-    set_default_size(640,480);
+    //set_default_size(640,480);
+    set_resizable(false);
 
     /* Frames */
     MyIGS::createControlFrame();
