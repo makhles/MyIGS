@@ -2,12 +2,18 @@
 
 #include <cairomm/context.h>
 #include "Canvas.h"
+#include "WorldWindow.h"
 
 Canvas::Canvas() {
     set_size_request(500,500);
 }
 
 Canvas::~Canvas() {
+}
+
+void Canvas::setWorldWindow(WorldWindow *worldWindow) {
+    _worldWindow = worldWindow;
+    _worldWindow->setCanvas(this);
 }
 
 bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
@@ -19,7 +25,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     int xc = width / 2;
     int yc = height / 2;
 
-    /* Set stroke properties */
+    /* Set stroke properties for the centered axis */
     cr->set_line_width(0.5);
     cr->set_source_rgb(0.0, 0.0, 0.0);
     std::vector<double> dashes{5.0};
@@ -31,6 +37,10 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->move_to(xc, 0);
     cr->line_to(xc, height);
     cr->stroke();
+
+    /* Set stroke properties for the objects */
+    cr->set_line_width(1.0);
+    cr->unset_dash();
 
     return true;
 }

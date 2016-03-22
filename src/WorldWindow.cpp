@@ -17,10 +17,6 @@ WorldWindow::~WorldWindow() {
     }
 }
 
-void WorldWindow::setView(MyIGS *view) {
-    _view = view;
-}
-
 void WorldWindow::createPoint(std::string name, const size_t xPos, const size_t yPos) {
     Point *point = new Point(name, xPos, yPos);
     _displayFile.push_back(point);

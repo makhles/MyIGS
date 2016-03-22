@@ -18,6 +18,7 @@ MyIGS::MyIGS() :
         _objectsListView(1) {
 
     /* Add the controller to views */
+    _canvas.setWorldWindow(&_worldWindow);
     _pointDialog.setWorldWindow(&_worldWindow);
     _lineDialog.setWorldWindow(&_worldWindow);
 
