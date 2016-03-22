@@ -17,7 +17,11 @@ MyIGS::MyIGS() :
         _labelCreateObjects("Create a new object:"),
         _objectsListView(1) {
 
-    _pointDialog.setWorldWindow(_worldWindow);
+    /* Add the controller to views */
+    _pointDialog.setWorldWindow(&_worldWindow);
+
+    /* Add view to the controller */
+    _worldWindow.setView(this);
 
     /* Main window */
     set_title("My IGS");
@@ -87,6 +91,7 @@ void MyIGS::createViewportFrame() {
 }
 
 void MyIGS::createObjectsFrame() {
+
     /* Objects frame */
     _objectsFrame.set_label("Objects");
     _objectsFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
@@ -110,14 +115,9 @@ void MyIGS::createObjectsFrame() {
     /* Objects window */
     _objectsWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
     _objectsWindow.add(_objectsListView);
-
     _objectsListView.set_column_title(0, "Current objects:");
-    guint row = _objectsListView.append();
-    _objectsListView.set_text(row, 0, "Point (Point0)");
-    row = _objectsListView.append();
-    _objectsListView.set_text(row, 0, "Point (Point1)");
-    row = _objectsListView.append();
-    _objectsListView.set_text(row, 0, "Wireframe (Wireframe0)");
+    std::cout << "Number of rows: " << _objectsListView.size() << std::endl;
+    std::cout << "Column title: " << _objectsListView.get_column_title(0) << std::endl;
 
     _mainBox.pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
@@ -148,9 +148,7 @@ void MyIGS::displaceLeft() {
 
 void MyIGS::createPoint() {
     std::cout << "Creating point..." << std::endl;
-    //PointDialog dialog;
     _pointDialog.show();
-    //Gtk::Main::run(dialog);
 }
 
 void MyIGS::createLine() {
@@ -159,4 +157,14 @@ void MyIGS::createLine() {
 
 void MyIGS::createWireframe() {
     std::cout << "New wireframe created." << std::endl;
+}
+
+void MyIGS::appendObjectToViewList(const GraphicalObject *obj) {
+    std::cout << "Object name: " << obj->get_name() << std::endl;
+
+    _objectsListView.append(obj->get_name());
+    std::cout << "Number of rows: " << _objectsListView.size() << std::endl;
+
+    //guint row = _objectsListView.append();
+    //_objectsListView.set_text(row, 0, obj->get_name());
 }

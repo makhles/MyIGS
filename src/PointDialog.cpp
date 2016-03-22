@@ -3,6 +3,7 @@
 #include <iostream>
 #include "PointDialog.h"
 #include "Point.h"
+#include "WorldWindow.h"
 
 PointDialog::PointDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),
@@ -54,7 +55,7 @@ PointDialog::PointDialog() :
 PointDialog::~PointDialog() {
 }
 
-void PointDialog::setWorldWindow(WorldWindow &worldWindow) {
+void PointDialog::setWorldWindow(WorldWindow *worldWindow) {
     _worldWindow = worldWindow;
 }
 
@@ -64,17 +65,17 @@ void PointDialog::on_button_cancel_clicked() {
 }
 
 void PointDialog::on_button_ok_clicked() {
-    
-    const std::string name = _nameEntry.get_text().raw();
     size_t x, y;
     std::stringstream s;
+
+    /* Get input data from dialog box Entries */
+    const std::string name = _nameEntry.get_text().raw();
     s << _xEntry.get_text().raw();
     s >> x;
     s << _yEntry.get_text().raw();
     s >> y;
 
-    Point point(name, x, y);
-    std::cout << "Point created!" << std::endl;
-    _worldWindow.addGraphicalObject(point);
+    /* Create the new point and close this window */
+    _worldWindow->createPoint(name, x, y);
     hide();
 }

@@ -6,10 +6,12 @@
 #include "ObjectType.h"
 
 class GraphicalObject {
-    private:
+    protected:
         std::string _name;
         ObjectType _type;
     protected:
         GraphicalObject(const std::string name, const ObjectType type);
+    public:
+        std::string get_name() const {return _name;}
 };
 #endif

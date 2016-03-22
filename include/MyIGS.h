@@ -64,6 +64,7 @@ class MyIGS : public Gtk::Window {
     public:
         MyIGS();
         virtual ~MyIGS();
+        void appendObjectToViewList(const GraphicalObject *obj);
 };
 
 #endif  // MYIGS_H

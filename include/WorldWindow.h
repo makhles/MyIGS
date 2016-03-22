@@ -4,17 +4,23 @@
 #define WORLDWINDOW_H
 
 #include <list>
-#include "GraphicalObject.h"
+#include <string>
+#include <cstddef>              // For size_t
+
+class MyIGS;
+class GraphicalObject;
 
 class WorldWindow {
 
     protected:
-        std::list<GraphicalObject> _displayFile;
+        std::list<GraphicalObject*> _displayFile;
+        MyIGS *_view;
 
     public:
         WorldWindow();
         virtual ~WorldWindow();
-        void addGraphicalObject(const GraphicalObject &obj);
+        void setView(MyIGS *view);
+        void createPoint(std::string name, const size_t xPos, const size_t yPos);
 };
 
 #endif  // WORLDWINDOW_H
