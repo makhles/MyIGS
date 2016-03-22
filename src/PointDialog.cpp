@@ -81,7 +81,16 @@ void PointDialog::on_button_ok_clicked() {
     s << _yEntry.get_text().raw();
     s >> y;
 
-    /* Create the new point and close this window */
+    /* Create the new point */
     _worldWindow->createPoint(name, x, y);
+
+    /* Clear the contents of the Entries and close the window */
+    PointDialog::clearDialog();
     hide();
+}
+
+void PointDialog::clearDialog() {
+    _nameEntry.set_text("");
+    _xEntry.set_text("");
+    _yEntry.set_text("");
 }

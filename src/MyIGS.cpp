@@ -147,6 +147,7 @@ void MyIGS::displaceLeft() {
 
 void MyIGS::createPoint() {
     std::cout << "Creating point..." << std::endl;
+    _pointDialog.set_modal(true);
     _pointDialog.show();
 }
 
