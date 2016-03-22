@@ -42,5 +42,15 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->set_line_width(1.0);
     cr->unset_dash();
 
+
+
     return true;
+}
+
+void Canvas::invalidateCanvas() {
+    auto win = get_window();
+    if (win) {
+        Gdk::Rectangle r(0, 0, get_allocation().get_width(), get_allocation().get_height());
+        win->invalidate_rect(r, false);
+    }
 }
