@@ -11,15 +11,15 @@ PointDialog::PointDialog() :
         _coordBox(Gtk::ORIENTATION_HORIZONTAL),
         _buttonBox(Gtk::ORIENTATION_HORIZONTAL),
         _nameLabel("Name: "),
-        _xLabel("x = "),
-        _yLabel("y = "),
+        _xLabel("x ="),
+        _yLabel("y ="),
         _okButton("OK"),
         _cancelButton("Cancel") {
 
     /* Window properties */
     set_title("Create Point");
-    set_default_size(300,300);
     set_border_width(10);
+    //set_size_request(300,100);
     set_resizable(false);
 
     /* Main box */
@@ -32,12 +32,23 @@ PointDialog::PointDialog() :
     _mainBox.pack_start(_buttonBox, Gtk::PACK_EXPAND_WIDGET, 1);
 
     /* Input */
-    _nameBox.pack_start(_nameLabel, Gtk::PACK_EXPAND_WIDGET, 1);
-    _nameBox.pack_start(_nameEntry, Gtk::PACK_EXPAND_WIDGET, 1);
-    _coordBox.pack_start(_xLabel, Gtk::PACK_EXPAND_WIDGET, 1);
-    _coordBox.pack_start(_xEntry, Gtk::PACK_EXPAND_WIDGET, 3);
-    _coordBox.pack_start(_yLabel, Gtk::PACK_EXPAND_WIDGET, 1);
-    _coordBox.pack_start(_yEntry, Gtk::PACK_EXPAND_WIDGET, 3);
+    //_nameBox.set_size_request(5,-1);
+
+    _nameBox.set_homogeneous(false);
+    _coordBox.set_homogeneous(false);
+
+    _nameBox.pack_start(_nameLabel, Gtk::PACK_SHRINK, 0);
+    _nameBox.pack_start(_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
+    _coordBox.pack_start(_xLabel, Gtk::PACK_EXPAND_PADDING, 0);
+    _coordBox.pack_start(_xEntry, Gtk::PACK_SHRINK, 0);
+    _coordBox.pack_start(_yLabel, Gtk::PACK_EXPAND_PADDING, 0);
+    _coordBox.pack_start(_yEntry, Gtk::PACK_SHRINK, 0);
+
+    /* Entries size */
+    //_nameEntry.set_size_request(100,-1);
+    _xEntry.set_width_chars(6);
+    _yEntry.set_width_chars(6);
+
 
     /* Control */
     _buttonBox.set_layout(Gtk::BUTTONBOX_END);

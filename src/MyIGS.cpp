@@ -116,8 +116,6 @@ void MyIGS::createObjectsFrame() {
     _objectsWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
     _objectsWindow.add(_objectsListView);
     _objectsListView.set_column_title(0, "Current objects:");
-    std::cout << "Number of rows: " << _objectsListView.size() << std::endl;
-    std::cout << "Column title: " << _objectsListView.get_column_title(0) << std::endl;
 
     _mainBox.pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
@@ -160,11 +158,5 @@ void MyIGS::createWireframe() {
 }
 
 void MyIGS::appendObjectToViewList(const GraphicalObject *obj) {
-    std::cout << "Object name: " << obj->get_name() << std::endl;
-
     _objectsListView.append(obj->get_name());
-    std::cout << "Number of rows: " << _objectsListView.size() << std::endl;
-
-    //guint row = _objectsListView.append();
-    //_objectsListView.set_text(row, 0, obj->get_name());
 }
