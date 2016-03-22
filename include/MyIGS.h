@@ -9,11 +9,13 @@
 #include "OutputBoard.h"
 #include "WorldWindow.h"
 #include "PointDialog.h"
+#include "LineDialog.h"
 
 class MyIGS : public Gtk::Window {
     protected:
         WorldWindow _worldWindow;
         PointDialog _pointDialog;
+        LineDialog _lineDialog;
         std::list<GraphicalObject> _objects;
         Gtk::Box _mainBox;
         Gtk::Frame _controlFrame;

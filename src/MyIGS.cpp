@@ -19,6 +19,7 @@ MyIGS::MyIGS() :
 
     /* Add the controller to views */
     _pointDialog.setWorldWindow(&_worldWindow);
+    _lineDialog.setWorldWindow(&_worldWindow);
 
     /* Add view to the controller */
     _worldWindow.setView(this);
@@ -150,7 +151,8 @@ void MyIGS::createPoint() {
 }
 
 void MyIGS::createLine() {
-    std::cout << "New line created." << std::endl;
+    std::cout << "Creating line..." << std::endl;
+    _lineDialog.show();
 }
 
 void MyIGS::createWireframe() {
