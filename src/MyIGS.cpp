@@ -13,12 +13,13 @@ MyIGS::MyIGS() :
         _dispButtonRight("Right"),
         _buttonCreatePoint("Point"),
         _buttonCreateLine("Line"),
-        _buttonCreateWireframe("Wireframe") {
+        _buttonCreateWireframe("Wireframe"),
+        _labelCreateObjects("Create a new object:"),
+        _objectsListView(1) {
 
     /* Main window */
     set_title("My IGS");
     set_border_width(10);
-    //set_default_size(640,480);
     set_resizable(false);
 
     /* Frames */
@@ -65,6 +66,7 @@ void MyIGS::createControlFrame() {
 
     _controlFrame.set_label("Control");
     _controlFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    _controlFrame.set_size_request(150,-1);
     _controlFrame.add(_controlBox);
 
     _mainBox.pack_start(_controlFrame, Gtk::PACK_SHRINK, 1);
@@ -86,6 +88,7 @@ void MyIGS::createObjectsFrame() {
     /* Objects frame */
     _objectsFrame.set_label("Objects");
     _objectsFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    _objectsFrame.set_size_request(175,-1);
     _objectsFrame.add(_objectsBox);
 
     /* New objects buttons */
@@ -94,10 +97,26 @@ void MyIGS::createObjectsFrame() {
     _buttonCreateWireframe.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createWireframe));
 
     /* Pack everything */
-    _objectsBox.pack_start(_buttonCreatePoint, Gtk::PACK_SHRINK, 1);
-    _objectsBox.pack_start(_buttonCreateLine, Gtk::PACK_SHRINK, 1);
-    _objectsBox.pack_start(_buttonCreateWireframe, Gtk::PACK_SHRINK, 1);
     _objectsBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
+    _objectsBox.pack_start(_labelCreateObjects, Gtk::PACK_SHRINK, 3);
+    _objectsBox.pack_start(_buttonCreatePoint, Gtk::PACK_SHRINK, 0);
+    _objectsBox.pack_start(_buttonCreateLine, Gtk::PACK_SHRINK, 0);
+    _objectsBox.pack_start(_buttonCreateWireframe, Gtk::PACK_SHRINK, 0);
+    _objectsBox.pack_start(_objectsSeparator, Gtk::PACK_SHRINK, 3);
+    _objectsBox.pack_start(_objectsWindow, Gtk::PACK_EXPAND_WIDGET, 0);
+
+    /* Objects window */
+    _objectsWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    _objectsWindow.add(_objectsListView);
+
+    _objectsListView.set_column_title(0, "Current objects:");
+    guint row = _objectsListView.append();
+    _objectsListView.set_text(row, 0, "Point (Point0)");
+    row = _objectsListView.append();
+    _objectsListView.set_text(row, 0, "Point (Point1)");
+    row = _objectsListView.append();
+    _objectsListView.set_text(row, 0, "Wireframe (Wireframe0)");
+
     _mainBox.pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
 

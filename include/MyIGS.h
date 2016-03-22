@@ -33,7 +33,10 @@ class MyIGS : public Gtk::Window {
         OutputBoard _board;
         /* Widgets used in the objects frame */
         Gtk::Box _objectsBox;
+        Gtk::Separator _objectsSeparator;
         Gtk::ScrolledWindow _objectsWindow;
+        Gtk::ListViewText _objectsListView;
+        Gtk::Label _labelCreateObjects;
         Gtk::Button _buttonCreatePoint;
         Gtk::Button _buttonCreateLine;
         Gtk::Button _buttonCreateWireframe;
