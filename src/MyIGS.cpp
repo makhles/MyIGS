@@ -17,6 +17,8 @@ MyIGS::MyIGS() :
         _labelCreateObjects("Create a new object:"),
         _objectsListView(1) {
 
+    _pointDialog.setWorldWindow(_worldWindow);
+
     /* Main window */
     set_title("My IGS");
     set_border_width(10);
@@ -145,7 +147,10 @@ void MyIGS::displaceLeft() {
 }
 
 void MyIGS::createPoint() {
-    std::cout << "New point created." << std::endl;
+    std::cout << "Creating point..." << std::endl;
+    //PointDialog dialog;
+    _pointDialog.show();
+    //Gtk::Main::run(dialog);
 }
 
 void MyIGS::createLine() {

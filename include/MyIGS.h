@@ -7,9 +7,13 @@
 #include "GraphicalObject.h"
 #include "Canvas.h"
 #include "OutputBoard.h"
+#include "WorldWindow.h"
+#include "PointDialog.h"
 
 class MyIGS : public Gtk::Window {
-    private:
+    protected:
+        WorldWindow _worldWindow;
+        PointDialog _pointDialog;
         std::list<GraphicalObject> _objects;
         Gtk::Box _mainBox;
         Gtk::Frame _controlFrame;
@@ -40,7 +44,8 @@ class MyIGS : public Gtk::Window {
         Gtk::Button _buttonCreatePoint;
         Gtk::Button _buttonCreateLine;
         Gtk::Button _buttonCreateWireframe;
-    private:
+
+    protected:
         void createControlFrame();
         void createViewportFrame();
         void createObjectsFrame();
@@ -55,8 +60,10 @@ class MyIGS : public Gtk::Window {
         void createPoint();
         void createLine();
         void createWireframe();
+
     public:
         MyIGS();
         virtual ~MyIGS();
 };
-#endif
+
+#endif  // MYIGS_H
