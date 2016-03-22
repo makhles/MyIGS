@@ -72,17 +72,23 @@ void PointDialog::on_button_cancel_clicked() {
 
 void PointDialog::on_button_ok_clicked() {
     size_t x, y;
-    std::stringstream s;
+    std::string name;
+    std::stringstream stringX, stringY;
 
     /* Get input data from dialog box Entries */
-    const std::string name = _nameEntry.get_text().raw();
-    s << _xEntry.get_text().raw();
-    s >> x;
-    s << _yEntry.get_text().raw();
-    s >> y;
+    name = _nameEntry.get_text().raw();
+    stringX << _xEntry.get_text().raw();
+    stringY << _yEntry.get_text().raw();
+    
+    /* Check for empty Entries */
+    if (!name.empty() && stringX.str().size() != 0 && stringY.str().size() != 0) {
+        std::cout << "No empty entry!" << std::endl;
+        stringX >> x;
+        stringY >> y;
 
-    /* Create the new point */
-    _worldWindow->createPoint(name, x, y);
+        /* Create the new point */
+        _worldWindow->createPoint(name, x, y);
+    }
 
     /* Clear the contents of the Entries and close the window */
     PointDialog::clearDialog();
