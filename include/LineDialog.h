@@ -43,6 +43,7 @@ class LineDialog : public Gtk::Window {
     protected:
         void on_button_cancel_clicked();
         void on_button_ok_clicked();
+        void clearDialog();
 };
 
 #endif  // LINEDIALOG_H

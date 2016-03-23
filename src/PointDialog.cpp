@@ -82,7 +82,6 @@ void PointDialog::on_button_ok_clicked() {
     
     /* Check for empty Entries */
     if (!name.empty() && stringX.str().size() != 0 && stringY.str().size() != 0) {
-        std::cout << "No empty entry!" << std::endl;
         stringX >> x;
         stringY >> y;
 
