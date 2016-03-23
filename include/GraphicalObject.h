@@ -13,5 +13,6 @@ class GraphicalObject {
         GraphicalObject(const std::string name, const ObjectType type);
     public:
         std::string get_name() const {return _name;}
+        ObjectType get_type() const {return _type;}
 };
 #endif

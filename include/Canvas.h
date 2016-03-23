@@ -13,12 +13,12 @@ class Canvas : public Gtk::DrawingArea {
 
     protected:
         bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
-        void invalidateCanvas();
 
     public:
         Canvas();
         virtual ~Canvas();
         void setWorldWindow(WorldWindow *worldWindow);
+        void invalidateCanvas();
 };
 
 #endif  // CANVAS_H

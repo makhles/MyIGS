@@ -1,8 +1,10 @@
 /* Canvas.cpp */
 
 #include <cairomm/context.h>
+#include <iostream>
 #include "Canvas.h"
 #include "WorldWindow.h"
+#include "Drawable.h"
 
 Canvas::Canvas() {
     set_size_request(500,500);
@@ -42,7 +44,12 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->set_line_width(1.0);
     cr->unset_dash();
 
-
+    std::cout << "Drawing each object" << std::endl;
+    std::list<Drawable*> objects = _worldWindow->get_displayFile();
+    for (auto obj = objects.begin(); obj != objects.end(); obj++) {
+        (*obj)->draw(cr);
+        cr->stroke();
+    }
 
     return true;
 }

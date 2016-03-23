@@ -86,19 +86,19 @@ void LineDialog::on_button_cancel_clicked() {
 
 void LineDialog::on_button_ok_clicked() {
     size_t x1, x2, y1, y2;
-    std::stringstream s;
+    std::stringstream sX1, sY1, sX2, sY2;
 
     /* Get input data from dialog box Entries */
     const std::string name = _nameEntry.get_text().raw();
-    s << _x1Entry.get_text().raw();
-    s >> x1;
-    s << _y1Entry.get_text().raw();
-    s >> y1;
-    s << _x2Entry.get_text().raw();
-    s >> x2;
-    s << _y2Entry.get_text().raw();
-    s >> y2;
-
+    sX1 << _x1Entry.get_text().raw();
+    sX1 >> x1;
+    sY1 << _y1Entry.get_text().raw();
+    sY1 >> y1;
+    sX2 << _x2Entry.get_text().raw();
+    sX2 >> x2;
+    sY2 << _y2Entry.get_text().raw();
+    sY2 >> y2;
+    std::cout << "(x1,y1,x2,y2) = " << x1 << y1 << x2 << y2 << std::endl;
     /* Create the new line and close this window */
     _worldWindow->createLine(name, x1, y1, x2, y2);
     hide();
