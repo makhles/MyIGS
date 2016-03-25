@@ -7,17 +7,19 @@
 #include <string>
 #include <cstddef>              // For size_t
 #include "WorldWindow.h"
+#include "LineDrawer.h"
 
 class MyIGS;
 class Shape;
 class Canvas;
 class Point;
-class Drawable;
+class Drawer;
 
 class InterfaceController {
 
     protected:
-        std::list<Drawable*> _displayFile;
+        std::list<Drawer*> _displayFile;
+        LineDrawer _lineDrawer;
         MyIGS *_view;
         Canvas *_canvas;
         WorldWindow _window;
@@ -27,13 +29,12 @@ class InterfaceController {
         size_t _yViewportMax;
 
     protected:
-        void scaleWindow(size_t factor);
         void clearDisplayFile();
 
     public:
         InterfaceController();
         virtual ~InterfaceController();
-        std::list<Drawable*> get_displayFile() const {return _displayFile;}
+        std::list<Drawer*> get_displayFile() const {return _displayFile;}
         size_t xWindowToViewport(const size_t xWindow);
         size_t yWindowToViewport(const size_t yWindow);
         void setView(MyIGS *view) {_view = view;}
@@ -45,6 +46,8 @@ class InterfaceController {
         void translateRight();
         void translateDown();
         void translateLeft();
+        void zoomWindowIn();
+        void zoomWindowOut();
 };
 
 #endif  // InterfaceController_H

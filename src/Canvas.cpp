@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Canvas.h"
 #include "InterfaceController.h"
-#include "Drawable.h"
+#include "Drawer.h"
 
 Canvas::Canvas() {
     set_size_request(500,500);
@@ -45,11 +45,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->unset_dash();
 
     std::cout << "Drawing each object" << std::endl;
-    std::list<Drawable*> objects = _InterfaceController->get_displayFile();
-    for (auto obj = objects.begin(); obj != objects.end(); obj++) {
-        (*obj)->draw(cr);
-        cr->stroke();
-    }
+    // TODO
 
     return true;
 }

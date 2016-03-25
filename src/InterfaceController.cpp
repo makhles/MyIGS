@@ -5,13 +5,15 @@
 #include "MyIGS.h"
 #include "Point.h"
 #include "Line.h"
-#include "DrawLine.h"
+#include "Drawer.h"
 
 InterfaceController::InterfaceController() :
         _xViewportMin(0),
         _xViewportMax(500),
         _yViewportMin(0),
         _yViewportMax(500) {
+
+    _displayFile.push_back(&_lineDrawer);
 }
 
 InterfaceController::~InterfaceController() {
@@ -35,9 +37,7 @@ void InterfaceController::createLine(std::string name, const size_t x1Pos, const
     Point *p2 = new Point(nameP2, x2Pos, y2Pos);
     Line *line = new Line(name, p1, p2);
 
-    DrawLine *drawLine = new DrawLine(line, this);
-    drawLine->clipToWindow();
-    _displayFile.push_back(drawLine);
+    _lineDrawer.addLine(line);
 
     /* Append object name to the list of objects in the view */
     _view->appendObjectToViewList(line);
@@ -82,8 +82,12 @@ void InterfaceController::translateLeft() {
     // TODO
 }
 
-void InterfaceController::scaleWindow(size_t factor) {
-    this->clearDisplayFile();
+void InterfaceController::zoomWindowIn() {
+    // TODO
+}
+
+void InterfaceController::zoomWindowOut() {
+    // TODO
 }
 
 void InterfaceController::clearDisplayFile() {
