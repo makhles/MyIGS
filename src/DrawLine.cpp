@@ -21,20 +21,17 @@ DrawLine::~DrawLine() {
 }
 
 void DrawLine::draw(const Cairo::RefPtr<Cairo::Context> &cr) {
-    if (_drawable) {
-        Point *p1 = _vpLine->get_p1();
-        Point *p2 = _vpLine->get_p2();
-        cr->move_to(p1->get_xPos(), p1->get_yPos());
-        cr->line_to(p2->get_xPos(), p2->get_yPos());
-        std::cout << "(x1,y1) = (" << p1->get_xPos() << "," << p1->get_yPos() << ")" << std::endl;
-        std::cout << "(x2,y2) = (" << p2->get_xPos() << "," << p2->get_yPos() << ")" << std::endl;
-    }
+    Point *p1 = _vpLine->get_p1();
+    Point *p2 = _vpLine->get_p2();
+    cr->move_to(p1->get_xPos(), p1->get_yPos());
+    cr->line_to(p2->get_xPos(), p2->get_yPos());
+    std::cout << "(x1,y1) = (" << p1->get_xPos() << "," << p1->get_yPos() << ")" << std::endl;
+    std::cout << "(x2,y2) = (" << p2->get_xPos() << "," << p2->get_yPos() << ")" << std::endl;
 }
 
 void DrawLine::clipToWindow() {
     // TODO
     _clippedLine = _line;      // for now.
-    _drawable = true;          // for now.
     this->windowToViewport();  // for now.
 }
 
