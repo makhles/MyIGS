@@ -3,7 +3,7 @@
 #include "Point.h"
 
 Point::Point(const std::string name, const size_t &xPos, const size_t &yPos) :
-        Shape::Shape(name, ObjectType::POINT),
+        Shape::Shape(name, ShapeType::POINT),
         _xPos(xPos),
         _yPos(yPos) {
 }
