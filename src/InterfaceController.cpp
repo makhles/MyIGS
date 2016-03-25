@@ -3,18 +3,23 @@
 #include <iostream>
 #include "InterfaceController.h"
 #include "MyIGS.h"
+#include "Canvas.h"
 #include "Point.h"
 #include "Line.h"
 #include "Drawer.h"
 
-InterfaceController::InterfaceController() :
+InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
+        _interface(interface),
+        _canvas(canvas),
         _xViewportMin(0),
         _xViewportMax(500),
         _yViewportMin(0),
         _yViewportMax(500) {
 
+    /* Initialize display file and share it with viewport */
     _displayFile.push_back(&_pointDrawer);
     _displayFile.push_back(&_lineDrawer);
+    _canvas->setDisplayFile(&_displayFile);
 }
 
 InterfaceController::~InterfaceController() {
@@ -26,7 +31,7 @@ void InterfaceController::createPoint(std::string name, const size_t xPos, const
     _pointDrawer.addPoint(point);
 
     /* Append object name to the list of objects in the view */
-    _view->appendObjectToViewList(point);
+    _interface->appendObjectToViewList(point);
 
     /* Force redraw */
     _canvas->invalidateCanvas();
@@ -44,7 +49,7 @@ void InterfaceController::createLine(std::string name, const size_t x1Pos, const
     _lineDrawer.addLine(line);
 
     /* Append object name to the list of objects in the view */
-    _view->appendObjectToViewList(line);
+    _interface->appendObjectToViewList(line);
 
     /* Force redraw */
     _canvas->invalidateCanvas();

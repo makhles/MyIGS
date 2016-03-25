@@ -13,11 +13,6 @@ Canvas::Canvas() {
 Canvas::~Canvas() {
 }
 
-void Canvas::setInterfaceController(InterfaceController *InterfaceController) {
-    _InterfaceController = InterfaceController;
-    _InterfaceController->setCanvas(this);
-}
-
 bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();

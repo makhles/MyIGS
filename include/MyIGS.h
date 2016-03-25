@@ -7,20 +7,26 @@
 #include "Shape.h"
 #include "Canvas.h"
 #include "OutputBoard.h"
-#include "InterfaceController.h"
 #include "PointDialog.h"
 #include "LineDialog.h"
 
+class InterfaceController;
+
 class MyIGS : public Gtk::Window {
     protected:
-        InterfaceController _InterfaceController;
+        InterfaceController *_interfaceController;
+        std::list<Shape> _objects;
+
+        /* Dialogs */
         PointDialog _pointDialog;
         LineDialog _lineDialog;
-        std::list<Shape> _objects;
+
+        /* Main widgets */
         Gtk::Box _mainBox;
         Gtk::Frame _controlFrame;
         Gtk::Frame _viewportFrame;
         Gtk::Frame _objectsFrame;
+
         /* Widgets used in the Control Frame */
         Gtk::Box _controlBox;
         Gtk::Box _zoomBox;
@@ -33,10 +39,12 @@ class MyIGS : public Gtk::Window {
         Gtk::Button _dispButtonDown;
         Gtk::Button _dispButtonLeft;
         Gtk::Button _dispButtonRight;
+
         /* Widgets used in the Viewport Frame */
         Gtk::Box _viewportBox;
         Canvas _canvas;
         OutputBoard _board;
+
         /* Widgets used in the objects frame */
         Gtk::Box _objectsBox;
         Gtk::Separator _objectsSeparator;

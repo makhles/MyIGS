@@ -28,12 +28,12 @@ class PointDialog : public Gtk::Window {
         Gtk::Entry _yEntry;
         Gtk::Button _okButton;
         Gtk::Button _cancelButton;
-        InterfaceController *_InterfaceController;
+        InterfaceController *_interfaceController;
 
     public:
         PointDialog();
         virtual ~PointDialog();
-        void setInterfaceController(InterfaceController *InterfaceController);
+        void setInterfaceController(InterfaceController *interfaceController);
 
     protected:
         void on_button_cancel_clicked();

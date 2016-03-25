@@ -5,7 +5,7 @@
 
 #include <list>
 #include <string>
-#include <cstddef>              // For size_t
+#include <cstddef>         // For size_t
 #include "WorldWindow.h"
 #include "LineDrawer.h"
 #include "PointDrawer.h"
@@ -22,7 +22,7 @@ class InterfaceController {
         std::list<Drawer*> _displayFile;
         PointDrawer _pointDrawer;
         LineDrawer _lineDrawer;
-        MyIGS *_view;
+        MyIGS *_interface;
         Canvas *_canvas;
         WorldWindow _window;
         size_t _xViewportMin;
@@ -34,16 +34,21 @@ class InterfaceController {
         void clearDisplayFile();
 
     public:
-        InterfaceController();
+        InterfaceController(MyIGS *interface, Canvas *canvas);
         virtual ~InterfaceController();
+
         std::list<Drawer*> get_displayFile() const {return _displayFile;}
+        void setCanvas(Canvas *canvas) {_canvas = canvas;}
+
         size_t xWindowToViewport(const size_t xWindow);
         size_t yWindowToViewport(const size_t yWindow);
-        void setView(MyIGS *view) {_view = view;}
-        void setCanvas(Canvas *canvas) {_canvas = canvas;}
+
+        /* Shape creation methods */
         void createPoint(std::string name, const size_t xPos, const size_t yPos);
         void createLine(std::string name, const size_t x1Pos, const size_t y1Pos,
                 const size_t x2Pos, const size_t y2Pos);
+
+        /* Transformation methods */
         void translateUp();
         void translateRight();
         void translateDown();

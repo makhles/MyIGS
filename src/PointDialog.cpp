@@ -61,8 +61,8 @@ PointDialog::PointDialog() :
 PointDialog::~PointDialog() {
 }
 
-void PointDialog::setInterfaceController(InterfaceController *InterfaceController) {
-    _InterfaceController = InterfaceController;
+void PointDialog::setInterfaceController(InterfaceController *interfaceController) {
+    _interfaceController = interfaceController;
 }
 
 void PointDialog::on_button_cancel_clicked() {
@@ -86,7 +86,7 @@ void PointDialog::on_button_ok_clicked() {
         stringY >> y;
 
         /* Create the new point */
-        _InterfaceController->createPoint(name, x, y);
+        _interfaceController->createPoint(name, x, y);
     }
 
     /* Clear the contents of the Entries and close the window */

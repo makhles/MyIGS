@@ -33,12 +33,12 @@ class LineDialog : public Gtk::Window {
         Gtk::Entry _y2Entry;
         Gtk::Button _okButton;
         Gtk::Button _cancelButton;
-        InterfaceController *_InterfaceController;
+        InterfaceController *_interfaceController;
 
     public:
         LineDialog();
         virtual ~LineDialog();
-        void setInterfaceController(InterfaceController *InterfaceController);
+        void setInterfaceController(InterfaceController *interfaceController);
 
     protected:
         void on_button_cancel_clicked();

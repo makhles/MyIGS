@@ -5,11 +5,11 @@
 
 #include <gtkmm/drawingarea.h>
 
-class InterfaceController;
+class Drawer;
 
 class Canvas : public Gtk::DrawingArea {
     protected:
-        InterfaceController *_InterfaceController;
+        const std::list<Drawer*> *_displayFile;
 
     protected:
         bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
@@ -17,7 +17,7 @@ class Canvas : public Gtk::DrawingArea {
     public:
         Canvas();
         virtual ~Canvas();
-        void setInterfaceController(InterfaceController *InterfaceController);
+        void setDisplayFile(const std::list<Drawer*> *displayFile) {_displayFile = displayFile;}
         void invalidateCanvas();
 };
 

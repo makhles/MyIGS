@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "MyIGS.h"
+#include "InterfaceController.h"
 
 MyIGS::MyIGS() :
         _mainBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -17,13 +18,13 @@ MyIGS::MyIGS() :
         _labelCreateObjects("Create a new object:"),
         _objectsListView(1) {
 
-    /* Add the controller to views */
-    _canvas.setInterfaceController(&_InterfaceController);
-    _pointDialog.setInterfaceController(&_InterfaceController);
-    _lineDialog.setInterfaceController(&_InterfaceController);
+    /* Add views to the controller */
+    _interfaceController = new InterfaceController(this, &_canvas);
 
-    /* Add view to the controller */
-    _InterfaceController.setView(this);
+    /* Add the controller to other views */
+    _pointDialog.setInterfaceController(_interfaceController);
+    _lineDialog.setInterfaceController(_interfaceController);
+
 
     /* Main window */
     set_title("My IGS");
@@ -40,6 +41,7 @@ MyIGS::MyIGS() :
 }
 
 MyIGS::~MyIGS() {
+    delete _interfaceController;
 }
 
 void MyIGS::createControlFrame() {

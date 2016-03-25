@@ -75,8 +75,8 @@ LineDialog::LineDialog() :
 LineDialog::~LineDialog() {
 }
 
-void LineDialog::setInterfaceController(InterfaceController *InterfaceController) {
-    _InterfaceController = InterfaceController;
+void LineDialog::setInterfaceController(InterfaceController *interfaceController) {
+    _interfaceController = interfaceController;
 }
 
 void LineDialog::on_button_cancel_clicked() {
@@ -104,7 +104,7 @@ void LineDialog::on_button_ok_clicked() {
         sY2 >> y2;
 
         /* Create the new line and close this window */
-        _InterfaceController->createLine(name, x1, y1, x2, y2);
+        _interfaceController->createLine(name, x1, y1, x2, y2);
     }
 
     /* Clear the contents of the Entries and close the window */
