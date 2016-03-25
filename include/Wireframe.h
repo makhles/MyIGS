@@ -1,22 +1,19 @@
-/* Wireframe.h
-   Copyright: Makhles Reuter Lange, 2016.
-*/
+/* Wireframe.h */
 
 #ifndef WIREFRAME_H
 #define WIREFRAME_H
 
-#include <cstddef>              // For size_t
-#include <vector>
+#include <list>
 #include "Shape.h"
 #include "Point.h"
 
 class Wireframe : public Shape {
     private:
-        std::vector<Point> _vertices;
+        std::list<Point*> *_vertices;
     public:
-        Wireframe(const std::string name, const Point &p1, const Point &p2, const Point &p3);
+        Wireframe(const std::string name, std::list<Point*> *vertices);
         ~Wireframe();
-        std::vector<Point> get_vertices() const {return _vertices;};
-        void add_vertice(const Point &p);
-};
-#endif
+        const std::list<Point*>* get_vertices() const {return _vertices;}
+}
+
+#endif  // WIREFRAME_H
