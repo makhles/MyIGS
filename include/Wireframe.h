@@ -14,6 +14,6 @@ class Wireframe : public Shape {
         Wireframe(const std::string name, std::list<Point*> *vertices);
         ~Wireframe();
         const std::list<Point*>* get_vertices() const {return _vertices;}
-}
+};
 
 #endif  // WIREFRAME_H
