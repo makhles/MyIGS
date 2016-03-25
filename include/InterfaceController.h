@@ -8,6 +8,7 @@
 #include <cstddef>              // For size_t
 #include "WorldWindow.h"
 #include "LineDrawer.h"
+#include "PointDrawer.h"
 
 class MyIGS;
 class Shape;
@@ -19,6 +20,7 @@ class InterfaceController {
 
     protected:
         std::list<Drawer*> _displayFile;
+        PointDrawer _pointDrawer;
         LineDrawer _lineDrawer;
         MyIGS *_view;
         Canvas *_canvas;

@@ -13,6 +13,7 @@ InterfaceController::InterfaceController() :
         _yViewportMin(0),
         _yViewportMax(500) {
 
+    _displayFile.push_back(&_pointDrawer);
     _displayFile.push_back(&_lineDrawer);
 }
 
@@ -22,10 +23,13 @@ InterfaceController::~InterfaceController() {
 
 void InterfaceController::createPoint(std::string name, const size_t xPos, const size_t yPos) {
     Point *point = new Point(name, xPos, yPos);
-    //_displayFile.push_back(point);
+    _pointDrawer.addPoint(point);
 
     /* Append object name to the list of objects in the view */
     _view->appendObjectToViewList(point);
+
+    /* Force redraw */
+    _canvas->invalidateCanvas();
 }
 
 void InterfaceController::createLine(std::string name, const size_t x1Pos, const size_t y1Pos,
