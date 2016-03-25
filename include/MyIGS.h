@@ -7,13 +7,13 @@
 #include "Shape.h"
 #include "Canvas.h"
 #include "OutputBoard.h"
-#include "WorldWindow.h"
+#include "InterfaceController.h"
 #include "PointDialog.h"
 #include "LineDialog.h"
 
 class MyIGS : public Gtk::Window {
     protected:
-        WorldWindow _worldWindow;
+        InterfaceController _InterfaceController;
         PointDialog _pointDialog;
         LineDialog _lineDialog;
         std::list<Shape> _objects;

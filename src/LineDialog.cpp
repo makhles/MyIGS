@@ -3,7 +3,7 @@
 #include <iostream>
 #include "LineDialog.h"
 #include "Line.h"
-#include "WorldWindow.h"
+#include "InterfaceController.h"
 
 LineDialog::LineDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),
@@ -75,8 +75,8 @@ LineDialog::LineDialog() :
 LineDialog::~LineDialog() {
 }
 
-void LineDialog::setWorldWindow(WorldWindow *worldWindow) {
-    _worldWindow = worldWindow;
+void LineDialog::setInterfaceController(InterfaceController *InterfaceController) {
+    _InterfaceController = InterfaceController;
 }
 
 void LineDialog::on_button_cancel_clicked() {
@@ -104,7 +104,7 @@ void LineDialog::on_button_ok_clicked() {
         sY2 >> y2;
 
         /* Create the new line and close this window */
-        _worldWindow->createLine(name, x1, y1, x2, y2);
+        _InterfaceController->createLine(name, x1, y1, x2, y2);
     }
 
     /* Clear the contents of the Entries and close the window */

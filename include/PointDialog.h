@@ -11,7 +11,7 @@
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/separator.h>
 
-class WorldWindow;
+class InterfaceController;
 
 class PointDialog : public Gtk::Window {
     protected:
@@ -28,12 +28,12 @@ class PointDialog : public Gtk::Window {
         Gtk::Entry _yEntry;
         Gtk::Button _okButton;
         Gtk::Button _cancelButton;
-        WorldWindow *_worldWindow;
+        InterfaceController *_InterfaceController;
 
     public:
         PointDialog();
         virtual ~PointDialog();
-        void setWorldWindow(WorldWindow *worldWindow);
+        void setInterfaceController(InterfaceController *InterfaceController);
 
     protected:
         void on_button_cancel_clicked();

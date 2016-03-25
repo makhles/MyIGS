@@ -18,12 +18,12 @@ MyIGS::MyIGS() :
         _objectsListView(1) {
 
     /* Add the controller to views */
-    _canvas.setWorldWindow(&_worldWindow);
-    _pointDialog.setWorldWindow(&_worldWindow);
-    _lineDialog.setWorldWindow(&_worldWindow);
+    _canvas.setInterfaceController(&_InterfaceController);
+    _pointDialog.setInterfaceController(&_InterfaceController);
+    _lineDialog.setInterfaceController(&_InterfaceController);
 
     /* Add view to the controller */
-    _worldWindow.setView(this);
+    _InterfaceController.setView(this);
 
     /* Main window */
     set_title("My IGS");

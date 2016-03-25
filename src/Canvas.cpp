@@ -3,7 +3,7 @@
 #include <cairomm/context.h>
 #include <iostream>
 #include "Canvas.h"
-#include "WorldWindow.h"
+#include "InterfaceController.h"
 #include "Drawable.h"
 
 Canvas::Canvas() {
@@ -13,9 +13,9 @@ Canvas::Canvas() {
 Canvas::~Canvas() {
 }
 
-void Canvas::setWorldWindow(WorldWindow *worldWindow) {
-    _worldWindow = worldWindow;
-    _worldWindow->setCanvas(this);
+void Canvas::setInterfaceController(InterfaceController *InterfaceController) {
+    _InterfaceController = InterfaceController;
+    _InterfaceController->setCanvas(this);
 }
 
 bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
@@ -45,7 +45,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->unset_dash();
 
     std::cout << "Drawing each object" << std::endl;
-    std::list<Drawable*> objects = _worldWindow->get_displayFile();
+    std::list<Drawable*> objects = _InterfaceController->get_displayFile();
     for (auto obj = objects.begin(); obj != objects.end(); obj++) {
         (*obj)->draw(cr);
         cr->stroke();

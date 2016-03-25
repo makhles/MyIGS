@@ -11,7 +11,7 @@
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/separator.h>
 
-class WorldWindow;
+class InterfaceController;
 
 class LineDialog : public Gtk::Window {
     protected:
@@ -33,12 +33,12 @@ class LineDialog : public Gtk::Window {
         Gtk::Entry _y2Entry;
         Gtk::Button _okButton;
         Gtk::Button _cancelButton;
-        WorldWindow *_worldWindow;
+        InterfaceController *_InterfaceController;
 
     public:
         LineDialog();
         virtual ~LineDialog();
-        void setWorldWindow(WorldWindow *worldWindow);
+        void setInterfaceController(InterfaceController *InterfaceController);
 
     protected:
         void on_button_cancel_clicked();

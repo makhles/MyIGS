@@ -6,7 +6,7 @@
 #include "Drawable.h"
 
 class Line;
-class WorldWindow;
+class InterfaceController;
 
 class DrawLine : public Drawable {
 
@@ -15,13 +15,13 @@ class DrawLine : public Drawable {
         Line *_line;         // Original line from model
         Line *_clippedLine;  // Line clipped to current window area
         Line *_vpLine;       // Line to be displayed at the viewport
-        WorldWindow *_worldWindow;
+        InterfaceController *_InterfaceController;
 
     protected:
         void windowToViewport() override;
 
     public:
-        DrawLine(Line *line, WorldWindow *worldWindow);
+        DrawLine(Line *line, InterfaceController *InterfaceController);
         virtual ~DrawLine();
         void draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
         void clipToWindow() override;

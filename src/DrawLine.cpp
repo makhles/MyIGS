@@ -4,11 +4,11 @@
 #include "DrawLine.h"
 #include "Line.h"
 #include "Point.h"
-#include "WorldWindow.h"
+#include "InterfaceController.h"
 
-DrawLine::DrawLine(Line *line, WorldWindow *worldWindow) : 
+DrawLine::DrawLine(Line *line, InterfaceController *InterfaceController) : 
         _line(line),
-        _worldWindow(worldWindow) {
+        _InterfaceController(InterfaceController) {
 
 }
 
@@ -42,13 +42,13 @@ void DrawLine::windowToViewport() {
     Point *clippedP2 = _clippedLine->get_p2();
 
     /* Point 1 in Viewport coordinates */
-    x = _worldWindow->xWindowToViewport(clippedP1->get_xPos());
-    y = _worldWindow->yWindowToViewport(clippedP1->get_yPos());
+    x = _InterfaceController->xWindowToViewport(clippedP1->get_xPos());
+    y = _InterfaceController->yWindowToViewport(clippedP1->get_yPos());
     p1 = new Point(clippedP1->get_name(), x, y);
 
     /* Point 2 in Viewport coordinates */
-    x = _worldWindow->xWindowToViewport(clippedP2->get_xPos());
-    y = _worldWindow->yWindowToViewport(clippedP2->get_yPos());
+    x = _InterfaceController->xWindowToViewport(clippedP2->get_xPos());
+    y = _InterfaceController->yWindowToViewport(clippedP2->get_yPos());
     p2 = new Point(clippedP2->get_name(), x, y);
 
     /* Line in Viewport coordinates */

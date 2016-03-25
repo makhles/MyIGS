@@ -3,7 +3,7 @@
 #include <iostream>
 #include "PointDialog.h"
 #include "Point.h"
-#include "WorldWindow.h"
+#include "InterfaceController.h"
 
 PointDialog::PointDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),
@@ -61,8 +61,8 @@ PointDialog::PointDialog() :
 PointDialog::~PointDialog() {
 }
 
-void PointDialog::setWorldWindow(WorldWindow *worldWindow) {
-    _worldWindow = worldWindow;
+void PointDialog::setInterfaceController(InterfaceController *InterfaceController) {
+    _InterfaceController = InterfaceController;
 }
 
 void PointDialog::on_button_cancel_clicked() {
@@ -86,7 +86,7 @@ void PointDialog::on_button_ok_clicked() {
         stringY >> y;
 
         /* Create the new point */
-        _worldWindow->createPoint(name, x, y);
+        _InterfaceController->createPoint(name, x, y);
     }
 
     /* Clear the contents of the Entries and close the window */

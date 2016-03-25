@@ -5,11 +5,11 @@
 
 #include <gtkmm/drawingarea.h>
 
-class WorldWindow;
+class InterfaceController;
 
 class Canvas : public Gtk::DrawingArea {
     protected:
-        WorldWindow *_worldWindow;
+        InterfaceController *_InterfaceController;
 
     protected:
         bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
@@ -17,7 +17,7 @@ class Canvas : public Gtk::DrawingArea {
     public:
         Canvas();
         virtual ~Canvas();
-        void setWorldWindow(WorldWindow *worldWindow);
+        void setInterfaceController(InterfaceController *InterfaceController);
         void invalidateCanvas();
 };
 
