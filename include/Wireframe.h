@@ -7,10 +7,10 @@
 
 #include <cstddef>              // For size_t
 #include <vector>
-#include "GraphicalObject.h"
+#include "Shape.h"
 #include "Point.h"
 
-class Wireframe : public GraphicalObject {
+class Wireframe : public Shape {
     private:
         std::vector<Point> _vertices;
     public:

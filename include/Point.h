@@ -6,9 +6,9 @@
 #define POINT_H
 
 #include <cstddef>              // For size_t
-#include "GraphicalObject.h"
+#include "Shape.h"
 
-class Point : public GraphicalObject {
+class Point : public Shape {
     friend class Line;
     private:
         size_t _xPos;

@@ -4,7 +4,7 @@
 #define MYIGS_H
 
 #include <gtkmm.h>
-#include "GraphicalObject.h"
+#include "Shape.h"
 #include "Canvas.h"
 #include "OutputBoard.h"
 #include "WorldWindow.h"
@@ -16,7 +16,7 @@ class MyIGS : public Gtk::Window {
         WorldWindow _worldWindow;
         PointDialog _pointDialog;
         LineDialog _lineDialog;
-        std::list<GraphicalObject> _objects;
+        std::list<Shape> _objects;
         Gtk::Box _mainBox;
         Gtk::Frame _controlFrame;
         Gtk::Frame _viewportFrame;
@@ -66,7 +66,7 @@ class MyIGS : public Gtk::Window {
     public:
         MyIGS();
         virtual ~MyIGS();
-        void appendObjectToViewList(const GraphicalObject *obj);
+        void appendObjectToViewList(const Shape *obj);
 };
 
 #endif  // MYIGS_H

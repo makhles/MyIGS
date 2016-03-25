@@ -8,7 +8,7 @@
 #include <cstddef>              // For size_t
 
 class MyIGS;
-class GraphicalObject;
+class Shape;
 class Canvas;
 class Point;
 class Drawable;

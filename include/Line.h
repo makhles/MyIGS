@@ -6,11 +6,11 @@
 #define LINE_H
 
 #include <cstddef>              // For size_t
-#include "GraphicalObject.h"
+#include "Shape.h"
 
 class Point;
 
-class Line : public GraphicalObject {
+class Line : public Shape {
     protected:
         Point *_p1;
         Point *_p2;

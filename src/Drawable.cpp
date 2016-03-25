@@ -5,7 +5,3 @@
 Drawable::Drawable() : _drawable(false) {
 
 }
-
-void Drawable::windowToViewport() {
-
-}

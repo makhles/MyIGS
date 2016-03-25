@@ -161,6 +161,6 @@ void MyIGS::createWireframe() {
     std::cout << "New wireframe created." << std::endl;
 }
 
-void MyIGS::appendObjectToViewList(const GraphicalObject *obj) {
+void MyIGS::appendObjectToViewList(const Shape *obj) {
     _objectsListView.append(obj->get_name());
 }
