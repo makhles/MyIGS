@@ -1,9 +1,9 @@
 # Created by aszdrick graf <aszdrick@gmail.com>
 # Compiler
-CXX       :=gcc
+CXX       :=g++
 LDLIBS    :=-lstdc++
 LDFLAGS   :=
-CXXFLAGS  :=`pkg-config --cflags --libs gtk+-3.0` -std=c++11
+CXXFLAGS  :=`pkg-config --cflags --libs gtkmm-3.0` -std=c++11 -Wall
 # Source directory
 SRCDIR    :=src
 # Headers directory
