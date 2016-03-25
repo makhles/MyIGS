@@ -8,15 +8,10 @@
 #include "DrawLine.h"
 
 InterfaceController::InterfaceController() :
-        _xWindowMin(0),
-        _xWindowMax(100),
-        _yWindowMin(0),
-        _yWindowMax(100),
         _xViewportMin(0),
         _xViewportMax(500),
         _yViewportMin(0),
         _yViewportMax(500) {
-
 }
 
 InterfaceController::~InterfaceController() {
@@ -54,8 +49,8 @@ void InterfaceController::createLine(std::string name, const size_t x1Pos, const
 size_t InterfaceController::xWindowToViewport(const size_t xWindow) {
     std::cout << "xWindow = " << xWindow << std::endl;
     size_t xViewport;
-    xViewport = xWindow - _xWindowMin;
-    xViewport *= (_xViewportMax - _xViewportMin)/(_xWindowMax - _xWindowMin);
+    xViewport = xWindow - _window._xMin;
+    xViewport *= (_xViewportMax - _xViewportMin)/(_window._xMax - _window._xMin);
     xViewport += _xViewportMin;
     std::cout << "xViewport = " << xViewport << std::endl;
     return xViewport;
@@ -64,15 +59,27 @@ size_t InterfaceController::xWindowToViewport(const size_t xWindow) {
 size_t InterfaceController::yWindowToViewport(const size_t yWindow) {
     std::cout << "yWindow = " << yWindow << std::endl;
     size_t yViewport;
-    yViewport = (_yViewportMax - _yViewportMin) / (_yWindowMax - _yWindowMin);
-    yViewport *= (yWindow - _yWindowMin);
+    yViewport = (_yViewportMax - _yViewportMin) / (_window._yMax - _window._yMin);
+    yViewport *= (yWindow - _window._yMin);
     yViewport = _yViewportMax - yViewport;
     std::cout << "yViewport = " << yViewport << std::endl;
     return yViewport;
 }
 
-void InterfaceController::translateWindow(size_t xDisp, size_t yDisp) {
-    this->clearDisplayFile();
+void InterfaceController::translateUp() {
+    // TODO
+}
+
+void InterfaceController::translateRight() {
+    // TODO
+}
+
+void InterfaceController::translateDown() {
+    // TODO
+}
+
+void InterfaceController::translateLeft() {
+    // TODO
 }
 
 void InterfaceController::scaleWindow(size_t factor) {

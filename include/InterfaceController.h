@@ -6,6 +6,7 @@
 #include <list>
 #include <string>
 #include <cstddef>              // For size_t
+#include "WorldWindow.h"
 
 class MyIGS;
 class Shape;
@@ -19,17 +20,13 @@ class InterfaceController {
         std::list<Drawable*> _displayFile;
         MyIGS *_view;
         Canvas *_canvas;
-        size_t _xWindowMin;
-        size_t _xWindowMax;
-        size_t _yWindowMin;
-        size_t _yWindowMax;
+        WorldWindow _window;
         size_t _xViewportMin;
         size_t _xViewportMax;
         size_t _yViewportMin;
         size_t _yViewportMax;
 
     protected:
-        void translateWindow(size_t xDisp, size_t yDisp);
         void scaleWindow(size_t factor);
         void clearDisplayFile();
 
@@ -44,6 +41,10 @@ class InterfaceController {
         void createPoint(std::string name, const size_t xPos, const size_t yPos);
         void createLine(std::string name, const size_t x1Pos, const size_t y1Pos,
                 const size_t x2Pos, const size_t y2Pos);
+        void translateUp();
+        void translateRight();
+        void translateDown();
+        void translateLeft();
 };
 
 #endif  // InterfaceController_H
