@@ -7,15 +7,10 @@
 
 class Drawable {
 
-    protected:
-        bool _drawable;
-
-    protected:
-        virtual void windowToViewport() = 0;
-
     public:
-        Drawable();
+        virtual ~Drawable();
         virtual void clipToWindow() = 0;
+        virtual void windowToViewport() = 0;
         virtual void draw(const Cairo::RefPtr<Cairo::Context> &cr) = 0;
 };
 
