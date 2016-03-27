@@ -1,4 +1,5 @@
-/* ObjectType.h */
+/* ShapeType.h */
+
 #ifndef SHAPETYPE_H
 #define SHAPETYPE_H
 

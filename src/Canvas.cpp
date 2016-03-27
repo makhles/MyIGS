@@ -4,7 +4,8 @@
 #include <iostream>
 #include "Canvas.h"
 #include "InterfaceController.h"
-#include "Drawer.h"
+#include "Shape.h"
+#include "Coord.h"
 
 Canvas::Canvas() {
     set_size_request(500,500);
@@ -34,18 +35,49 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->move_to(xc, 0);
     cr->line_to(xc, height);
     cr->stroke();
-
-    /* Set stroke properties for the objects */
-    cr->set_line_width(1.0);
     cr->unset_dash();
 
     std::cout << "Drawing each object" << std::endl;
-    // TODO
+    auto shape = _displayFile.begin();
+    while (shape != _displayFile.end()) {
+        if ((*shape)->get_type() == ShapeType::POINT) {
+            cr->set_line_cap(Cairo::LINE_CAP_ROUND);
+            cr->set_line_width(2.0);
+        } else {
+            cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+            cr->set_line_width(1.0);
+        }
+        const std::list<const Coord<size_t>*> *coordinates = (*shape)->getViewportCoordinates();
+        Canvas::drawShape(cr, coordinates);
+        shape++;
+        cr->stroke();
+    }
 
     return true;
 }
 
+void Canvas::drawShape(const Cairo::RefPtr<Cairo::Context> &cr, 
+            const std::list<const Coord<size_t>*> *coordinates) {
+
+    bool endPoint = false;
+    auto coord = coordinates->begin();
+    while (coord != coordinates->end()) {
+        if (endPoint) {
+            cr->line_to((*coord)->getX(), (*coord)->getY());
+        } else {
+            cr->move_to((*coord)->getX(), (*coord)->getY());
+        }
+        endPoint ^= true;
+        coord++;
+    }
+}
+
+void Canvas::addToDisplayFile(Shape *shape) {
+    _displayFile.push_back(shape);
+}
+
 void Canvas::invalidateCanvas() {
+    std::cout << "Invalidating canvas..." << std::endl;
     auto win = get_window();
     if (win) {
         Gdk::Rectangle r(0, 0, get_allocation().get_width(), get_allocation().get_height());

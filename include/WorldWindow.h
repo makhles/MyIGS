@@ -4,6 +4,7 @@
 #define WORLDWINDOW_H
 
 class WorldWindow {
+
     public:
         const double XMIN = 0;
         const double YMIN = 0;
@@ -13,6 +14,7 @@ class WorldWindow {
         double _xMax;
         double _yMin;
         double _yMax;
+
     public:
         WorldWindow();
         ~WorldWindow();

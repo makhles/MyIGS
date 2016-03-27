@@ -4,20 +4,25 @@
 #define CANVAS_H
 
 #include <gtkmm/drawingarea.h>
+#include <cstddef>
 
-class Drawer;
+class Shape;
+class Point;
+template <class T> class Coord;
 
 class Canvas : public Gtk::DrawingArea {
     protected:
-        const std::list<Drawer*> *_displayFile;
+        std::list<Shape*> _displayFile;
 
     protected:
         bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+        void drawShape(const Cairo::RefPtr<Cairo::Context> &cr,
+                const std::list<const Coord<size_t>*> *coordinates);
 
     public:
         Canvas();
         virtual ~Canvas();
-        void setDisplayFile(const std::list<Drawer*> *displayFile) {_displayFile = displayFile;}
+        void addToDisplayFile(Shape *shape);
         void invalidateCanvas();
 };
 

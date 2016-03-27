@@ -4,18 +4,17 @@
 #define MYIGS_H
 
 #include <gtkmm.h>
-#include "Shape.h"
 #include "Canvas.h"
 #include "OutputBoard.h"
 #include "PointDialog.h"
 #include "LineDialog.h"
 
 class InterfaceController;
+class Shape;
 
 class MyIGS : public Gtk::Window {
     protected:
         InterfaceController *_interfaceController;
-        std::list<Shape> _objects;
 
         /* Dialogs */
         PointDialog _pointDialog;

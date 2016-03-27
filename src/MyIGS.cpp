@@ -3,6 +3,7 @@
 #include <iostream>
 #include "MyIGS.h"
 #include "InterfaceController.h"
+#include "Shape.h"
 
 MyIGS::MyIGS() :
         _mainBox(Gtk::ORIENTATION_HORIZONTAL),
