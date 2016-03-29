@@ -13,12 +13,14 @@ Line::Line(const std::string &name, const Point *p1, const Point *p2) :
 }
 
 Line::~Line() {
+    std::cout << "Line destructor called." << std::endl;
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
         delete *coord;
         coord++;
     }
     _wCoords.clear();
+    std::cout << "Line destructor done." << std::endl;
 }
 
 

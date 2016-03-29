@@ -12,6 +12,8 @@ Canvas::Canvas() {
 }
 
 Canvas::~Canvas() {
+    std::cout << "Canvas destructor called." << std::endl;
+    std::cout << "Canvasdestructor done." << std::endl;
 }
 
 bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {

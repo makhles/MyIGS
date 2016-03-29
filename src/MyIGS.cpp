@@ -42,7 +42,9 @@ MyIGS::MyIGS() :
 }
 
 MyIGS::~MyIGS() {
+    std::cout << "MyIGS destructor called." << std::endl;
     delete _interfaceController;
+    std::cout << "MyIGS destructor done." << std::endl;
 }
 
 void MyIGS::createControlFrame() {
@@ -57,8 +59,8 @@ void MyIGS::createControlFrame() {
     _controlBox.pack_start(_zoomFrame, Gtk::PACK_SHRINK, 1);
 
     /* Zoom frame buttons */
-    _zoomButtonOut.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoom_out));
-    _zoomButtonIn.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoom_in));
+    _zoomButtonOut.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowOut));
+    _zoomButtonIn.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowIn));
     _zoomBox.pack_start(_zoomButtonOut, Gtk::PACK_EXPAND_WIDGET, 1);
     _zoomBox.pack_start(_zoomButtonIn, Gtk::PACK_EXPAND_WIDGET, 1);
 
@@ -125,28 +127,29 @@ void MyIGS::createObjectsFrame() {
     _mainBox.pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
 
-void MyIGS::zoom_in() {
+void MyIGS::zoomWindowIn() {
     std::cout << "Zooming in!" << std::endl;
+
 }
 
-void MyIGS::zoom_out() {
+void MyIGS::zoomWindowOut() {
     std::cout << "Zooming out!" << std::endl;
 }
 
-void MyIGS::displaceUp() {
-    std::cout << "Going up..." << std::endl;
+void MyIGS::moveWindowUp() {
+
 }
 
-void MyIGS::displaceRight() {
-    std::cout << "Going right..." << std::endl;
+void MyIGS::moveWindowRight() {
+
 }
 
-void MyIGS::displaceDown() {
-    std::cout << "Going down..." << std::endl;
+void MyIGS::moveWindowDown() {
+
 }
 
-void MyIGS::displaceLeft() {
-    std::cout << "Going left..." << std::endl;
+void MyIGS::moveWindowLeft() {
+
 }
 
 void MyIGS::createPoint() {

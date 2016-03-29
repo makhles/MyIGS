@@ -58,13 +58,15 @@ class MyIGS : public Gtk::Window {
         void createControlFrame();
         void createViewportFrame();
         void createObjectsFrame();
+
         /* Control */
-        void zoom_in();
-        void zoom_out();
-        void displaceUp();
-        void displaceRight();
-        void displaceDown();
-        void displaceLeft();
+        void zoomWindowIn();
+        void zoomWindowOut();
+        void moveWindowUp();
+        void moveWindowRight();
+        void moveWindowDown();
+        void moveWindowLeft();
+
         /* Objects creation */
         void createPoint();
         void createLine();

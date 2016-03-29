@@ -18,12 +18,14 @@ InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
 }
 
 InterfaceController::~InterfaceController() {
+    std::cout << "InterfaceController destructor called." << std::endl;
     auto shape = _shapes.begin();
     while (shape != _shapes.end()) {
         delete *shape;
         shape++;
     }
     _shapes.clear();
+    std::cout << "InterfaceController destructor done." << std::endl;
 }
 
 void InterfaceController::createPoint(std::string name, const size_t xPos, const size_t yPos) {
@@ -107,20 +109,20 @@ size_t InterfaceController::yWindowToViewport(const double yWindow) {
     return (size_t) yViewport;
 }
 
-void InterfaceController::translateUp() {
-    // TODO
+void InterfaceController::moveWindowUp() {
+
 }
 
-void InterfaceController::translateRight() {
-    // TODO
+void InterfaceController::moveWindowRight() {
+
 }
 
-void InterfaceController::translateDown() {
-    // TODO
+void InterfaceController::moveWindowDown() {
+
 }
 
-void InterfaceController::translateLeft() {
-    // TODO
+void InterfaceController::moveWindowLeft() {
+
 }
 
 void InterfaceController::zoomWindowIn() {
