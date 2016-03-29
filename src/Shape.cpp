@@ -12,6 +12,6 @@ void Shape::clearViewportCoordinates() {
     _vpCoords.clear();
 }
 
-void Shape::addViewportCoordinate(const Coord<size_t> *coord) {
+void Shape::addViewportCoordinate(const Coord<int> *coord) {
     _vpCoords.push_back(coord);
 }

@@ -17,7 +17,7 @@ class Canvas : public Gtk::DrawingArea {
     protected:
         bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
         void drawShape(const Cairo::RefPtr<Cairo::Context> &cr,
-                const std::list<const Coord<size_t>*> *coordinates);
+                const std::list<const Coord<int>*> *coordinates);
 
     public:
         Canvas();

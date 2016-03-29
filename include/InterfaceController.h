@@ -5,7 +5,6 @@
 
 #include <list>
 #include <string>
-#include <cstddef>         // For size_t
 #include "WorldWindow.h"
 
 class MyIGS;
@@ -19,23 +18,23 @@ class InterfaceController {
         MyIGS *_interface;
         Canvas *_canvas;
         WorldWindow _window;
-        size_t _xViewportMin; // TODO : change to getter method from Canvas
-        size_t _xViewportMax;
-        size_t _yViewportMin;
-        size_t _yViewportMax;
+        int _xViewportMin; // TODO : change to getter method from Canvas
+        int _xViewportMax;
+        int _yViewportMin;
+        int _yViewportMax;
 
     public:
         InterfaceController(MyIGS *interface, Canvas *canvas);
         virtual ~InterfaceController();
 
         void toViewport(Shape *shape);
-        size_t xWindowToViewport(const double xWindow);
-        size_t yWindowToViewport(const double yWindow);
+        int xWindowToViewport(const double xWindow);
+        int yWindowToViewport(const double yWindow);
 
         /* Shape creation methods */
-        void createPoint(std::string name, const size_t xPos, const size_t yPos);
-        void createLine(std::string name, const size_t x1Pos, const size_t y1Pos,
-                const size_t x2Pos, const size_t y2Pos);
+        void createPoint(std::string name, const int xPos, const int yPos);
+        void createLine(std::string name, const int x1Pos, const int y1Pos,
+                const int x2Pos, const int y2Pos);
         void finalizeShapeCreation(Shape *shape);
         void update(Shape *shape);
 

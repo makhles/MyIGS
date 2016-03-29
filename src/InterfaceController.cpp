@@ -28,13 +28,13 @@ InterfaceController::~InterfaceController() {
     std::cout << "InterfaceController destructor done." << std::endl;
 }
 
-void InterfaceController::createPoint(std::string name, const size_t xPos, const size_t yPos) {
+void InterfaceController::createPoint(std::string name, const int xPos, const int yPos) {
     Point *point = new Point(name, xPos, yPos);
     InterfaceController::finalizeShapeCreation(point);
 }
 
-void InterfaceController::createLine(std::string name, const size_t x1Pos, const size_t y1Pos,
-        const size_t x2Pos, const size_t y2Pos) {
+void InterfaceController::createLine(std::string name, const int x1Pos, const int y1Pos,
+        const int x2Pos, const int y2Pos) {
 
     std::cout << "Creating a new line." << std::endl;
 
@@ -70,7 +70,7 @@ void InterfaceController::toViewport(Shape *shape) {
     const std::list<Coord<double>*>* wCoords = shape->getWindowCoordinates();
     shape->clearViewportCoordinates();
 
-    size_t vpX, vpY;
+    int vpX, vpY;
     int count = 0;
     auto c = wCoords->begin();
     while (c != wCoords->end()) {
@@ -80,13 +80,13 @@ void InterfaceController::toViewport(Shape *shape) {
         std::cout << "" << count << " of " << wCoords->size() << std::endl;
         vpY = this->yWindowToViewport((*c)->getY());
         std::cout << "vpY = " << vpY << std::endl;
-        shape->addViewportCoordinate(new Coord<size_t>(vpX, vpY));
+        shape->addViewportCoordinate(new Coord<int>(vpX, vpY));
         c++;
     }
     std::cout << "Converted." << std::endl;
 }
 
-size_t InterfaceController::xWindowToViewport(const double xWindow) {
+int InterfaceController::xWindowToViewport(const double xWindow) {
     double xViewport;
     xViewport = xWindow - _window.getXMin();
     std::cout << "xViewport = " << xViewport << std::endl;
@@ -94,10 +94,10 @@ size_t InterfaceController::xWindowToViewport(const double xWindow) {
     std::cout << "xViewport = " << xViewport << std::endl;
     xViewport += _xViewportMin;
     std::cout << "xViewport = " << xViewport << std::endl;
-    return (size_t) xViewport;
+    return (int) xViewport;
 }
 
-size_t InterfaceController::yWindowToViewport(const double yWindow) {
+int InterfaceController::yWindowToViewport(const double yWindow) {
     double yViewport;
     yViewport = (_yViewportMax - _yViewportMin) / (_window.getYMax() - _window.getYMin());
     std::cout << "yViewport = " << yViewport << std::endl;
@@ -105,7 +105,7 @@ size_t InterfaceController::yWindowToViewport(const double yWindow) {
     std::cout << "yViewport = " << yViewport << std::endl;
     yViewport = _yViewportMax - yViewport;
     std::cout << "yViewport = " << yViewport << std::endl;
-    return (size_t) yViewport;
+    return (int) yViewport;
 }
 
 void InterfaceController::moveWindow(int moveX, int moveY) {

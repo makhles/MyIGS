@@ -49,7 +49,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
             cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
             cr->set_line_width(1.0);
         }
-        const std::list<const Coord<size_t>*> *coordinates = (*shape)->getViewportCoordinates();
+        const std::list<const Coord<int>*> *coordinates = (*shape)->getViewportCoordinates();
         Canvas::drawShape(cr, coordinates);
         shape++;
         cr->stroke();
@@ -59,7 +59,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
 }
 
 void Canvas::drawShape(const Cairo::RefPtr<Cairo::Context> &cr, 
-            const std::list<const Coord<size_t>*> *coordinates) {
+            const std::list<const Coord<int>*> *coordinates) {
 
     bool endPoint = false;
     auto coord = coordinates->begin();
