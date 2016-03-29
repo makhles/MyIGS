@@ -48,11 +48,11 @@ class MyIGS : public Gtk::Window {
         Gtk::Box _objectsBox;
         Gtk::Separator _objectsSeparator;
         Gtk::ScrolledWindow _objectsWindow;
-        Gtk::ListViewText _objectsListView;
-        Gtk::Label _labelCreateObjects;
         Gtk::Button _buttonCreatePoint;
         Gtk::Button _buttonCreateLine;
         Gtk::Button _buttonCreateWireframe;
+        Gtk::Label _labelCreateObjects;
+        Gtk::ListViewText _objectsListView;
 
     protected:
         void createControlFrame();

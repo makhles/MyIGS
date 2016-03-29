@@ -71,6 +71,10 @@ void MyIGS::createControlFrame() {
     _controlBox.pack_start(_dispFrame, Gtk::PACK_SHRINK, 1);
 
     /* Displacement buttons */
+    _dispButtonUp.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowUp));
+    _dispButtonRight.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowRight));
+    _dispButtonDown.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowDown));
+    _dispButtonLeft.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowLeft));
     _dispGrid.attach(_dispButtonUp,2,1,1,1);
     _dispGrid.attach(_dispButtonRight,3,2,1,1);
     _dispGrid.attach(_dispButtonDown,2,3,1,1);
@@ -128,28 +132,27 @@ void MyIGS::createObjectsFrame() {
 }
 
 void MyIGS::zoomWindowIn() {
-    std::cout << "Zooming in!" << std::endl;
 
 }
 
 void MyIGS::zoomWindowOut() {
-    std::cout << "Zooming out!" << std::endl;
+
 }
 
 void MyIGS::moveWindowUp() {
-
+    _interfaceController->moveWindow(0,1);
 }
 
 void MyIGS::moveWindowRight() {
-
+    _interfaceController->moveWindow(1,0);
 }
 
 void MyIGS::moveWindowDown() {
-
+    _interfaceController->moveWindow(0,-1);
 }
 
 void MyIGS::moveWindowLeft() {
-
+    _interfaceController->moveWindow(-1,0);
 }
 
 void MyIGS::createPoint() {

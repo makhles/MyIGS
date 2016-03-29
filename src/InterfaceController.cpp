@@ -55,13 +55,12 @@ void InterfaceController::finalizeShapeCreation(Shape *shape) {
     /* Append object name to the list of objects in the view */
     _interface->appendObjectToViewList(shape);
 
-    /* Clip to current window dimensions */
+    this->update(shape);
+}
+
+void InterfaceController::update(Shape *shape) {
     shape->clipToWindow(&_window);
-
-    /* Compute viewport coordinates */
     this->toViewport(shape);
-
-    /* Force redraw */
     _canvas->invalidateCanvas();
 }
 
@@ -89,9 +88,9 @@ void InterfaceController::toViewport(Shape *shape) {
 
 size_t InterfaceController::xWindowToViewport(const double xWindow) {
     double xViewport;
-    xViewport = xWindow - _window._xMin;
+    xViewport = xWindow - _window.getXMin();
     std::cout << "xViewport = " << xViewport << std::endl;
-    xViewport *= (_xViewportMax - _xViewportMin)/(_window._xMax - _window._xMin);
+    xViewport *= (_xViewportMax - _xViewportMin)/(_window.getXMax() - _window.getXMin());
     std::cout << "xViewport = " << xViewport << std::endl;
     xViewport += _xViewportMin;
     std::cout << "xViewport = " << xViewport << std::endl;
@@ -100,29 +99,22 @@ size_t InterfaceController::xWindowToViewport(const double xWindow) {
 
 size_t InterfaceController::yWindowToViewport(const double yWindow) {
     double yViewport;
-    yViewport = (_yViewportMax - _yViewportMin) / (_window._yMax - _window._yMin);
+    yViewport = (_yViewportMax - _yViewportMin) / (_window.getYMax() - _window.getYMin());
     std::cout << "yViewport = " << yViewport << std::endl;
-    yViewport *= (yWindow - _window._yMin);
+    yViewport *= (yWindow - _window.getYMin());
     std::cout << "yViewport = " << yViewport << std::endl;
     yViewport = _yViewportMax - yViewport;
     std::cout << "yViewport = " << yViewport << std::endl;
     return (size_t) yViewport;
 }
 
-void InterfaceController::moveWindowUp() {
-
-}
-
-void InterfaceController::moveWindowRight() {
-
-}
-
-void InterfaceController::moveWindowDown() {
-
-}
-
-void InterfaceController::moveWindowLeft() {
-
+void InterfaceController::moveWindow(int moveX, int moveY) {
+    _window.moveWindow(moveX, moveY);
+    auto shape = _shapes.begin();
+    while (shape != _shapes.end()) {
+        this->update((*shape));
+        shape++;
+    }
 }
 
 void InterfaceController::zoomWindowIn() {

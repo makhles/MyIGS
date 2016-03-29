@@ -37,12 +37,10 @@ class InterfaceController {
         void createLine(std::string name, const size_t x1Pos, const size_t y1Pos,
                 const size_t x2Pos, const size_t y2Pos);
         void finalizeShapeCreation(Shape *shape);
+        void update(Shape *shape);
 
         /* Transformation methods */
-        void translateUp();
-        void translateRight();
-        void translateDown();
-        void translateLeft();
+        void moveWindow(int moveX, int moveY);
         void zoomWindowIn();
         void zoomWindowOut();
 };
