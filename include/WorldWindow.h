@@ -6,15 +6,17 @@
 class WorldWindow {
 
     private:
-        const double XMIN = 0;
-        const double YMIN = 0;
-        const double XMAX = 100;
-        const double YMAX = 100;
+        const double WINDOW_DEFAULT_XMIN = 0;
+        const double WINDOW_DEFAULT_YMIN = 0;
+        const double WINDOW_DEFAULT_XMAX = 100;
+        const double WINDOW_DEFAULT_YMAX = 100;
         const double DEFAULT_DISPLACEMENT = 5.0;
+        const double DEFAULT_ZOOM = 0.25;
         double _xMin;
         double _xMax;
         double _yMin;
         double _yMax;
+        double _zoom;
 
     public:
         WorldWindow();
@@ -24,8 +26,7 @@ class WorldWindow {
         const double getYMin() const { return _yMin; }
         const double getYMax() const { return _yMax; }
         void moveWindow(int moveX, int moveY);
-        void zoomWindowIn();
-        void zoomWindowOut();
+        void zoomWindow(int inOrOut);
 };
 
 #endif  // WORLDWINDOW_H

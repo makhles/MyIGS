@@ -132,11 +132,11 @@ void MyIGS::createObjectsFrame() {
 }
 
 void MyIGS::zoomWindowIn() {
-
+    _interfaceController->zoomWindow(1);
 }
 
 void MyIGS::zoomWindowOut() {
-
+    _interfaceController->zoomWindow(-1);
 }
 
 void MyIGS::moveWindowUp() {

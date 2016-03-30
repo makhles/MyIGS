@@ -37,11 +37,11 @@ class InterfaceController {
                 const int x2Pos, const int y2Pos);
         void finalizeShapeCreation(Shape *shape);
         void update(Shape *shape);
+        void updateShapes();
 
         /* Transformation methods */
         void moveWindow(int moveX, int moveY);
-        void zoomWindowIn();
-        void zoomWindowOut();
+        void zoomWindow(int inOrOut);
 };
 
 #endif  // InterfaceController_H

@@ -110,17 +110,18 @@ int InterfaceController::yWindowToViewport(const double yWindow) {
 
 void InterfaceController::moveWindow(int moveX, int moveY) {
     _window.moveWindow(moveX, moveY);
+    this->updateShapes();
+}
+
+void InterfaceController::zoomWindow(int inOrOut) {
+    _window.zoomWindow(inOrOut);
+    this->updateShapes();
+}
+
+void InterfaceController::updateShapes() {
     auto shape = _shapes.begin();
     while (shape != _shapes.end()) {
         this->update((*shape));
         shape++;
     }
-}
-
-void InterfaceController::zoomWindowIn() {
-    // TODO
-}
-
-void InterfaceController::zoomWindowOut() {
-    // TODO
 }
