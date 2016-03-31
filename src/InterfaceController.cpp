@@ -58,7 +58,6 @@ void InterfaceController::createWireframe(std::string name, std::list<Coord<doub
         wireframe->addPoint(p);
         delete *coord;
         coord = coords.erase(coord);
-        // coord++;
     }
 
     std::cout << "About to create wireframe... " << std::endl;

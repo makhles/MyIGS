@@ -12,3 +12,9 @@ build/
 
 # Other stuff
 *.d
+
+# Codeblocks
+*.cbp
+*.depend
+*.layout
+obj/
