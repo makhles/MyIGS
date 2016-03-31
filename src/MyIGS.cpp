@@ -165,7 +165,8 @@ void MyIGS::createLine() {
 }
 
 void MyIGS::createWireframe() {
-    std::cout << "New wireframe created." << std::endl;
+    std::cout << "Creating wireframe..." << std::endl;
+    _wireframeDialog.show();
 }
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {

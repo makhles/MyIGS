@@ -8,6 +8,7 @@
 #include "OutputBoard.h"
 #include "PointDialog.h"
 #include "LineDialog.h"
+#include "WireframeDialog.h"
 
 class InterfaceController;
 class Shape;
@@ -19,6 +20,7 @@ class MyIGS : public Gtk::Window {
         /* Dialogs */
         PointDialog _pointDialog;
         LineDialog _lineDialog;
+        WireframeDialog _wireframeDialog;
 
         /* Main widgets */
         Gtk::Box _mainBox;
