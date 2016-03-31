@@ -9,6 +9,7 @@
 
 template <class T> class Coord;
 class WorldWindow;
+class AbstractDrawer;
 
 class Shape {
 
@@ -27,6 +28,11 @@ class Shape {
         ShapeType get_type() const {return _type;}
         const std::list<Coord<double>*>* getWindowCoordinates() const {return &_wCoords;}
         const std::list<const Coord<int>*>* getViewportCoordinates() const {return &_vpCoords;}
+
+        // Visitor
+        virtual void accept(AbstractDrawer *drawer) = 0;
+
+
         void clearViewportCoordinates();
         void addViewportCoordinate(const Coord<int> *coord);
         virtual void clipToWindow(WorldWindow *w) = 0;

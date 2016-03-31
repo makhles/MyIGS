@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Coord.h"
 #include "WorldWindow.h"
+#include "AbstractDrawer.h"
 
 Wireframe::Wireframe(const std::string name, std::list<Point*> *vertices) :
         Shape(name, ShapeType::WIREFRAME),
@@ -20,6 +21,11 @@ Wireframe::~Wireframe() {
     }
     _wCoords.clear();
     std::cout << "Wireframe destructor done." << std::endl;
+}
+
+// Visitor
+void Wireframe::accept(AbstractDrawer *drawer) {
+    drawer->draw(this);
 }
 
 void Wireframe::clipToWindow(WorldWindow *w) {

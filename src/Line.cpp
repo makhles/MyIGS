@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Coord.h"
 #include "WorldWindow.h"
+#include "AbstractDrawer.h"
 
 Line::Line(const std::string &name, const Point *p1, const Point *p2) :
         Shape(name, ShapeType::LINE),
@@ -23,6 +24,10 @@ Line::~Line() {
     std::cout << "Line destructor done." << std::endl;
 }
 
+// Visitor
+void Line::accept(AbstractDrawer *drawer) {
+    drawer->draw(this);
+}
 
 void Line::clipToWindow(WorldWindow *w) {
     std::cout << "Clipping to window." << std::endl;

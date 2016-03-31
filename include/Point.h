@@ -18,6 +18,10 @@ class Point : public Shape {
         ~Point();
         const double getX() const {return _x;}
         const double getY() const {return _y;}
+
+        // Visitor
+        virtual void accept(AbstractDrawer *drawer);
+
         virtual void clipToWindow(WorldWindow *w) override;
 };
 

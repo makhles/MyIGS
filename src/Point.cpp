@@ -4,6 +4,7 @@
 #include "Point.h"
 #include "Coord.h"
 #include "WorldWindow.h"
+#include "AbstractDrawer.h"
 
 Point::Point(const std::string name, const double &x, const double &y) :
         Shape(name, ShapeType::POINT),
@@ -20,6 +21,11 @@ Point::~Point() {
     }
     _wCoords.clear();
     std::cout << "Point destructor done." << std::endl;
+}
+
+// Visitor
+void Point::accept(AbstractDrawer *drawer) {
+    drawer->draw(this);
 }
 
 void Point::clipToWindow(WorldWindow *w) {

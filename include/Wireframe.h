@@ -17,6 +17,10 @@ class Wireframe : public Shape {
         Wireframe(const std::string name, std::list<Point*> *vertices);
         Wireframe(std::list<Point*> *vertices);
         ~Wireframe();
+
+        // Visitor
+        virtual void accept(AbstractDrawer *drawer);
+
         virtual void clipToWindow(WorldWindow *w) override;
 };
 
