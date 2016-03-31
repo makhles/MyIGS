@@ -6,6 +6,8 @@
 #include <cairomm/context.h>
 #include "AbstractDrawer.h"
 
+template <class T> class Coord;
+
 class ShapeDrawer : public AbstractDrawer
 {
     protected:
@@ -21,6 +23,7 @@ class ShapeDrawer : public AbstractDrawer
         virtual void draw(Wireframe *wireframe);
 
         // Own functions
+        void drawCoordinates(const std::list<const Coord<int>*> *coordinates);
         void setCairoContext(const Cairo::RefPtr<Cairo::Context> &cr) { _cr = cr;}
 };
 
