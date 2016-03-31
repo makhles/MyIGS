@@ -6,7 +6,7 @@
 #include "WorldWindow.h"
 #include "AbstractDrawer.h"
 
-Point::Point(const std::string name, const double &x, const double &y) :
+Point::Point(const std::string name, const double x, const double y) :
         Shape(name, ShapeType::POINT),
         _x(x),
         _y(y) {

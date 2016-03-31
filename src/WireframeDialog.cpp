@@ -4,6 +4,7 @@
 #include "WireframeDialog.h"
 #include "Wireframe.h"
 #include "InterfaceController.h"
+#include "Coord.h"
 
 WireframeDialog::WireframeDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),
@@ -90,8 +91,7 @@ void WireframeDialog::on_button_add_clicked() {
     if (!name.empty() && sX.str().size() != 0 && sY.str().size() != 0) {
         sX >> x;
         sY >> y;
-        _xCoords.push_back(x);
-        _yCoords.push_back(y);
+        _coords.push_back(new Coord<double>(x,y));
 
         /* Hide name entry */
         _xEntry.set_text("");
@@ -100,7 +100,7 @@ void WireframeDialog::on_button_add_clicked() {
         _nameLabel.hide();
 
         /* Check if minimum number of points have been added */
-        if (_xCoords.size() == 2) {
+        if (_coords.size() == 2) {
             _okButton.show();
         }
     }
@@ -119,18 +119,17 @@ void WireframeDialog::on_button_ok_clicked() {
     if (!name.empty() && sX.str().size() != 0 && sY.str().size() != 0) {
         sX >> x;
         sY >> y;
-        _xCoords.push_back(x);
-        _yCoords.push_back(y);
+        _coords.push_back(new Coord<double>(x,y));
         
         /* Create the new wireframe and close this window */
-        //_interfaceController->createWireframe(name, _xCoords, _yCoords);
+        _interfaceController->createWireframe(name, _coords);
         this->clearDialog();
         hide();
     }
 
     /* With at least 3 points added, a Wireframe can be created */
-    else if (_xCoords.size() >= 3) {
-        //_interfaceController->createWireframe(name, _xCoords, _yCoords);
+    else if (_coords.size() >= 3) {
+        _interfaceController->createWireframe(name, _coords);
         this->clearDialog();
         hide();
     }
@@ -143,6 +142,5 @@ void WireframeDialog::clearDialog() {
     _nameEntry.show();
     _nameLabel.show();
     _okButton.hide();
-    _xCoords.clear();
-    _yCoords.clear();
+    _coords.clear();
 }

@@ -6,6 +6,7 @@
 #include "Canvas.h"
 #include "Point.h"
 #include "Line.h"
+#include "Wireframe.h"
 #include "Coord.h"
 
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
@@ -44,19 +45,45 @@ void InterfaceController::createLine(std::string name, const int x1Pos, const in
     InterfaceController::finalizeShapeCreation(line);
 }
 
+void InterfaceController::createWireframe(std::string name, std::list<Coord<double>*> coords) {
+    int counter = 0;
+    Point *p;
+    Wireframe *wireframe = new Wireframe(name);
+
+    auto coord = coords.begin();
+    while (coord != coords.end()) {
+        counter++;
+        const std::string p_name = name + "_p" + std::to_string(counter);
+        p = new Point(p_name, (*coord)->getX(), (*coord)->getY());
+        wireframe->addPoint(p);
+        delete *coord;
+        coord = coords.erase(coord);
+        // coord++;
+    }
+
+    std::cout << "About to create wireframe... " << std::endl;
+    this->finalizeShapeCreation(wireframe);
+}
+
 void InterfaceController::finalizeShapeCreation(Shape *shape) {
-    _shapes.push_back(shape);
+    _interface->appendObjectToViewList(shape);
+    std::cout << "A... " << std::endl;
     _canvas->addToDisplayFile(shape);
+    std::cout << "B... " << std::endl;
+    _shapes.push_back(shape);
+    std::cout << "AA... " << std::endl;
 
     /* Append object name to the list of objects in the view */
-    _interface->appendObjectToViewList(shape);
+    std::cout << "C... " << std::endl;
 
     this->update(shape);
 }
 
 void InterfaceController::update(Shape *shape) {
     shape->clipToWindow(&_window);
+    std::cout << "D... " << std::endl;
     this->toViewport(shape);
+    std::cout << "E... " << std::endl;
     _canvas->invalidateCanvas();
 }
 

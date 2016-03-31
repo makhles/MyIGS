@@ -170,5 +170,7 @@ void MyIGS::createWireframe() {
 }
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {
+    std::cout << "Appending " << obj->get_name() << std::endl;
     _objectsListView.append(obj->get_name());
+    std::cout << "Appended... " << std::endl;
 }

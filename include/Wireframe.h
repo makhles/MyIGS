@@ -11,12 +11,13 @@
 class Wireframe : public Shape {
 
     private:
-        std::list<Point*> *_vertices;
+        std::list<Point*> _vertices;
 
     public:
-        Wireframe(const std::string name, std::list<Point*> *vertices);
-        Wireframe(std::list<Point*> *vertices);
+        Wireframe(const std::string name);
         ~Wireframe();
+
+        void addPoint(Point *point);
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer);

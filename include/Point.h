@@ -13,8 +13,7 @@ class Point : public Shape {
         const double _y;
 
     public:
-        Point(const std::string name, const double &x, const double &y);
-        Point(const double &x, const double &y);
+        Point(const std::string name, const double x, const double y);
         ~Point();
         const double getX() const {return _x;}
         const double getY() const {return _y;}

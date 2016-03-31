@@ -12,13 +12,13 @@
 #include <gtkmm/separator.h>
 #include <list>
 
+template <class T> class Coord;
 class InterfaceController;
 
 class WireframeDialog : public Gtk::Window {
 
     protected:
-        std::list<double> _xCoords;
-        std::list<double> _yCoords;
+        std::list<Coord<double>*> _coords;
         Gtk::Box _mainBox;
         Gtk::Box _nameBox;
         Gtk::Box _coordBox;

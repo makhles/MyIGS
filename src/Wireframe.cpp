@@ -7,9 +7,9 @@
 #include "WorldWindow.h"
 #include "AbstractDrawer.h"
 
-Wireframe::Wireframe(const std::string name, std::list<Point*> *vertices) :
-        Shape(name, ShapeType::WIREFRAME),
-        _vertices(vertices) {
+Wireframe::Wireframe(const std::string name) :
+        Shape(name, ShapeType::WIREFRAME) {
+    std::cout << "Wireframe constructor... " << std::endl;
 }
 
 Wireframe::~Wireframe() {
@@ -19,6 +19,16 @@ Wireframe::~Wireframe() {
         coord++;
     }
     _wCoords.clear();
+    auto point = _vertices.begin();
+    while (point != _vertices.end()) {
+        delete *point;
+        point++;
+    }
+    _vertices.clear();
+}
+
+void Wireframe::addPoint(Point *point) {
+    _vertices.push_back(point);
 }
 
 // Visitor
@@ -32,8 +42,8 @@ void Wireframe::clipToWindow(WorldWindow *w) {
     /* Temporary implementation */
     Coord<double> *coord;
     _wCoords.clear();
-    auto p = _vertices->begin();
-    while (p != _vertices->end()) {
+    auto p = _vertices.begin();
+    while (p != _vertices.end()) {
         coord = new Coord<double>((*p)->getX(), (*p)->getY());
         _wCoords.push_back(coord);
         p++;
