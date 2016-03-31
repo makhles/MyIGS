@@ -13,14 +13,12 @@ Wireframe::Wireframe(const std::string name, std::list<Point*> *vertices) :
 }
 
 Wireframe::~Wireframe() {
-    std::cout << "Wireframe destructor called." << std::endl;
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
         delete *coord;
         coord++;
     }
     _wCoords.clear();
-    std::cout << "Wireframe destructor done." << std::endl;
 }
 
 // Visitor

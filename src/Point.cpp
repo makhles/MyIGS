@@ -13,14 +13,12 @@ Point::Point(const std::string name, const double &x, const double &y) :
 }
 
 Point::~Point() {
-    std::cout << "Point destructor called." << std::endl;
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
         delete *coord;
         coord++;
     }
     _wCoords.clear();
-    std::cout << "Point destructor done." << std::endl;
 }
 
 // Visitor

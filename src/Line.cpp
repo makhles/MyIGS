@@ -14,14 +14,12 @@ Line::Line(const std::string &name, const Point *p1, const Point *p2) :
 }
 
 Line::~Line() {
-    std::cout << "Line destructor called." << std::endl;
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
         delete *coord;
         coord++;
     }
     _wCoords.clear();
-    std::cout << "Line destructor done." << std::endl;
 }
 
 // Visitor
@@ -36,9 +34,7 @@ void Line::clipToWindow(WorldWindow *w) {
     Coord<double> *coord;
     _wCoords.clear();
     coord = new Coord<double>(_p1->getX(), _p1->getY());
-    std::cout << "Coord = (" << _p1->getX() << "," << _p1->getY()<< ")" << std::endl;
     _wCoords.push_back(coord);
     coord = new Coord<double>(_p2->getX(), _p2->getY());
-    std::cout << "Coord = (" << _p2->getX() << "," << _p2->getY()<< ")" << std::endl;
     _wCoords.push_back(coord);
 }
