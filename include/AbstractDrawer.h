@@ -3,6 +3,10 @@
 #ifndef ABSTRACT_DRAWER_H
 #define ABSTRACT_DRAWER_H
 
+class Point;
+class Line;
+class Wireframe;
+
 class AbstractDrawer
 {
     public:
