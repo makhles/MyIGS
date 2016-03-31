@@ -15,27 +15,23 @@ ShapeDrawer::~ShapeDrawer() {
 }
 
 void ShapeDrawer::draw(Point *point) {
-    _cr->save();
+    const Coord<int> *p = (point->getViewportCoordinates())->front();
     _cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-    _cr->set_line_width(5.0);
-    this->drawCoordinates(point->getViewportCoordinates());
-    _cr->restore();
+    _cr->set_line_width(2.0);
+    _cr->move_to(p->getX(), p->getY());
+    _cr->line_to(p->getX(), p->getY());
 }
 
 void ShapeDrawer::draw(Line *line) {
-    _cr->save();
     _cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     _cr->set_line_width(1.0);
     this->drawCoordinates(line->getViewportCoordinates());
-    _cr->restore();
 }
 
 void ShapeDrawer::draw(Wireframe *wireframe) {
-    _cr->save();
     _cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     _cr->set_line_width(1.0);
     this->drawCoordinates(wireframe->getViewportCoordinates());
-    _cr->restore();
 }
 
 void ShapeDrawer::drawCoordinates(const std::list<const Coord<int>*> *coordinates) {

@@ -69,7 +69,6 @@ void InterfaceController::toViewport(Shape *shape) {
     int vpX, vpY;
     auto c = wCoords->begin();
     while (c != wCoords->end()) {
-        count++;
         vpX = this->xWindowToViewport((*c)->getX());
         vpY = this->yWindowToViewport((*c)->getY());
         shape->addViewportCoordinate(new Coord<int>(vpX, vpY));

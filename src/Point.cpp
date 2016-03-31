@@ -33,7 +33,5 @@ void Point::clipToWindow(WorldWindow *w) {
 
     /* Temporary implementation */
     _wCoords.clear();
-    Coord<double> *coord = new Coord<double>(_x, _y);
-    _wCoords.push_back(coord);
-    _wCoords.push_back(coord);
+    _wCoords.push_back(new Coord<double>(_x, _y));
 }

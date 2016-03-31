@@ -3,9 +3,7 @@
 #include <cairomm/context.h>
 #include <iostream>
 #include "Canvas.h"
-#include "InterfaceController.h"
 #include "Shape.h"
-#include "Coord.h"
 
 Canvas::Canvas() {
     set_size_request(500,500);
@@ -40,37 +38,18 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->unset_dash();
 
     std::cout << "Drawing each object" << std::endl;
-    auto shape = _displayFile.begin();
-    while (shape != _displayFile.end()) {
-        if ((*shape)->get_type() == ShapeType::POINT) {
-            cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-            cr->set_line_width(2.0);
-        } else {
-            cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-            cr->set_line_width(1.0);
-        }
-        const std::list<const Coord<int>*> *coordinates = (*shape)->getViewportCoordinates();
-        Canvas::drawShape(cr, coordinates);
-        shape++;
-        cr->stroke();
-    }
+    this->drawShapes(cr);
 
     return true;
 }
 
-void Canvas::drawShape(const Cairo::RefPtr<Cairo::Context> &cr, 
-            const std::list<const Coord<int>*> *coordinates) {
-
-    bool endPoint = false;
-    auto coord = coordinates->begin();
-    while (coord != coordinates->end()) {
-        if (endPoint) {
-            cr->line_to((*coord)->getX(), (*coord)->getY());
-        } else {
-            cr->move_to((*coord)->getX(), (*coord)->getY());
-        }
-        endPoint ^= true;
-        coord++;
+void Canvas::drawShapes(const Cairo::RefPtr<Cairo::Context> &cr) {
+    _drawer.setCairoContext(cr);
+    auto shape = _displayFile.begin();
+    while (shape != _displayFile.end()) {
+        (*shape)->accept(&_drawer);
+        shape++;
+        cr->stroke();
     }
 }
 
