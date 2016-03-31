@@ -18,14 +18,12 @@ InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
 }
 
 InterfaceController::~InterfaceController() {
-    std::cout << "InterfaceController destructor called." << std::endl;
     auto shape = _shapes.begin();
     while (shape != _shapes.end()) {
         delete *shape;
         shape++;
     }
     _shapes.clear();
-    std::cout << "InterfaceController destructor done." << std::endl;
 }
 
 void InterfaceController::createPoint(std::string name, const int xPos, const int yPos) {
@@ -47,8 +45,6 @@ void InterfaceController::createLine(std::string name, const int x1Pos, const in
 }
 
 void InterfaceController::finalizeShapeCreation(Shape *shape) {
-
-    std::cout << "Finalizing shape creation." << std::endl;
     _shapes.push_back(shape);
     _canvas->addToDisplayFile(shape);
 
@@ -71,17 +67,15 @@ void InterfaceController::toViewport(Shape *shape) {
     shape->clearViewportCoordinates();
 
     int vpX, vpY;
-    int count = 0;
     auto c = wCoords->begin();
     while (c != wCoords->end()) {
         count++;
         vpX = this->xWindowToViewport((*c)->getX());
-        std::cout << "vpX = " << vpX << std::endl;
-        std::cout << "" << count << " of " << wCoords->size() << std::endl;
         vpY = this->yWindowToViewport((*c)->getY());
-        std::cout << "vpY = " << vpY << std::endl;
         shape->addViewportCoordinate(new Coord<int>(vpX, vpY));
         c++;
+        std::cout << "vpX = " << vpX << std::endl;
+        std::cout << "vpY = " << vpY << std::endl;
     }
     std::cout << "Converted." << std::endl;
 }
