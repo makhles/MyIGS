@@ -10,11 +10,16 @@ Canvas::Canvas() {
 }
 
 Canvas::~Canvas() {
-    std::cout << "Canvas destructor called." << std::endl;
-    std::cout << "Canvasdestructor done." << std::endl;
 }
 
 bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
+    this->drawCenterLines(cr);
+    std::cout << "Drawing shapes..." << std::endl;
+    this->drawShapes(cr);
+    return true;
+}
+
+void Canvas::drawCenterLines(const Cairo::RefPtr<Cairo::Context> &cr) {
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();
     const int height = allocation.get_height();
@@ -36,11 +41,6 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->line_to(xc, height);
     cr->stroke();
     cr->unset_dash();
-
-    std::cout << "Drawing each object" << std::endl;
-    this->drawShapes(cr);
-
-    return true;
 }
 
 void Canvas::drawShapes(const Cairo::RefPtr<Cairo::Context> &cr) {

@@ -15,6 +15,7 @@ class Canvas : public Gtk::DrawingArea {
 
     protected:
         bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+        void drawCenterLines(const Cairo::RefPtr<Cairo::Context> &cr);
         void drawShapes(const Cairo::RefPtr<Cairo::Context> &cr);
 
     public:

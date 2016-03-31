@@ -42,9 +42,7 @@ MyIGS::MyIGS() :
 }
 
 MyIGS::~MyIGS() {
-    std::cout << "MyIGS destructor called." << std::endl;
     delete _interfaceController;
-    std::cout << "MyIGS destructor done." << std::endl;
 }
 
 void MyIGS::createControlFrame() {
