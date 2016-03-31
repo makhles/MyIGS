@@ -85,7 +85,7 @@ void LineDialog::on_button_cancel_clicked() {
 }
 
 void LineDialog::on_button_ok_clicked() {
-    size_t x1, x2, y1, y2;
+    double x1, x2, y1, y2;
     std::stringstream sX1, sY1, sX2, sY2;
 
     /* Get input data from dialog box Entries */

@@ -122,7 +122,7 @@ void WireframeDialog::on_button_ok_clicked() {
         _coords.push_back(new Coord<double>(x,y));
         
         /* Create the new wireframe and close this window */
-        _interfaceController->createWireframe(name);
+        _interfaceController->createWireframe(name, _coords);
         std::cout << "Vortei." << std::endl;
         this->clearDialog();
         hide();
@@ -130,7 +130,7 @@ void WireframeDialog::on_button_ok_clicked() {
 
     /* With at least 3 points added, a Wireframe can be created */
     else if (_coords.size() >= 3) {
-        _interfaceController->createWireframe(name);
+        _interfaceController->createWireframe(name, _coords);
         this->clearDialog();
         hide();
     }

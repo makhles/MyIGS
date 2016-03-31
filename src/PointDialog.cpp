@@ -71,7 +71,7 @@ void PointDialog::on_button_cancel_clicked() {
 }
 
 void PointDialog::on_button_ok_clicked() {
-    size_t x, y;
+    double x, y;
     std::string name;
     std::stringstream stringX, stringY;
 

@@ -33,10 +33,10 @@ class InterfaceController {
         int yWindowToViewport(const double yWindow);
 
         /* Shape creation methods */
-        void createPoint(std::string name, const int xPos, const int yPos);
-        void createLine(std::string name, const int x1Pos, const int y1Pos,
-                const int x2Pos, const int y2Pos);
-        void createWireframe(std::string name), std::list<Coord<double>*> coords);
+        void createPoint(std::string name, const double xPos, const double yPos);
+        void createLine(std::string name, const double x1Pos, const double y1Pos,
+                const double x2Pos, const double y2Pos);
+        void createWireframe(std::string name, std::list<Coord<double>*> coords);
         void finalizeShapeCreation(Shape *shape);
         void update(Shape *shape);
         void updateShapes();

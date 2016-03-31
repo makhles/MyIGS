@@ -27,13 +27,13 @@ InterfaceController::~InterfaceController() {
     _shapes.clear();
 }
 
-void InterfaceController::createPoint(std::string name, const int xPos, const int yPos) {
+void InterfaceController::createPoint(std::string name, const double xPos, const double yPos) {
     Point *point = new Point(name, xPos, yPos);
     InterfaceController::finalizeShapeCreation(point);
 }
 
-void InterfaceController::createLine(std::string name, const int x1Pos, const int y1Pos,
-        const int x2Pos, const int y2Pos) {
+void InterfaceController::createLine(std::string name, const double x1Pos, const double y1Pos,
+        const double x2Pos, const double y2Pos) {
 
     std::cout << "Creating a new line." << std::endl;
 
