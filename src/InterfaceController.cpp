@@ -43,25 +43,36 @@ void InterfaceController::createLine(std::string name, const double x1Pos, const
     Point *p2 = new Point(p2_name , x2Pos, y2Pos);
     Line *line = new Line(name, p1, p2);
     InterfaceController::finalizeShapeCreation(line);
+
+    Wireframe *w2 = new Wireframe("w2");
+    w2->addPoint(new Point("ppp",10.0,10.0));
+    w2->addPoint(new Point("ppp",80.0,70.0));
+    w2->addPoint(new Point("ppp",90.0,30.0));
+    InterfaceController::finalizeShapeCreation(w2);
 }
 
 void InterfaceController::createWireframe(std::string name, std::list<Coord<double>*> coords) {
-    int counter = 0;
-    Point *p;
-    Wireframe *wireframe = new Wireframe(name);
+    // int counter = 0;
+    // Point *p;
+    // Wireframe *wireframe = new Wireframe(name);
 
-    auto coord = coords.begin();
-    while (coord != coords.end()) {
-        counter++;
-        const std::string p_name = name + "_p" + std::to_string(counter);
-        p = new Point(p_name, (*coord)->getX(), (*coord)->getY());
-        wireframe->addPoint(p);
-        delete *coord;
-        coord = coords.erase(coord);
-    }
+    // auto coord = coords.begin();
+    // while (coord != coords.end()) {
+    //     counter++;
+    //     const std::string p_name = name + "_p" + std::to_string(counter);
+    //     p = new Point(p_name, (*coord)->getX(), (*coord)->getY());
+    //     wireframe->addPoint(p);
+    //     delete *coord;
+    //     coord = coords.erase(coord);
+    // }
+    // std::cout << "About to create wireframe... " << std::endl;
+    // InterfaceController::finalizeShapeCreation(wireframe);
 
-    std::cout << "About to create wireframe... " << std::endl;
-    this->finalizeShapeCreation(wireframe);
+    Wireframe *w2 = new Wireframe("w2");
+    w2->addPoint(new Point("ppp",10.0,10.0));
+    w2->addPoint(new Point("ppp",80.0,70.0));
+    w2->addPoint(new Point("ppp",90.0,30.0));
+    InterfaceController::finalizeShapeCreation(w2);
 }
 
 void InterfaceController::finalizeShapeCreation(Shape *shape) {

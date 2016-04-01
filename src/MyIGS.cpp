@@ -4,6 +4,7 @@
 #include "MyIGS.h"
 #include "InterfaceController.h"
 #include "Shape.h"
+#include "CreatePointDialog.h"
 
 MyIGS::MyIGS() :
         _mainBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -155,8 +156,10 @@ void MyIGS::moveWindowLeft() {
 
 void MyIGS::createPoint() {
     std::cout << "Creating point..." << std::endl;
-    _pointDialog.set_modal(true);
-    _pointDialog.show();
+    //_pointDialog.set_modal(true);
+    //_pointDialog.show();
+    CreatePointDialog dialog("Create a new point");
+    dialog.run();
 }
 
 void MyIGS::createLine() {
