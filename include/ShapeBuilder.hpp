@@ -10,21 +10,34 @@
 #define SHAPE_BUILDER_HPP
 
 #include <list>
+#include <string>
+#include "ShapeType.h"
 
+class Shape;
 class Point;
 
 class ShapeBuilder {
-  public:
-    static ShapeBuilder* instance();
-    void addPoint(const double, const double);
-    void clearPoints();
 
-  private:
-    ShapeBuilder() {};
-    ShapeBuilder(ShapeBuilder const&) {};
-    void operator=(ShapeBuilder const&) {};
+private:
     static ShapeBuilder *m_pInstance;
     std::list<Point*> m_points;
+    std::string m_name;
+
+private:
+    ShapeBuilder() {}
+    ~ShapeBuilder();
+    ShapeBuilder(const ShapeBuilder &) {};
+    void operator=(const ShapeBuilder &) {};
+    void reset();
+    Point* createPoint();
+
+public:
+    static ShapeBuilder* instance();
+    void addName(const std::string &);
+    void addPoint(const double, const double);
+    void addPoint(const std::string &, const double, const double);
+    void rollback();
+    Shape* createShape(ShapeType);
 };
 
 #endif  // SHAPE_BUILDER_HPP

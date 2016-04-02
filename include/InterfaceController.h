@@ -6,6 +6,7 @@
 #include <list>
 #include <string>
 #include "WorldWindow.h"
+#include "ShapeType.h"
 
 class MyIGS;
 class Canvas;
@@ -33,6 +34,8 @@ class InterfaceController {
         int yWindowToViewport(const double yWindow);
 
         /* Shape creation methods */
+        void createShape(ShapeType);
+
         void createPoint(std::string name, const double xPos, const double yPos);
         void createLine(std::string name, const double x1Pos, const double y1Pos,
                 const double x2Pos, const double y2Pos);

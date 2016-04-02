@@ -4,6 +4,7 @@
 #include "MyIGS.h"
 #include "InterfaceController.h"
 #include "Shape.h"
+#include "ShapeType.h"
 #include "CreatePointDialog.h"
 
 MyIGS::MyIGS() :
@@ -156,10 +157,11 @@ void MyIGS::moveWindowLeft() {
 
 void MyIGS::createPoint() {
     std::cout << "Creating point..." << std::endl;
-    //_pointDialog.set_modal(true);
-    //_pointDialog.show();
     CreatePointDialog dialog("Create a new point");
-    dialog.run();
+    int response = dialog.run();
+    if (response == Gtk::RESPONSE_OK) {
+       _interfaceController->createShape(ShapeType::POINT);
+    }
 }
 
 void MyIGS::createLine() {
@@ -173,7 +175,5 @@ void MyIGS::createWireframe() {
 }
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {
-    std::cout << "Appending " << obj->get_name() << std::endl;
     _objectsListView.append(obj->get_name());
-    std::cout << "Appended... " << std::endl;
 }
