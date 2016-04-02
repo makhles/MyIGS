@@ -15,6 +15,7 @@
 
 class Shape;
 class Point;
+class Line;
 
 class ShapeBuilder {
 
@@ -30,6 +31,7 @@ private:
     void operator=(const ShapeBuilder &) {};
     void reset();
     Point* createPoint();
+    Line* createLine();
 
 public:
     static ShapeBuilder* instance();

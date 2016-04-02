@@ -5,6 +5,7 @@
 #include "ShapeBuilder.hpp"
 #include "Shape.h"
 #include "Point.h"
+#include "Line.h"
 #include "DeleteList.hpp"
 
 // Global static pointer to ensure a single instance of the class.
@@ -46,9 +47,16 @@ void ShapeBuilder::addPoint(const std::string &name, const double x, const doubl
 Shape* ShapeBuilder::createShape(ShapeType type) {
     Shape *shape;
     switch (type) {
-    case ShapeType::POINT:
-        shape = ShapeBuilder::createPoint();
-        break;
+        case ShapeType::POINT:
+        {
+            shape = ShapeBuilder::createPoint();
+            break;
+        }
+        case ShapeType::LINE:
+        {
+            shape = ShapeBuilder::createLine();
+            break;
+        }
     }
     ShapeBuilder::reset();
     return shape;
@@ -56,8 +64,20 @@ Shape* ShapeBuilder::createShape(ShapeType type) {
 
 
 Point* ShapeBuilder::createPoint() {
-    return m_points.front();
+    Point *p = m_points.front();
+    m_points.pop_front();
+    return p;
 }
+
+
+Line* ShapeBuilder::createLine() {
+    Point *p1 = m_points.front();
+    m_points.pop_front();
+    Point *p2 = m_points.front();
+    m_points.pop_front();
+    return new Line(m_name, p1, p2);
+}
+
 
 // Reset all members for creating another shape.
 // Only called if previous shape was successfully built,
