@@ -10,6 +10,7 @@
 #include "Wireframe.hpp"
 #include "Coord.hpp"
 
+
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
         _interface(interface),
         _canvas(canvas),
@@ -18,6 +19,7 @@ InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
         _yViewportMin(0),
         _yViewportMax(500) {
 }
+
 
 InterfaceController::~InterfaceController() {
     auto shape = _shapes.begin();
@@ -28,59 +30,13 @@ InterfaceController::~InterfaceController() {
     _shapes.clear();
 }
 
+
 // Create a new shape based on its type.
 void InterfaceController::createShape(ShapeType type) {
     Shape *shape = ShapeBuilder::instance()->createShape(type);
     this->finalizeShapeCreation(shape);
 }
 
-void InterfaceController::createPoint(std::string name, const double xPos, const double yPos) {
-    Point *point = new Point(name, xPos, yPos);
-    InterfaceController::finalizeShapeCreation(point);
-}
-
-void InterfaceController::createLine(std::string name, const double x1Pos, const double y1Pos,
-        const double x2Pos, const double y2Pos) {
-
-    std::cout << "Creating a new line." << std::endl;
-
-    const std::string p1_name = name + "_p1";
-    const std::string p2_name = name + "_p2";
-    Point *p1 = new Point(p1_name , x1Pos, y1Pos);
-    Point *p2 = new Point(p2_name , x2Pos, y2Pos);
-    Line *line = new Line(name, p1, p2);
-    InterfaceController::finalizeShapeCreation(line);
-
-    Wireframe *w2 = new Wireframe("w2");
-    w2->addPoint(new Point("ppp",10.0,10.0));
-    w2->addPoint(new Point("ppp",80.0,70.0));
-    w2->addPoint(new Point("ppp",90.0,30.0));
-    InterfaceController::finalizeShapeCreation(w2);
-}
-
-void InterfaceController::createWireframe(std::string name, std::list<Coord<double>*> coords) {
-    // int counter = 0;
-    // Point *p;
-    // Wireframe *wireframe = new Wireframe(name);
-
-    // auto coord = coords.begin();
-    // while (coord != coords.end()) {
-    //     counter++;
-    //     const std::string p_name = name + "_p" + std::to_string(counter);
-    //     p = new Point(p_name, (*coord)->getX(), (*coord)->getY());
-    //     wireframe->addPoint(p);
-    //     delete *coord;
-    //     coord = coords.erase(coord);
-    // }
-    // std::cout << "About to create wireframe... " << std::endl;
-    // InterfaceController::finalizeShapeCreation(wireframe);
-
-    Wireframe *w2 = new Wireframe("w2");
-    w2->addPoint(new Point("ppp",10.0,10.0));
-    w2->addPoint(new Point("ppp",80.0,70.0));
-    w2->addPoint(new Point("ppp",90.0,30.0));
-    InterfaceController::finalizeShapeCreation(w2);
-}
 
 void InterfaceController::finalizeShapeCreation(Shape *shape) {
     _canvas->addToDisplayFile(shape);
@@ -89,11 +45,23 @@ void InterfaceController::finalizeShapeCreation(Shape *shape) {
     this->update(shape);
 }
 
+
 void InterfaceController::update(Shape *shape) {
     shape->clipToWindow(&_window);
     this->toViewport(shape);
     _canvas->invalidateCanvas();
 }
+
+
+// Called whenever the Window is translated or rotated.
+void InterfaceController::updateShapes() {
+    auto shape = _shapes.begin();
+    while (shape != _shapes.end()) {
+        this->update((*shape));
+        shape++;
+    }
+}
+
 
 void InterfaceController::toViewport(Shape *shape) {
     std::cout << "Converting to viewport coordinates." << std::endl;
@@ -113,6 +81,7 @@ void InterfaceController::toViewport(Shape *shape) {
     }
 }
 
+
 int InterfaceController::xWindowToViewport(const double xWindow) {
     double xViewport;
     xViewport = xWindow - _window.getXMin();
@@ -120,6 +89,7 @@ int InterfaceController::xWindowToViewport(const double xWindow) {
     xViewport += _xViewportMin;
     return (int) xViewport;
 }
+
 
 int InterfaceController::yWindowToViewport(const double yWindow) {
     double yViewport;
@@ -129,20 +99,14 @@ int InterfaceController::yWindowToViewport(const double yWindow) {
     return (int) yViewport;
 }
 
+
 void InterfaceController::moveWindow(int moveX, int moveY) {
     _window.moveWindow(moveX, moveY);
     this->updateShapes();
 }
 
+
 void InterfaceController::zoomWindow(int inOrOut) {
     _window.zoomWindow(inOrOut);
     this->updateShapes();
-}
-
-void InterfaceController::updateShapes() {
-    auto shape = _shapes.begin();
-    while (shape != _shapes.end()) {
-        this->update((*shape));
-        shape++;
-    }
 }

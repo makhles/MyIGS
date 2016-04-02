@@ -6,9 +6,6 @@
 #include <gtkmm.h>
 #include "Canvas.hpp"
 #include "OutputBoard.hpp"
-#include "PointDialog.hpp"
-#include "LineDialog.hpp"
-#include "WireframeDialog.hpp"
 
 class InterfaceController;
 class Shape;
