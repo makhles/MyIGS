@@ -9,12 +9,11 @@
 #include "CreateWireframeDialog.hpp"
 #include "ShapeBuilder.hpp"
 
-#define GTK_RESPONSE_ADD 999
-
 CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Dialog(title, true),
-    _nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
-    _nameEntry(Gtk::manage(new Gtk::Entry()))
+    m_totalPoints(0),
+    m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
+    m_nameEntry(Gtk::manage(new Gtk::Entry()))
 
 {
     set_resizable(false);
@@ -22,16 +21,16 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
 
     // Entry for the name
     Gtk::HBox * const name_hbox = Gtk::manage(new Gtk::HBox());
-    name_hbox->pack_start(*_nameLabel, Gtk::PACK_SHRINK, 0);
-    name_hbox->pack_start(*_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
+    name_hbox->pack_start(*m_nameLabel, Gtk::PACK_SHRINK, 0);
+    name_hbox->pack_start(*m_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
     name_hbox->set_homogeneous(false);
 
     get_content_area()->pack_start(*name_hbox);
 
     // Entries for the coordinates
-    this->addCoord();
-    this->addCoord();
-    this->addCoord();
+    this->addPoint();
+    this->addPoint();
+    this->addPoint();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -43,46 +42,18 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     show_all_children();
 }
 
-void CreateWireframeDialog::on_button_add_clicked() {
-    this->addCoord();
-}
-
 
 void CreateWireframeDialog::on_my_response(int response_id) {
     switch (response_id) {
         case Gtk::RESPONSE_OK:
         {
-            // double x1, x2, y1, y2;
-            // std::stringstream sX1, sY1, sX2, sY2;
-
-            // /* Get input data from dialog box entries */
-            // const std::string name = _nameEntry->get_text().raw();
-            // sX1 << _x1Entry->get_text().raw();
-            // sY1 << _y1Entry->get_text().raw();
-            // sX2 << _x2Entry->get_text().raw();
-            // sY2 << _y2Entry->get_text().raw();
-
-            // if (!name.empty() && sX1.str().size() != 0 && sY1.str().size() != 0
-            //         && sX2.str().size() != 0 && sY2.str().size() != 0) {
-
-            //     sX1 >> x1;
-            //     sY1 >> y1;
-            //     sX2 >> x2;
-            //     sY2 >> y2;
-
-            //     /* Create the new point */
-            //     ShapeBuilder *builder = ShapeBuilder::instance();
-            //     builder->addName(name);
-            //     builder->addPoint(x1, y1);
-            //     builder->addPoint(x2, y2);
-                std::cout << "Added wireframe to ShapeBuilder." << std::endl;
-            // }
+            this->createShape();
             break;
         }
         case Gtk::RESPONSE_APPLY:
         {
             std::cout << "User required to add another point." << std::endl;
-            this->addCoord();
+            this->addPoint();
             signal_response().emission_stop();
             break;
         }
@@ -99,8 +70,46 @@ void CreateWireframeDialog::on_my_response(int response_id) {
     }
 }
 
+
+void CreateWireframeDialog::createShape() {
+
+    ShapeBuilder *builder = ShapeBuilder::instance();
+    const std::string name = m_nameEntry->get_text().raw();
+
+    if (!name.empty()) {
+
+        builder->addName(name);
+        
+        double x, y;
+        auto coord = m_coordEntries.cbegin();
+        
+        while (coord != m_coordEntries.cend()) {
+            // Create new stringstreams at every loop iteration
+            // to make sure it's totally clear.
+            std::stringstream sX, sY;
+            sX << (*coord)->get_text().raw();
+            coord++;
+            sY << (*coord)->get_text().raw();
+            coord++;
+            
+            if (sX.str().size() != 0 && sY.str().size() != 0) {
+                sX >> x;
+                sY >> y;
+                m_totalPoints++;
+                builder->addPoint(x, y);
+            }
+        }
+        // Check for minimum number of points.
+        if (!this->buildWireframe()) {
+            std::cout << "Rolling back." << std::endl;
+            builder->rollback();
+        }
+        std::cout << "Added wireframe to ShapeBuilder." << std::endl;
+    }
+}
+
 // Called every time the user clicks the "Add point" button.
-void CreateWireframeDialog::addCoord() {
+void CreateWireframeDialog::addPoint() {
 
     // Used for naming each coordinate, like x0, x1, y0, y1, etc.
     // Every time a new point is added, m_coordEntries increases by 2.

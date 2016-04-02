@@ -9,7 +9,6 @@
 
 Wireframe::Wireframe(const std::string name) :
         Shape(name, ShapeType::WIREFRAME) {
-    std::cout << "Wireframe constructor... " << std::endl;
 }
 
 Wireframe::~Wireframe() {

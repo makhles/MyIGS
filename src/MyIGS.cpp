@@ -179,8 +179,8 @@ void MyIGS::createWireframe() {
     std::cout << "Creating wireframe..." << std::endl;
     CreateWireframeDialog dialog("Create a new wireframe");
     int response = dialog.run();
-    if (response == Gtk::RESPONSE_OK) {
-       // _interfaceController->createShape(ShapeType::WIREFRAME);
+    if (response == Gtk::RESPONSE_OK && dialog.buildWireframe()) {
+       _interfaceController->createShape(ShapeType::WIREFRAME);
     }
 }
 

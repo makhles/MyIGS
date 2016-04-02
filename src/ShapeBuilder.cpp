@@ -2,10 +2,12 @@
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
+#include <iostream>
 #include "ShapeBuilder.hpp"
 #include "Shape.hpp"
 #include "Point.hpp"
 #include "Line.hpp"
+#include "Wireframe.hpp"
 #include "DeleteList.hpp"
 
 // Global static pointer to ensure a single instance of the class.
@@ -57,6 +59,11 @@ Shape* ShapeBuilder::createShape(ShapeType type) {
             shape = ShapeBuilder::createLine();
             break;
         }
+        case ShapeType::WIREFRAME:
+        {
+            shape = ShapeBuilder::createWireframe();
+            break;
+        }
     }
     ShapeBuilder::reset();
     return shape;
@@ -76,6 +83,17 @@ Line* ShapeBuilder::createLine() {
     Point *p2 = m_points.front();
     m_points.pop_front();
     return new Line(m_name, p1, p2);
+}
+
+
+Wireframe* ShapeBuilder::createWireframe() {
+    Wireframe *wireframe = new Wireframe(m_name);
+    auto p = m_points.begin();
+    while (p != m_points.end()) {
+        wireframe->addPoint((*p));
+        p++;
+    }
+    return wireframe;
 }
 
 

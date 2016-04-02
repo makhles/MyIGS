@@ -16,6 +16,7 @@
 class Shape;
 class Point;
 class Line;
+class Wireframe;
 
 class ShapeBuilder {
 
@@ -32,6 +33,7 @@ private:
     void reset();
     Point* createPoint();
     Line* createLine();
+    Wireframe* createWireframe();
 
 public:
     static ShapeBuilder* instance();

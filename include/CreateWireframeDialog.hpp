@@ -18,21 +18,22 @@ class CreateWireframeDialog : public Gtk::Dialog
 private:
 
     // Attribute
-    Gtk::Label * const _nameLabel;
-    Gtk::Entry * const _nameEntry;
+    int m_totalPoints;
+    Gtk::Label * const m_nameLabel;
+    Gtk::Entry * const m_nameEntry;
     std::list<Gtk::Entry*> m_coordEntries;
 
-    void addCoord();
-
     // Signal handler
-    void on_button_add_clicked();
     void on_my_response(int response_id);
+    void addPoint();
+    void createShape();
 
 public:
 
     // Life cycle
     CreateWireframeDialog(const Glib::ustring &title);
     ~CreateWireframeDialog() {}
+    bool buildWireframe() const { return m_totalPoints >= 3;}
 };
 
 #endif  // CREATE_WIREFRAME_DIALOG_HPP
