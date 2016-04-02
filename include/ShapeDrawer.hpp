@@ -14,8 +14,8 @@ class ShapeDrawer : public AbstractDrawer
         Cairo::RefPtr<Cairo::Context> _cr;
 
     public:
-        ShapeDrawer();
-        ~ShapeDrawer();
+        ShapeDrawer() {}
+        ~ShapeDrawer() {}
 
         // AbstractDrawer functions
         virtual void draw(Point *point);
@@ -23,7 +23,6 @@ class ShapeDrawer : public AbstractDrawer
         virtual void draw(Wireframe *wireframe);
 
         // Own functions
-        void drawCoordinates(const std::list<const Coord<int>*> *coordinates);
         void setCairoContext(const Cairo::RefPtr<Cairo::Context> &cr) { _cr = cr;}
 };
 
