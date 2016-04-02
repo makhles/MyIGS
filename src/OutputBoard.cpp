@@ -1,6 +1,6 @@
 /* OutputBoard.cpp */
 
-#include "OutputBoard.h"
+#include "OutputBoard.hpp"
 
 OutputBoard::OutputBoard() {
     add(_textView);

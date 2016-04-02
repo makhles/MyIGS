@@ -1,10 +1,10 @@
 /* WireframeDialog.cpp */
 
 #include <iostream>
-#include "WireframeDialog.h"
-#include "Wireframe.h"
-#include "InterfaceController.h"
-#include "Coord.h"
+#include "WireframeDialog.hpp"
+#include "Wireframe.hpp"
+#include "InterfaceController.hpp"
+#include "Coord.hpp"
 
 WireframeDialog::WireframeDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),

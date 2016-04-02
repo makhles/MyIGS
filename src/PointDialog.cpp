@@ -1,9 +1,9 @@
 /* PointDialog.cpp */
 
 #include <iostream>
-#include "PointDialog.h"
-#include "Point.h"
-#include "InterfaceController.h"
+#include "PointDialog.hpp"
+#include "Point.hpp"
+#include "InterfaceController.hpp"
 
 PointDialog::PointDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),

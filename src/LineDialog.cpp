@@ -1,9 +1,9 @@
 /* LineDialog.cpp */
 
 #include <iostream>
-#include "LineDialog.h"
-#include "Line.h"
-#include "InterfaceController.h"
+#include "LineDialog.hpp"
+#include "Line.hpp"
+#include "InterfaceController.hpp"
 
 LineDialog::LineDialog() :
         _mainBox(Gtk::ORIENTATION_VERTICAL),

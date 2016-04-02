@@ -4,7 +4,7 @@
 */
 
 #include <gtkmm/application.h>
-#include "MyIGS.h"
+#include "MyIGS.hpp"
 
 int main(int argc, char *argv[]) {
 

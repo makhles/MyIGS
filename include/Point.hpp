@@ -4,7 +4,7 @@
 #define POINT_H
 
 #include <cairomm/context.h>
-#include "Shape.h"
+#include "Shape.hpp"
 
 class Point : public Shape {
 

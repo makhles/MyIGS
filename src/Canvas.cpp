@@ -2,8 +2,8 @@
 
 #include <cairomm/context.h>
 #include <iostream>
-#include "Canvas.h"
-#include "Shape.h"
+#include "Canvas.hpp"
+#include "Shape.hpp"
 
 Canvas::Canvas() {
     set_size_request(500,500);

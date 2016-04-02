@@ -3,9 +3,9 @@
 //          Makhles Reuter Lange
 
 #include "ShapeBuilder.hpp"
-#include "Shape.h"
-#include "Point.h"
-#include "Line.h"
+#include "Shape.hpp"
+#include "Point.hpp"
+#include "Line.hpp"
 #include "DeleteList.hpp"
 
 // Global static pointer to ensure a single instance of the class.

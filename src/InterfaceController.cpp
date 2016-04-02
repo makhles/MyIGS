@@ -1,14 +1,14 @@
 /* InterfaceController.cpp */
 
 #include <iostream>
-#include "InterfaceController.h"
-#include "MyIGS.h"
-#include "Canvas.h"
+#include "InterfaceController.hpp"
+#include "MyIGS.hpp"
+#include "Canvas.hpp"
 #include "ShapeBuilder.hpp"
-#include "Point.h"
-#include "Line.h"
-#include "Wireframe.h"
-#include "Coord.h"
+#include "Point.hpp"
+#include "Line.hpp"
+#include "Wireframe.hpp"
+#include "Coord.hpp"
 
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
         _interface(interface),

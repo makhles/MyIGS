@@ -5,8 +5,8 @@
 
 #include <list>
 #include <string>
-#include "WorldWindow.h"
-#include "ShapeType.h"
+#include "WorldWindow.hpp"
+#include "ShapeType.hpp"
 
 class MyIGS;
 class Canvas;

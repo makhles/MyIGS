@@ -11,7 +11,7 @@
 
 #include <list>
 #include <string>
-#include "ShapeType.h"
+#include "ShapeType.hpp"
 
 class Shape;
 class Point;

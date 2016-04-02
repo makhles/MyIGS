@@ -1,7 +1,7 @@
 /* Shape.cpp */
 
-#include "Shape.h"
-#include "WorldWindow.h"
+#include "Shape.hpp"
+#include "WorldWindow.hpp"
 
 Shape::Shape(const std::string name, const ShapeType type) :
         _name(name),

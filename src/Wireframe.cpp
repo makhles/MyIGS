@@ -1,11 +1,11 @@
 /* Wireframe.cpp */
 
 #include <iostream>
-#include "Wireframe.h"
-#include "Point.h"
-#include "Coord.h"
-#include "WorldWindow.h"
-#include "AbstractDrawer.h"
+#include "Wireframe.hpp"
+#include "Point.hpp"
+#include "Coord.hpp"
+#include "WorldWindow.hpp"
+#include "AbstractDrawer.hpp"
 
 Wireframe::Wireframe(const std::string name) :
         Shape(name, ShapeType::WIREFRAME) {

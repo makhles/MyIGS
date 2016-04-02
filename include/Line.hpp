@@ -3,7 +3,7 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include "Shape.h"
+#include "Shape.hpp"
 
 class Point;
 

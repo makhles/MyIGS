@@ -4,11 +4,11 @@
 #define MYIGS_H
 
 #include <gtkmm.h>
-#include "Canvas.h"
-#include "OutputBoard.h"
-#include "PointDialog.h"
-#include "LineDialog.h"
-#include "WireframeDialog.h"
+#include "Canvas.hpp"
+#include "OutputBoard.hpp"
+#include "PointDialog.hpp"
+#include "LineDialog.hpp"
+#include "WireframeDialog.hpp"
 
 class InterfaceController;
 class Shape;

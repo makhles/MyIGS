@@ -1,10 +1,10 @@
 /* Point.cpp */
 
 #include <iostream>
-#include "Point.h"
-#include "Coord.h"
-#include "WorldWindow.h"
-#include "AbstractDrawer.h"
+#include "Point.hpp"
+#include "Coord.hpp"
+#include "WorldWindow.hpp"
+#include "AbstractDrawer.hpp"
 
 Point::Point(const std::string name, const double x, const double y) :
         Shape(name, ShapeType::POINT),

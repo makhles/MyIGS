@@ -5,7 +5,7 @@
 
 #include <string>
 #include <list>
-#include "ShapeType.h"
+#include "ShapeType.hpp"
 
 template <class T> class Coord;
 class WorldWindow;

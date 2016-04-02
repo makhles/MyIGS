@@ -4,7 +4,7 @@
 #define SHAPE_DRAWER_H
 
 #include <cairomm/context.h>
-#include "AbstractDrawer.h"
+#include "AbstractDrawer.hpp"
 
 template <class T> class Coord;
 

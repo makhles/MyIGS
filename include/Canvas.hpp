@@ -4,7 +4,7 @@
 #define CANVAS_H
 
 #include <gtkmm/drawingarea.h>
-#include "ShapeDrawer.h"
+#include "ShapeDrawer.hpp"
 
 class Shape;
 

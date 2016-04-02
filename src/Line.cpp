@@ -1,11 +1,11 @@
 /* Line.cpp */
 
 #include <iostream>
-#include "Line.h"
-#include "Point.h"
-#include "Coord.h"
-#include "WorldWindow.h"
-#include "AbstractDrawer.h"
+#include "Line.hpp"
+#include "Point.hpp"
+#include "Coord.hpp"
+#include "WorldWindow.hpp"
+#include "AbstractDrawer.hpp"
 
 Line::Line(const std::string name, const Point *p1, const Point *p2) :
         Shape(name, ShapeType::LINE),

@@ -1,10 +1,10 @@
 /* ShapeDrawer.cpp */
 
-#include "ShapeDrawer.h"
-#include "Point.h"
-#include "Line.h"
-#include "Wireframe.h"
-#include "Coord.h"
+#include "ShapeDrawer.hpp"
+#include "Point.hpp"
+#include "Line.hpp"
+#include "Wireframe.hpp"
+#include "Coord.hpp"
 
 ShapeDrawer::ShapeDrawer() {
 

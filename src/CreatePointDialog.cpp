@@ -6,7 +6,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/button.h>
 #include <iostream>
-#include "CreatePointDialog.h"
+#include "CreatePointDialog.hpp"
 #include "ShapeBuilder.hpp"
 
 CreatePointDialog::CreatePointDialog(const Glib::ustring & title) :

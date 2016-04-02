@@ -1,11 +1,11 @@
 /* MyIGS.cpp */
 
 #include <iostream>
-#include "MyIGS.h"
-#include "InterfaceController.h"
-#include "Shape.h"
-#include "ShapeType.h"
-#include "CreatePointDialog.h"
+#include "MyIGS.hpp"
+#include "InterfaceController.hpp"
+#include "Shape.hpp"
+#include "ShapeType.hpp"
+#include "CreatePointDialog.hpp"
 #include "CreateLineDialog.hpp"
 
 MyIGS::MyIGS() :

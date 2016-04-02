@@ -1,7 +1,7 @@
 /* WorldWindow.cpp */
 
 #include <iostream>
-#include "WorldWindow.h"
+#include "WorldWindow.hpp"
 
 WorldWindow::WorldWindow() :
         _xMin(WorldWindow::WINDOW_DEFAULT_XMIN),

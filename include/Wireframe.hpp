@@ -4,8 +4,8 @@
 #define WIREFRAME_H
 
 #include <list>
-#include "Shape.h"
-#include "Point.h"
+#include "Shape.hpp"
+#include "Point.hpp"
 
 
 class Wireframe : public Shape {
