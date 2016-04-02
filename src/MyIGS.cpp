@@ -6,6 +6,7 @@
 #include "Shape.h"
 #include "ShapeType.h"
 #include "CreatePointDialog.h"
+#include "CreateLineDialog.hpp"
 
 MyIGS::MyIGS() :
         _mainBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -166,7 +167,11 @@ void MyIGS::createPoint() {
 
 void MyIGS::createLine() {
     std::cout << "Creating line..." << std::endl;
-    _lineDialog.show();
+    CreateLineDialog dialog("Create a new line");
+    int response = dialog.run();
+    if (response == Gtk::RESPONSE_OK) {
+       _interfaceController->createShape(ShapeType::LINE);
+    }
 }
 
 void MyIGS::createWireframe() {
