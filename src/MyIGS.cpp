@@ -11,6 +11,9 @@
 
 MyIGS::MyIGS() :
         m_mainBox(Gtk::manage(new Gtk::HBox())),
+        m_controlFrame(Gtk::manage(new Gtk::Frame("Control"))),
+        m_viewportFrame(Gtk::manage(new Gtk::Frame("Viewport"))),
+        m_objectsFrame(Gtk::manage(new Gtk::Frame("Objects"))),
         _zoomButtonOut("Out"),
         _zoomButtonIn("In"),
         _dispButtonUp("Up"),
@@ -23,18 +26,31 @@ MyIGS::MyIGS() :
         _labelCreateObjects("Create a new object:"),
         _objectsListView(1) {
 
-    /* Add views to the controller */
     _interfaceController = new InterfaceController(this, &_canvas);
 
-    /* Main window */
+    // Main window
     set_title("My IGS");
     set_border_width(10);
     set_resizable(false);
 
-    /* Frames */
+
+    m_controlFrame->set_size_request(150,-1);
+    m_objectsFrame->set_size_request(175,-1);
+
+    m_controlFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    m_viewportFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    m_objectsFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+
+
+
+    // Frames
     MyIGS::createControlFrame();
     MyIGS::createViewportFrame();
     MyIGS::createObjectsFrame();
+
+    m_mainBox->pack_start(*m_controlFrame, Gtk::PACK_SHRINK, 1);
+    m_mainBox->pack_start(*m_viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    m_mainBox->pack_start(*m_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 
     add(*m_mainBox);
     show_all_children();
@@ -78,33 +94,21 @@ void MyIGS::createControlFrame() {
     _dispGrid.attach(_dispButtonLeft,1,2,1,1);
     _dispFrame.add(_dispGrid);
 
-    _controlFrame.set_label("Control");
-    _controlFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    _controlFrame.set_size_request(150,-1);
-    _controlFrame.add(_controlBox);
-
-    m_mainBox->pack_start(_controlFrame, Gtk::PACK_SHRINK, 1);
+    
+    m_controlFrame->add(_controlBox);
 }
+
 
 void MyIGS::createViewportFrame() {
     _viewportBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
     _viewportBox.pack_start(_canvas, Gtk::PACK_EXPAND_WIDGET, 1);
     _viewportBox.pack_start(_board, Gtk::PACK_EXPAND_WIDGET, 1);
 
-    _viewportFrame.set_label("Viewport");
-    _viewportFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-
-    _viewportFrame.add(_viewportBox);
-    m_mainBox->pack_start(_viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    m_viewportFrame->add(_viewportBox);
 }
 
-void MyIGS::createObjectsFrame() {
 
-    /* Objects frame */
-    _objectsFrame.set_label("Objects");
-    _objectsFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    _objectsFrame.set_size_request(175,-1);
-    _objectsFrame.add(_objectsBox);
+void MyIGS::createObjectsFrame() {
 
     /* New objects buttons */
     _buttonCreatePoint.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createPoint));
@@ -125,32 +129,39 @@ void MyIGS::createObjectsFrame() {
     _objectsWindow.add(_objectsListView);
     _objectsListView.set_column_title(0, "Current objects:");
 
-    m_mainBox->pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    m_objectsFrame->add(_objectsBox);
 }
+
 
 void MyIGS::zoomWindowIn() {
     _interfaceController->zoomWindow(1);
 }
 
+
 void MyIGS::zoomWindowOut() {
     _interfaceController->zoomWindow(-1);
 }
+
 
 void MyIGS::moveWindowUp() {
     _interfaceController->moveWindow(0,1);
 }
 
+
 void MyIGS::moveWindowRight() {
     _interfaceController->moveWindow(1,0);
 }
+
 
 void MyIGS::moveWindowDown() {
     _interfaceController->moveWindow(0,-1);
 }
 
+
 void MyIGS::moveWindowLeft() {
     _interfaceController->moveWindow(-1,0);
 }
+
 
 void MyIGS::createPoint() {
     std::cout << "Creating point..." << std::endl;
@@ -161,6 +172,7 @@ void MyIGS::createPoint() {
     }
 }
 
+
 void MyIGS::createLine() {
     std::cout << "Creating line..." << std::endl;
     CreateLineDialog dialog("Create a new line");
@@ -170,6 +182,7 @@ void MyIGS::createLine() {
     }
 }
 
+
 void MyIGS::createWireframe() {
     std::cout << "Creating wireframe..." << std::endl;
     CreateWireframeDialog dialog("Create a new wireframe");
@@ -178,6 +191,7 @@ void MyIGS::createWireframe() {
        _interfaceController->createShape(ShapeType::WIREFRAME);
     }
 }
+
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {
     _objectsListView.append(obj->get_name());

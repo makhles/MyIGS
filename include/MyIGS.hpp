@@ -16,9 +16,9 @@ class MyIGS : public Gtk::Window {
 
         /* Main widgets */
         Gtk::HBox * const m_mainBox;
-        Gtk::Frame _controlFrame;
-        Gtk::Frame _viewportFrame;
-        Gtk::Frame _objectsFrame;
+        Gtk::Frame * const m_controlFrame;
+        Gtk::Frame * const m_viewportFrame;
+        Gtk::Frame * const m_objectsFrame;
 
         /* Widgets used in the Control Frame */
         Gtk::Box _controlBox;
