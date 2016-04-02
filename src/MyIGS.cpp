@@ -7,6 +7,7 @@
 #include "ShapeType.hpp"
 #include "CreatePointDialog.hpp"
 #include "CreateLineDialog.hpp"
+#include "CreateWireframeDialog.hpp"
 
 MyIGS::MyIGS() :
         _mainBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -176,7 +177,11 @@ void MyIGS::createLine() {
 
 void MyIGS::createWireframe() {
     std::cout << "Creating wireframe..." << std::endl;
-    _wireframeDialog.show();
+    CreateWireframeDialog dialog("Create a new wireframe");
+    int response = dialog.run();
+    if (response == Gtk::RESPONSE_OK) {
+       // _interfaceController->createShape(ShapeType::WIREFRAME);
+    }
 }
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {
