@@ -39,11 +39,11 @@ CreatePointDialog::CreatePointDialog(const Glib::ustring & title) :
 
     get_content_area()->pack_start(*name_hbox);
     get_content_area()->pack_start(*coord_hbox);
-    add_button("OK", Gtk::RESPONSE_OK);
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
+    add_button("OK", Gtk::RESPONSE_OK);
 
     signal_response().connect_notify(sigc::mem_fun(*this, &CreatePointDialog::on_my_response));
-    set_default_response(Gtk::RESPONSE_CANCEL);
+    set_default_response(Gtk::RESPONSE_OK);
     show_all_children();
 }
 
