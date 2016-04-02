@@ -15,7 +15,7 @@ class MyIGS : public Gtk::Window {
         InterfaceController *_interfaceController;
 
         /* Main widgets */
-        Gtk::Box _mainBox;
+        Gtk::HBox * const m_mainBox;
         Gtk::Frame _controlFrame;
         Gtk::Frame _viewportFrame;
         Gtk::Frame _objectsFrame;

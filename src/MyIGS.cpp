@@ -10,7 +10,7 @@
 #include "CreateWireframeDialog.hpp"
 
 MyIGS::MyIGS() :
-        _mainBox(Gtk::ORIENTATION_HORIZONTAL),
+        m_mainBox(Gtk::manage(new Gtk::HBox())),
         _zoomButtonOut("Out"),
         _zoomButtonIn("In"),
         _dispButtonUp("Up"),
@@ -36,7 +36,7 @@ MyIGS::MyIGS() :
     MyIGS::createViewportFrame();
     MyIGS::createObjectsFrame();
 
-    add(_mainBox);
+    add(*m_mainBox);
     show_all_children();
 }
 
@@ -83,7 +83,7 @@ void MyIGS::createControlFrame() {
     _controlFrame.set_size_request(150,-1);
     _controlFrame.add(_controlBox);
 
-    _mainBox.pack_start(_controlFrame, Gtk::PACK_SHRINK, 1);
+    m_mainBox->pack_start(_controlFrame, Gtk::PACK_SHRINK, 1);
 }
 
 void MyIGS::createViewportFrame() {
@@ -95,7 +95,7 @@ void MyIGS::createViewportFrame() {
     _viewportFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
 
     _viewportFrame.add(_viewportBox);
-    _mainBox.pack_start(_viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    m_mainBox->pack_start(_viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
 
 void MyIGS::createObjectsFrame() {
@@ -125,7 +125,7 @@ void MyIGS::createObjectsFrame() {
     _objectsWindow.add(_objectsListView);
     _objectsListView.set_column_title(0, "Current objects:");
 
-    _mainBox.pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    m_mainBox->pack_start(_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
 }
 
 void MyIGS::zoomWindowIn() {
