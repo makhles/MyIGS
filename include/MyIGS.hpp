@@ -17,11 +17,6 @@ class MyIGS : public Gtk::Window {
     protected:
         InterfaceController *_interfaceController;
 
-        /* Dialogs */
-        PointDialog _pointDialog;
-        LineDialog _lineDialog;
-        WireframeDialog _wireframeDialog;
-
         /* Main widgets */
         Gtk::Box _mainBox;
         Gtk::Frame _controlFrame;

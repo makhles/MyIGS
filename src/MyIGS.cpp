@@ -26,11 +26,6 @@ MyIGS::MyIGS() :
     /* Add views to the controller */
     _interfaceController = new InterfaceController(this, &_canvas);
 
-    /* Add the controller to other views */
-    _pointDialog.setInterfaceController(_interfaceController);
-    _lineDialog.setInterfaceController(_interfaceController);
-
-
     /* Main window */
     set_title("My IGS");
     set_border_width(10);
