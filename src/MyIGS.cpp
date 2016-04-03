@@ -10,156 +10,160 @@
 #include "CreateWireframeDialog.hpp"
 
 MyIGS::MyIGS() :
-        m_mainBox(Gtk::manage(new Gtk::HBox())),
-        m_controlFrame(Gtk::manage(new Gtk::Frame("Control"))),
-        m_viewportFrame(Gtk::manage(new Gtk::Frame("Viewport"))),
-        m_objectsFrame(Gtk::manage(new Gtk::Frame("Objects"))),
-        _zoomButtonOut("Out"),
-        _zoomButtonIn("In"),
-        _dispButtonUp("Up"),
-        _dispButtonDown("Down"),
-        _dispButtonLeft("Left"),
-        _dispButtonRight("Right"),
-        _buttonCreatePoint("Point"),
-        _buttonCreateLine("Line"),
-        _buttonCreateWireframe("Wireframe"),
-        _labelCreateObjects("Create a new object:"),
-        _objectsListView(1) {
-
-    _interfaceController = new InterfaceController(this, &_canvas);
+    m_objectsListView(Gtk::manage(new Gtk::ListViewText(1))),
+    m_board(Gtk::manage(new OutputBoard())),
+    m_canvas(Gtk::manage(new Canvas()))
+{
+    m_controller = new InterfaceController(this, m_canvas);
 
     // Main window
     set_title("My IGS");
     set_border_width(10);
     set_resizable(false);
 
+    // Main widgets
+    Gtk::HBox  * const mainBox = Gtk::manage(new Gtk::HBox());
+    Gtk::Frame * const controlFrame = Gtk::manage(new Gtk::Frame("Control"));
+    Gtk::Frame * const viewportFrame = Gtk::manage(new Gtk::Frame("Viewport"));
+    Gtk::Frame * const objectsFrame = Gtk::manage(new Gtk::Frame("Objects"));
 
-    m_controlFrame->set_size_request(150,-1);
-    m_objectsFrame->set_size_request(175,-1);
+    controlFrame->set_size_request(150,-1);
+    objectsFrame->set_size_request(175,-1);
 
-    m_controlFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    m_viewportFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    m_objectsFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    controlFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    viewportFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    objectsFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
 
+// --------------------------------------------------------------------------------------------- //
+// ---------------------------------------- Zoom Frame ----------------------------------------- //
 
+    Gtk::VBox * const controlBox = Gtk::manage(new Gtk::VBox());
+    Gtk::Frame * const scaleFrame = Gtk::manage(new Gtk::Frame("Scaling"));
+    Gtk::Frame * const translateFrame = Gtk::manage(new Gtk::Frame("Translation"));
+    Gtk::HBox * const scaleBox = Gtk::manage(new Gtk::HBox());
+    Gtk::Grid * const scaleGrid = Gtk::manage(new Gtk::Grid());
 
-    // Frames
-    MyIGS::createControlFrame();
-    MyIGS::createViewportFrame();
-    MyIGS::createObjectsFrame();
+    controlBox->pack_start(*scaleFrame, Gtk::PACK_SHRINK, 1);
+    controlBox->pack_start(*translateFrame, Gtk::PACK_SHRINK, 1);
 
-    m_mainBox->pack_start(*m_controlFrame, Gtk::PACK_SHRINK, 1);
-    m_mainBox->pack_start(*m_viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
-    m_mainBox->pack_start(*m_objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    // Scaling frame
+    scaleFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    scaleFrame->set_border_width(5);
+    scaleFrame->add(*scaleBox);
 
-    add(*m_mainBox);
+    // Translation frame
+    translateFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    translateFrame->set_border_width(5);
+    translateFrame->add(*scaleGrid);
+
+    // Scale buttons
+    Gtk::Button * const scaleOutButton = Gtk::manage(new Gtk::Button("Out"));
+    Gtk::Button * const scaleInButton = Gtk::manage(new Gtk::Button("In"));
+
+    // Scale buttons signals
+    scaleOutButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowOut));
+    scaleInButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowIn));
+
+    scaleBox->pack_start(*scaleOutButton, Gtk::PACK_EXPAND_WIDGET, 1);
+    scaleBox->pack_start(*scaleInButton, Gtk::PACK_EXPAND_WIDGET, 1);
+
+    // Translation buttons
+    Gtk::Button * const moveUpButton = Gtk::manage(new Gtk::Button("Up"));
+    Gtk::Button * const moveRightButton = Gtk::manage(new Gtk::Button("Right"));
+    Gtk::Button * const moveDownButton = Gtk::manage(new Gtk::Button("Down"));
+    Gtk::Button * const moveLeftButton = Gtk::manage(new Gtk::Button("Left"));
+
+    // Translation buttons signals
+    moveUpButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowUp));
+    moveRightButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowRight));
+    moveDownButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowDown));
+    moveLeftButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowLeft));
+
+    scaleGrid->attach(*moveUpButton,2,1,1,1);
+    scaleGrid->attach(*moveRightButton,3,2,1,1);
+    scaleGrid->attach(*moveDownButton,2,3,1,1);
+    scaleGrid->attach(*moveLeftButton,1,2,1,1);
+    
+    controlFrame->add(*controlBox);
+
+// --------------------------------------------------------------------------------------------- //
+// ------------------------------------ Viewport Frame ----------------------------------------- //
+
+    Gtk::VBox * const viewportBox = Gtk::manage(new Gtk::VBox());
+    viewportBox->pack_start(*m_canvas, Gtk::PACK_EXPAND_WIDGET, 1);
+    viewportBox->pack_start(*m_board, Gtk::PACK_EXPAND_WIDGET, 1);
+    viewportFrame->add(*viewportBox);
+
+// --------------------------------------------------------------------------------------------- //
+// ------------------------------------- Objects Frame ----------------------------------------- //
+
+    // New objects buttons
+    Gtk::Button * const createPointButton = Gtk::manage(new Gtk::Button("Point"));
+    Gtk::Button * const createLineButton = Gtk::manage(new Gtk::Button("Line"));
+    Gtk::Button * const createWireframeButton = Gtk::manage(new Gtk::Button("Wireframe"));
+
+    createPointButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createPoint));
+    createLineButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createLine));
+    createWireframeButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createWireframe));
+
+    Gtk::VBox * const objectsBox = Gtk::manage(new Gtk::VBox());
+    Gtk::Label * const labelCreateObjects = Gtk::manage(new Gtk::Label("Create a new object:"));
+    Gtk::Separator * const objectsSeparator = Gtk::manage(new Gtk::Separator());
+    Gtk::ScrolledWindow * const objectsWindow = Gtk::manage(new Gtk::ScrolledWindow());
+
+    objectsBox->pack_start(*labelCreateObjects, Gtk::PACK_SHRINK, 3);
+    objectsBox->pack_start(*createPointButton, Gtk::PACK_SHRINK, 0);
+    objectsBox->pack_start(*createLineButton, Gtk::PACK_SHRINK, 0);
+    objectsBox->pack_start(*createWireframeButton, Gtk::PACK_SHRINK, 0);
+    objectsBox->pack_start(*objectsSeparator, Gtk::PACK_SHRINK, 3);
+    objectsBox->pack_start(*objectsWindow, Gtk::PACK_EXPAND_WIDGET, 0);
+
+    m_objectsListView->set_column_title(0, "Current objects:");
+    objectsWindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    objectsWindow->add(*m_objectsListView);
+    objectsFrame->add(*objectsBox);
+
+    mainBox->pack_start(*controlFrame, Gtk::PACK_SHRINK, 1);
+    mainBox->pack_start(*viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    mainBox->pack_start(*objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+
+    add(*mainBox);
     show_all_children();
 }
 
+
 MyIGS::~MyIGS() {
-    delete _interfaceController;
-}
-
-void MyIGS::createControlFrame() {
-    _controlBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
-    _zoomBox.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
-
-    /* Zoom frame */
-    _zoomFrame.set_label("Zoom");
-    _zoomFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    _zoomFrame.set_border_width(5);
-    _zoomFrame.add(_zoomBox);
-    _controlBox.pack_start(_zoomFrame, Gtk::PACK_SHRINK, 1);
-
-    /* Zoom frame buttons */
-    _zoomButtonOut.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowOut));
-    _zoomButtonIn.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowIn));
-    _zoomBox.pack_start(_zoomButtonOut, Gtk::PACK_EXPAND_WIDGET, 1);
-    _zoomBox.pack_start(_zoomButtonIn, Gtk::PACK_EXPAND_WIDGET, 1);
-
-    /* Displacement Frame */
-    _dispFrame.set_label("Displacement");
-    _dispFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    _dispFrame.set_border_width(5);
-    _controlBox.pack_start(_dispFrame, Gtk::PACK_SHRINK, 1);
-
-    /* Displacement buttons */
-    _dispButtonUp.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowUp));
-    _dispButtonRight.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowRight));
-    _dispButtonDown.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowDown));
-    _dispButtonLeft.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowLeft));
-    _dispGrid.attach(_dispButtonUp,2,1,1,1);
-    _dispGrid.attach(_dispButtonRight,3,2,1,1);
-    _dispGrid.attach(_dispButtonDown,2,3,1,1);
-    _dispGrid.attach(_dispButtonLeft,1,2,1,1);
-    _dispFrame.add(_dispGrid);
-
-    
-    m_controlFrame->add(_controlBox);
-}
-
-
-void MyIGS::createViewportFrame() {
-    _viewportBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
-    _viewportBox.pack_start(_canvas, Gtk::PACK_EXPAND_WIDGET, 1);
-    _viewportBox.pack_start(_board, Gtk::PACK_EXPAND_WIDGET, 1);
-
-    m_viewportFrame->add(_viewportBox);
-}
-
-
-void MyIGS::createObjectsFrame() {
-
-    /* New objects buttons */
-    _buttonCreatePoint.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createPoint));
-    _buttonCreateLine.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createLine));
-    _buttonCreateWireframe.signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createWireframe));
-
-    /* Pack everything */
-    _objectsBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
-    _objectsBox.pack_start(_labelCreateObjects, Gtk::PACK_SHRINK, 3);
-    _objectsBox.pack_start(_buttonCreatePoint, Gtk::PACK_SHRINK, 0);
-    _objectsBox.pack_start(_buttonCreateLine, Gtk::PACK_SHRINK, 0);
-    _objectsBox.pack_start(_buttonCreateWireframe, Gtk::PACK_SHRINK, 0);
-    _objectsBox.pack_start(_objectsSeparator, Gtk::PACK_SHRINK, 3);
-    _objectsBox.pack_start(_objectsWindow, Gtk::PACK_EXPAND_WIDGET, 0);
-
-    /* Objects window */
-    _objectsWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-    _objectsWindow.add(_objectsListView);
-    _objectsListView.set_column_title(0, "Current objects:");
-
-    m_objectsFrame->add(_objectsBox);
+    delete m_controller;
 }
 
 
 void MyIGS::zoomWindowIn() {
-    _interfaceController->zoomWindow(1);
+    m_controller->zoomWindow(1);
 }
 
 
 void MyIGS::zoomWindowOut() {
-    _interfaceController->zoomWindow(-1);
+    m_controller->zoomWindow(-1);
 }
 
 
 void MyIGS::moveWindowUp() {
-    _interfaceController->moveWindow(0,1);
+    m_controller->moveWindow(0,1);
 }
 
 
 void MyIGS::moveWindowRight() {
-    _interfaceController->moveWindow(1,0);
+    m_controller->moveWindow(1,0);
 }
 
 
 void MyIGS::moveWindowDown() {
-    _interfaceController->moveWindow(0,-1);
+    m_controller->moveWindow(0,-1);
 }
 
 
 void MyIGS::moveWindowLeft() {
-    _interfaceController->moveWindow(-1,0);
+    m_controller->moveWindow(-1,0);
 }
 
 
@@ -168,7 +172,7 @@ void MyIGS::createPoint() {
     CreatePointDialog dialog("Create a new point");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
-       _interfaceController->createShape(ShapeType::POINT);
+       m_controller->createShape(ShapeType::POINT);
     }
 }
 
@@ -178,7 +182,7 @@ void MyIGS::createLine() {
     CreateLineDialog dialog("Create a new line");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
-       _interfaceController->createShape(ShapeType::LINE);
+       m_controller->createShape(ShapeType::LINE);
     }
 }
 
@@ -188,11 +192,11 @@ void MyIGS::createWireframe() {
     CreateWireframeDialog dialog("Create a new wireframe");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK && dialog.buildWireframe()) {
-       _interfaceController->createShape(ShapeType::WIREFRAME);
+       m_controller->createShape(ShapeType::WIREFRAME);
     }
 }
 
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {
-    _objectsListView.append(obj->get_name());
+    m_objectsListView->append(obj->get_name());
 }
