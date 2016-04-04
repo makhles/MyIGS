@@ -4,6 +4,7 @@
 #define MYIGS_H
 
 #include <gtkmm.h>
+#include <gtkmm/selectiondata.h>
 #include "Canvas.hpp"
 #include "OutputBoard.hpp"
 
@@ -16,6 +17,7 @@ protected:
     OutputBoard * const m_board;
     Canvas * const m_canvas;
     InterfaceController * m_controller;
+    Glib::RefPtr<Gtk::TreeSelection> m_selection; 
 
     // Control
     void zoomWindowIn();
@@ -34,6 +36,7 @@ public:
     MyIGS();
     virtual ~MyIGS();
     void appendObjectToViewList(const Shape *obj);
+    void on_selection_changed();
 };
 
 #endif  // MYIGS_H

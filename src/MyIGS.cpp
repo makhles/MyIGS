@@ -16,6 +16,9 @@ MyIGS::MyIGS() :
 {
     m_controller = new InterfaceController(this, m_canvas);
 
+    m_selection = m_objectsListView->get_selection();
+    m_selection->signal_changed().connect(sigc::mem_fun(*this, &MyIGS::on_selection_changed));
+
     // Main window
     set_title("My IGS");
     set_border_width(10);
@@ -199,4 +202,8 @@ void MyIGS::createWireframe() {
 
 void MyIGS::appendObjectToViewList(const Shape *obj) {
     m_objectsListView->append(obj->get_name());
+}
+
+void MyIGS::on_selection_changed() {
+    std::cout << "Dont't touch me!!!" << std::endl;
 }
