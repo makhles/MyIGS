@@ -10,16 +10,14 @@
 
 class InterfaceController;
 class Shape;
-class ObjectListView;
+class ObjectsTreeView;
 
 class MyIGS : public Gtk::Window {
 protected:
-    //Gtk::ListViewText * const m_objectsListView;
-    ObjectListView * const m_objectsListView;
+    ObjectsTreeView * const m_objectsView;
     OutputBoard * const m_board;
     Canvas * const m_canvas;
     InterfaceController * m_controller;
-    Glib::RefPtr<Gtk::TreeSelection> m_selection; 
 
     // Control
     void zoomWindowIn();
@@ -37,8 +35,7 @@ protected:
 public:
     MyIGS();
     virtual ~MyIGS();
-    void appendObjectToViewList(const Shape *obj);
-    //void on_selection_changed();
+    void appendObject(const Glib::ustring obj);
 };
 
 #endif  // MYIGS_H

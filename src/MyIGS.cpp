@@ -8,18 +8,14 @@
 #include "CreatePointDialog.hpp"
 #include "CreateLineDialog.hpp"
 #include "CreateWireframeDialog.hpp"
-#include "ObjectListView.hpp"
+#include "ObjectsTreeView.hpp"
 
 MyIGS::MyIGS() :
-    //m_objectsListView(Gtk::manage(new Gtk::ListViewText(1))),
-    m_objectsListView(Gtk::manage(new ObjectListView())),
+    m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_board(Gtk::manage(new OutputBoard())),
     m_canvas(Gtk::manage(new Canvas()))
 {
     m_controller = new InterfaceController(this, m_canvas);
-
-    //m_selection = m_objectsListView->get_selection();
-    //m_selection->signal_changed().connect(sigc::mem_fun(*this, &MyIGS::on_selection_changed));
 
     // Main window
     set_title("My IGS");
@@ -123,9 +119,8 @@ MyIGS::MyIGS() :
     objectsBox->pack_start(*objectsSeparator, Gtk::PACK_SHRINK, 3);
     objectsBox->pack_start(*objectsWindow, Gtk::PACK_EXPAND_WIDGET, 0);
 
-    //m_objectsListView->set_column_title(0, "Current objects:");
     objectsWindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-    objectsWindow->add(*m_objectsListView);
+    objectsWindow->add(*m_objectsView);
     objectsFrame->add(*objectsBox);
 
     mainBox->pack_start(*controlFrame, Gtk::PACK_SHRINK, 1);
@@ -202,10 +197,6 @@ void MyIGS::createWireframe() {
 }
 
 
-void MyIGS::appendObjectToViewList(const Shape *obj) {
-    //m_objectsListView->append(obj->get_name());
+void MyIGS::appendObject(const Glib::ustring obj) {
+    m_objectsView->appendObject(obj);
 }
-
-// void MyIGS::on_selection_changed() {
-//     std::cout << "Dont't touch me!!!" << std::endl;
-// }

@@ -1,16 +1,17 @@
-// ObjectListView.hpp
+// ObjectsTreeView.hpp
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
-#ifndef OBJECT_LIST_VIEW_HPP
-#define OBJECT_LIST_VIEW_HPP
+#ifndef OBJECTS_TREE_VIEW_HPP
+#define OBJECTS_TREE_VIEW_HPP
 
 #include <gtkmm.h>
 
-class ObjectListView : public Gtk::TreeView {
+class ObjectsTreeView : public Gtk::TreeView {
 
 protected:
-    
+    unsigned m_objCount;
+
     // Signal handlers
     bool on_button_press_event(GdkEventButton* button_event) override;
     void on_menu_file_popup_generic();
@@ -33,8 +34,9 @@ protected:
     Gtk::Menu m_menuPopup;
 
 public:
-    ObjectListView();
-    virtual ~ObjectListView() {}
+    ObjectsTreeView();
+    virtual ~ObjectsTreeView() {}
+    void appendObject(const Glib::ustring obj);
 };
 
-#endif  // OBJECT_LIST_VIEW_HPP
+#endif  // OBJECTS_TREE_VIEW_HPP

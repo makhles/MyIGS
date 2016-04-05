@@ -41,7 +41,7 @@ void InterfaceController::createShape(ShapeType type) {
 void InterfaceController::finalizeShapeCreation(Shape *shape) {
     _canvas->addToDisplayFile(shape);
     _shapes.push_back(shape);
-    _interface->appendObjectToViewList(shape);
+    _interface->appendObject(shape->get_name());
     this->update(shape);
 }
 
