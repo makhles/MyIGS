@@ -86,6 +86,7 @@ void TMatrix::operator*(TMatrix &rhs) {
 void TMatrix::left_product(const TMatrix &lhs, TMatrix &result) const {
     for (unsigned i = 0; i < m_order; i++) {
         for (unsigned j = 0; j < m_order; j++) {
+            result(i,j) = 0;  // Make sure it's clean.
             for (unsigned k = 0; k < m_order; k++) {
                 result(i,j) += lhs(i,k) * this->m_matrix[k][j];
             }
@@ -99,6 +100,7 @@ void TMatrix::left_product(const TMatrix &lhs, TMatrix &result) const {
 void TMatrix::right_product(const TMatrix &rhs, TMatrix &result) const {
     for (unsigned i = 0; i < m_order; i++) {
         for (unsigned j = 0; j < m_order; j++) {
+            result(i,j) = 0;  // Make sure it's clean.
             for (unsigned k = 0; k < m_order; k++) {
                 result(i,j) += this->m_matrix[i][k] * rhs(k,j);
             }

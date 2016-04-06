@@ -8,14 +8,11 @@
 #include "TMatrix.hpp"
 
 class Translation : public TMatrix {
-private:
-    double m_dx;  // Translation along the x axis
-    double m_dy;  // Translation along the y axis
 
 public:
     Translation(unsigned order, double dx, double dy);
     virtual ~Translation() {}
-    //virtual void rebuildTMatrix(TMatrix *);
+    void buildTMatrix(const double ref_x, const double ref_y) override;
 };
 
 #endif  // TRANSLATION_MATRIX_HPP

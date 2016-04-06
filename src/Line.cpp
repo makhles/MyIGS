@@ -14,6 +14,7 @@ Line::Line(const std::string name, Point *p1, Point *p2) :
         _p2(p2) {
 }
 
+
 Line::~Line() {
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
@@ -23,10 +24,19 @@ Line::~Line() {
     _wCoords.clear();
 }
 
+
+const Coord<double> Line::getCentroid() {
+    double x = (_p1->getX() + _p2->getX()) / 2.0;
+    double y = (_p1->getY() + _p2->getY()) / 2.0;
+    return Coord<double>(x, y);
+}
+
+
 // Visitor
 void Line::accept(AbstractDrawer *drawer) {
     drawer->draw(this);
 }
+
 
 void Line::clipToWindow(WorldWindow *w) {
     std::cout << "Clipping to window." << std::endl;
@@ -39,6 +49,7 @@ void Line::clipToWindow(WorldWindow *w) {
     coord = new Coord<double>(_p2->getX(), _p2->getY());
     _wCoords.push_back(coord);
 }
+
 
 void Line::transform(TMatrix *matrix) {
     _p1->transform(matrix);

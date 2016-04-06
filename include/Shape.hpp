@@ -29,6 +29,7 @@ class Shape {
         ShapeType get_type() const {return _type;}
         const std::list<Coord<double>*>* getWindowCoordinates() const {return &_wCoords;}
         const std::list<const Coord<int>*>* getViewportCoordinates() const {return &_vpCoords;}
+        virtual const Coord<double> getCentroid() = 0;
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer) = 0;

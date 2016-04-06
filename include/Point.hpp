@@ -17,6 +17,7 @@ class Point : public Shape {
         ~Point();
         const double getX() const {return _x;}
         const double getY() const {return _y;}
+        const Coord<double> getCentroid() override;
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer);

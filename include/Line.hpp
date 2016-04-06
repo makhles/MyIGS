@@ -18,6 +18,7 @@ class Line : public Shape {
         ~Line();
         const Point* get_p1() const {return _p1;}
         const Point* get_p2() const {return _p2;}
+        const Coord<double> getCentroid() override;
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer);

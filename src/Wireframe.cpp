@@ -11,6 +11,7 @@ Wireframe::Wireframe(const std::string name) :
         Shape(name, ShapeType::WIREFRAME) {
 }
 
+
 Wireframe::~Wireframe() {
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
@@ -26,14 +27,32 @@ Wireframe::~Wireframe() {
     _vertices.clear();
 }
 
+
+const Coord<double> Wireframe::getCentroid() {
+    double x = 0.0;
+    double y = 0.0;
+    auto p = _vertices.begin();
+    while (p != _vertices.end()) {
+        x += (*p)->getX();
+        y += (*p)->getY();
+        p++;
+    }
+    x = x / (double) _vertices.size();
+    y = y / (double) _vertices.size();
+    return Coord<double>(x, y);
+}
+
+
 void Wireframe::addPoint(Point *point) {
     _vertices.push_back(point);
 }
+
 
 // Visitor
 void Wireframe::accept(AbstractDrawer *drawer) {
     drawer->draw(this);
 }
+
 
 void Wireframe::clipToWindow(WorldWindow *w) {
     std::cout << "Clipping to window." << std::endl;

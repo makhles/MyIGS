@@ -17,6 +17,7 @@ class Wireframe : public Shape {
         Wireframe(const std::string name);
         ~Wireframe();
 
+        const Coord<double> getCentroid() override;
         void addPoint(Point *point);
 
         // Visitor

@@ -33,6 +33,7 @@ public:
     void addScaling(double sx, double sy);
     void addRotation(double angleZ, TransformationType type);
     void rollback();
+    void addCentroid(const double x, const double y);
     TMatrix* createMatrix();
 };
 

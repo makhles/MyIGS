@@ -12,10 +12,7 @@
 class TMatrix {
 protected:
     std::vector<std::vector<double> > m_matrix;
-
     unsigned m_order; // Number of rows and columns
-    double m_refX;    // X coordinate of reference point
-    double m_refY;    // Y coordinate of reference point
 
 public:
     TMatrix(unsigned order);
@@ -34,7 +31,7 @@ public:
 
     // Getters
     unsigned getOrder() const { return m_order;}
-    //virtual void rebuildTMatrix(TMatrix *) {}
+    virtual void buildTMatrix(const double ref_x, const double ref_y) {}
 };
 
 #endif  // TMATRIX_HPP

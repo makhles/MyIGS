@@ -13,6 +13,7 @@ Point::Point(const std::string name, const double x, const double y) :
         _y(y) {
 }
 
+
 Point::~Point() {
     auto coord = _wCoords.begin();
     while (coord != _wCoords.end()) {
@@ -22,10 +23,17 @@ Point::~Point() {
     _wCoords.clear();
 }
 
+
+const Coord<double> Point::getCentroid() {
+    return Coord<double>(_x, _y);
+}
+
+
 // Visitor
 void Point::accept(AbstractDrawer *drawer) {
     drawer->draw(this);
 }
+
 
 void Point::clipToWindow(WorldWindow *w) {
     std::cout << "Clipping to window." << std::endl;
