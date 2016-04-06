@@ -6,6 +6,7 @@
 #define TRANSFORMATION_DIALOG_HPP
 
 #include "gtkmm.h"
+#include "TransformationType.hpp"
 
 class TransformationDialog : public Gtk::Dialog {
 
@@ -31,6 +32,10 @@ protected:
     // Gtk::Entry * const m_sxEntry;
     // Gtk::Entry * const m_syEntry;
 
+    TransformationType m_transformType;
+    unsigned m_translationsCount;
+
+    void addTranslation();
     void applyTransformations();
 
     // Signal handlers

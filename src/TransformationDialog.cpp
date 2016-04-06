@@ -4,13 +4,15 @@
 
 #include <iostream>
 #include "TransformationDialog.hpp"
+#include "TMatrixBuilder.hpp"
 
 TransformationDialog::TransformationDialog(const Glib::ustring &title) :
     Dialog(title, true),
-    m_transformations(Gtk::manage(new Gtk::ListViewText(0))),  // 0 columns
+    m_transformations(Gtk::manage(new Gtk::ListViewText(1))),  // 1 column
     m_dxEntry(Gtk::manage(new Gtk::Entry())),
     m_dyEntry(Gtk::manage(new Gtk::Entry()))
 {
+    
     set_resizable(false);
     set_border_width(10);
 
@@ -25,7 +27,7 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
     Gtk::VBox * const rotation_box = Gtk::manage(new Gtk::VBox());
 
     // Transformation labels
-     Gtk::Label * const translation_label = Gtk::manage(new Gtk::Label("Translation"));
+    Gtk::Label * const translation_label = Gtk::manage(new Gtk::Label("Translation"));
     Gtk::Label * const scaling_label = Gtk::manage(new Gtk::Label("Scaling"));
     Gtk::Label * const rotation_label = Gtk::manage(new Gtk::Label("Rotation"));
 
@@ -69,13 +71,17 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
 // --------------------------------------------------------------------------------------------- //
 // ----------------------------------------- Rotation ------------------------------------------ //
 
+
+
     // The left box widgets
+    m_transformations->set_column_title(0, "Transformations:");
     Gtk::VBox * const list_box = Gtk::manage(new Gtk::VBox());
     Gtk::ScrolledWindow * const scroll_window = Gtk::manage(new Gtk::ScrolledWindow());
     Gtk::Button * const add_button = Gtk::manage(new Gtk::Button("Add"));
     Gtk::Button * const rem_button = Gtk::manage(new Gtk::Button("Remove"));
 
     // Pack the left box widgets
+    scroll_window->set_size_request(150,100);
     scroll_window->add(*m_transformations);
     scroll_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
     list_box->pack_start(*scroll_window, Gtk::PACK_EXPAND_WIDGET, 0);
@@ -103,6 +109,21 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
 
 void TransformationDialog::on_add_button_clicked() {
     std::cout << "Adding transformation..." << std::endl;
+    switch (m_transformType) {
+        case TransformationType::TRANSLATION:
+        {
+            this->addTranslation();
+            break;
+        }
+        case TransformationType::SCALING:
+        {
+            break;
+        }
+        case TransformationType::ROTATION:
+        {
+            break;
+        }
+    }
 }
 
 
@@ -135,7 +156,46 @@ void TransformationDialog::on_my_response(int response_id) {
 
 void TransformationDialog::on_notebook_switch_page(Gtk::Widget* page, guint page_number) {
     std::cout << "Switched to tab with index " << page_number << std::endl;
+    switch (page_number) {
+        case 0:
+        {
+            m_transformType = TransformationType::TRANSLATION;
+            break;
+        }
+        case 1:
+        {
+            m_transformType = TransformationType::SCALING;
+            break;
+        }
+        case 2:
+        {
+            m_transformType = TransformationType::ROTATION;
+            break;
+        }
+    }
 }
+
+
+void TransformationDialog::addTranslation() {
+    double dx, dy;
+    std::stringstream str_dx, str_dy;
+
+    /* Get input data from dialog box entries */
+    str_dx << m_dxEntry->get_text().raw();
+    str_dy << m_dyEntry->get_text().raw();
+    
+    /* Check for empty entries */
+    if (str_dx.str().size() != 0 && str_dy.str().size() != 0) {
+        str_dx >> dx;
+        str_dy >> dy;
+
+        TMatrixBuilder::instance()->addTranslation(dx, dy);
+        m_transformations->append("Translation " + std::to_string(m_translationsCount));
+        m_translationsCount++;
+        std::cout << "Added new translation." << std::endl;
+    }
+}
+
 
 
 void TransformationDialog::applyTransformations() {
