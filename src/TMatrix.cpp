@@ -81,6 +81,32 @@ void TMatrix::operator*(TMatrix &rhs) {
 }
 
 
+// Compute the product of this matrix and the one to its left.
+// Both matrices must be square and have the same order.
+void TMatrix::left_product(const TMatrix &lhs, TMatrix &result) const {
+    for (unsigned i = 0; i < m_order; i++) {
+        for (unsigned j = 0; j < m_order; j++) {
+            for (unsigned k = 0; k < m_order; k++) {
+                result(i,j) += lhs(i,k) * this->m_matrix[k][j];
+            }
+        }
+    }
+}
+
+
+// Compute the product of this matrix and the one to its right.
+// Both matrices must be square and have the same order.
+void TMatrix::right_product(const TMatrix &rhs, TMatrix &result) const {
+    for (unsigned i = 0; i < m_order; i++) {
+        for (unsigned j = 0; j < m_order; j++) {
+            for (unsigned k = 0; k < m_order; k++) {
+                result(i,j) += this->m_matrix[i][k] * rhs(k,j);
+            }
+        }
+    }
+}
+
+
 // Overloading of * operator
 // Original vector will be used to store the result.
 void TMatrix::operator*(std::vector<double> &rhs) {

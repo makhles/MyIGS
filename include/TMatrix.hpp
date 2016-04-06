@@ -22,6 +22,9 @@ public:
     TMatrix(const TMatrix &rhs);  // Copy constructor
     virtual ~TMatrix();
 
+    void left_product(const TMatrix &lhs, TMatrix &result) const;
+    void right_product(const TMatrix &rhs, TMatrix &result) const;
+
     // Operators overloading
     double& operator()(const unsigned &row, const unsigned &col);              // Accessor
     const double& operator()(const unsigned &row, const unsigned &col) const;  // Accessor
