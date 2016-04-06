@@ -14,28 +14,22 @@ protected:
 
     Gtk::ListViewText * const m_transformations;
 
-    // Translation
-    Gtk::Entry * const m_dxEntry;
-    Gtk::Entry * const m_dyEntry;
+    Gtk::Entry * const m_dxEntry;  // Translation in x
+    Gtk::Entry * const m_dyEntry;  // Translation in y
+    Gtk::Entry * const m_sxEntry;  // Scalilng in x
+    Gtk::Entry * const m_syEntry;  // Scalilng in y
 
     // // Rotation
-    // Gtk::Label * const m_angleLabel;  // Angle about the z axis
     // Gtk::Entry * const m_angleEntry;
-    // Gtk::Label * const m_xLabel;      // Reference point x coordinate for rotation
-    // Gtk::Label * const m_yLabel;      // Reference point y coordinate for rotation
     // Gtk::Entry * const m_xEntry;
     // Gtk::Entry * const m_yEntry;
 
-    // // Scaling
-    // Gtk::Label * const m_sxLabel;
-    // Gtk::Label * const m_syLabel;
-    // Gtk::Entry * const m_sxEntry;
-    // Gtk::Entry * const m_syEntry;
-
     TransformationType m_transformType;
     unsigned m_translationsCount;
+    unsigned m_scalingCount;
 
     void addTranslation();
+    void addScaling();
     void applyTransformations();
 
     // Signal handlers

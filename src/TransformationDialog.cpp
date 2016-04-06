@@ -10,9 +10,12 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
     Dialog(title, true),
     m_transformations(Gtk::manage(new Gtk::ListViewText(1))),  // 1 column
     m_dxEntry(Gtk::manage(new Gtk::Entry())),
-    m_dyEntry(Gtk::manage(new Gtk::Entry()))
+    m_dyEntry(Gtk::manage(new Gtk::Entry())),
+    m_sxEntry(Gtk::manage(new Gtk::Entry())),
+    m_syEntry(Gtk::manage(new Gtk::Entry())),
+    m_translationsCount(0),
+    m_scalingCount(0)
 {
-    
     set_resizable(false);
     set_border_width(10);
 
@@ -67,6 +70,19 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
 // --------------------------------------------------------------------------------------------- //
 // ----------------------------------------- Scaling ------------------------------------------- //
 
+    Gtk::HBox * const sfactor_box = Gtk::manage(new Gtk::HBox());  // Scaling factor box
+    Gtk::Label * const sxLabel = Gtk::manage(new Gtk::Label("sx:"));
+    Gtk::Label * const syLabel = Gtk::manage(new Gtk::Label("sy:"));
+
+    m_sxEntry->set_width_chars(6);
+    m_syEntry->set_width_chars(6);
+
+    sfactor_box->pack_start(*sxLabel, Gtk::PACK_SHRINK, 5);
+    sfactor_box->pack_start(*m_sxEntry, Gtk::PACK_SHRINK, 5);
+    sfactor_box->pack_start(*syLabel, Gtk::PACK_SHRINK, 5);
+    sfactor_box->pack_start(*m_syEntry, Gtk::PACK_SHRINK, 5);
+
+    scaling_box->pack_start(*sfactor_box, Gtk::PACK_SHRINK, 10);
 
 // --------------------------------------------------------------------------------------------- //
 // ----------------------------------------- Rotation ------------------------------------------ //
@@ -117,6 +133,7 @@ void TransformationDialog::on_add_button_clicked() {
         }
         case TransformationType::SCALING:
         {
+            this->addScaling();
             break;
         }
         case TransformationType::ROTATION:
@@ -197,8 +214,29 @@ void TransformationDialog::addTranslation() {
 }
 
 
+void TransformationDialog::addScaling() {
+    double sx, sy;
+    std::stringstream str_sx, str_sy;
+
+    /* Get input data from dialog box entries */
+    str_sx << m_sxEntry->get_text().raw();
+    str_sy << m_syEntry->get_text().raw();
+    
+    /* Check for empty entries */
+    if (str_sx.str().size() != 0 && str_sy.str().size() != 0) {
+        str_sx >> sx;
+        str_sy >> sy;
+
+        TMatrixBuilder::instance()->addScaling(sx, sy);
+        m_transformations->append("Scaling " + std::to_string(m_scalingCount));
+        m_scalingCount++;
+        std::cout << "Added new scaling." << std::endl;
+    }
+}
+
 
 void TransformationDialog::applyTransformations() {
     std::cout << "Applying all transformations." << std::endl;
+    
 }
 
