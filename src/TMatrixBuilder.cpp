@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "TMatrixBuilder.hpp"
 #include "TMatrix.hpp"
+#include "Translation.hpp"
 #include "DeleteList.hpp"
 
 // Global static pointer to ensure a single instance of the class.
@@ -21,7 +22,8 @@ TMatrixBuilder* TMatrixBuilder::instance() {
 
 
 void TMatrixBuilder::addTranslation(double dx, double dy) {
-
+    TMatrix *matrix = new Translation(3, dx, dy);
+    m_transformations.push_back(matrix);
 }
 
 
@@ -58,4 +60,16 @@ void TMatrixBuilder::rollback() {
                        DeleteList<TMatrix*>());
         m_transformations.clear();
     }
+}
+
+
+TMatrix* TMatrixBuilder::createMatrix() {
+    auto matrix = m_transformations.cbegin();
+    TMatrix *global_matrix = new TMatrix(**matrix);  // Copies the first matrix
+    matrix++;
+    while (matrix != m_transformations.cend()) {
+        (**matrix) * (*global_matrix);  // Global matrix receives the result
+        matrix++;
+    }
+    return global_matrix;
 }

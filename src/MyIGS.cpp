@@ -16,6 +16,7 @@ MyIGS::MyIGS() :
     m_canvas(Gtk::manage(new Canvas()))
 {
     m_controller = new InterfaceController(this, m_canvas);
+    m_objectsView->setInterfaceController(m_controller);
 
     // Main window
     set_title("My IGS");

@@ -9,6 +9,8 @@
 #include "Line.hpp"
 #include "Wireframe.hpp"
 #include "Coord.hpp"
+#include "TMatrix.hpp"
+#include "TMatrixBuilder.hpp"
 
 
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
@@ -43,6 +45,33 @@ void InterfaceController::finalizeShapeCreation(Shape *shape) {
     _shapes.push_back(shape);
     _interface->appendObject(shape->get_name());
     this->update(shape);
+}
+
+
+void InterfaceController::transform(const std::string &obj) {
+    Shape *shape = this->findShape(obj);
+    if (shape) {
+        TMatrix *matrix = TMatrixBuilder::instance()->createMatrix();
+        shape->transform(matrix);
+        this->update(shape);
+        TMatrixBuilder::instance()->rollback();  // Delete transformations
+        delete matrix;
+    } else {
+        std::cout << "Couldn't find specified object!" << std::endl;
+    }
+}
+
+
+Shape* InterfaceController::findShape(const std::string &obj) {
+    Shape *shapeToReturn = nullptr;
+    auto shape = _shapes.cbegin();
+    while (shape != _shapes.cend()) {
+        if ((*shape)->get_name() == obj) {
+            shapeToReturn = *shape;
+        }
+        shape++;
+    }
+    return shapeToReturn;
 }
 
 

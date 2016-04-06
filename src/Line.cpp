@@ -6,8 +6,9 @@
 #include "Coord.hpp"
 #include "WorldWindow.hpp"
 #include "AbstractDrawer.hpp"
+#include "TMatrix.hpp"
 
-Line::Line(const std::string name, const Point *p1, const Point *p2) :
+Line::Line(const std::string name, Point *p1, Point *p2) :
         Shape(name, ShapeType::LINE),
         _p1(p1),
         _p2(p2) {
@@ -37,4 +38,9 @@ void Line::clipToWindow(WorldWindow *w) {
     _wCoords.push_back(coord);
     coord = new Coord<double>(_p2->getX(), _p2->getY());
     _wCoords.push_back(coord);
+}
+
+void Line::transform(TMatrix *matrix) {
+    _p1->transform(matrix);
+    _p2->transform(matrix);
 }

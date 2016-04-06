@@ -7,9 +7,12 @@
 
 #include <gtkmm.h>
 
+class InterfaceController;
+
 class ObjectsTreeView : public Gtk::TreeView {
 
 protected:
+    InterfaceController *m_controller;
     unsigned m_objCount;
 
     // Signal handlers
@@ -37,6 +40,7 @@ protected:
 public:
     ObjectsTreeView();
     virtual ~ObjectsTreeView() {}
+    void setInterfaceController(InterfaceController *controller) {m_controller = controller;}
     Glib::ustring get_selected_object_name();
     void appendObject(const Glib::ustring obj);
 };

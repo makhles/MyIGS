@@ -5,6 +5,7 @@
 #include <iostream>
 #include "ObjectsTreeView.hpp"
 #include "TransformationDialog.hpp"
+#include "InterfaceController.hpp"
 
 ObjectsTreeView::ObjectsTreeView() : m_objCount(0) {
 
@@ -62,6 +63,7 @@ void ObjectsTreeView::on_menu_popup_transform() {
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
        std::cout << "Exited with OK." << std::endl;
+       m_controller->transform(objName.raw());
     } else if (response == Gtk::RESPONSE_CANCEL) {
         std::cout << "Exited with CANCEL." << std::endl;
     } else if (response == Gtk::RESPONSE_DELETE_EVENT) {

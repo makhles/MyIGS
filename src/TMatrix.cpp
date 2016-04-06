@@ -18,6 +18,7 @@ TMatrix::TMatrix(unsigned int order) : m_order(order) {
     }
 }
 
+
 // Copy contructor
 TMatrix::TMatrix(const TMatrix &rhs) {
     m_matrix = rhs.m_matrix;
@@ -72,7 +73,7 @@ void TMatrix::operator*(TMatrix &rhs) {
     for (unsigned i = 0; i < m_order; i++) {
         for (unsigned j = 0; j < m_order; j++) {
             for (unsigned k = 0; k < m_order; k++) {
-                result(i,j) = this->m_matrix[i][k] * rhs(i,j);
+                result(i,j) += this->m_matrix[i][k] * rhs(k,j);
             }
         }
     }
@@ -86,7 +87,10 @@ void TMatrix::operator*(std::vector<double> &rhs) {
     std::vector<double> result(rhs.size());
     for (unsigned i = 0; i < m_order; i++) {
         for (unsigned j = 0; j < m_order; j++) {
-            result[i] = this->m_matrix[i][j] * rhs[j];
+            std::cout << "m_matrix[" << i << "][" << j << "] = " << m_matrix[i][j] << "       "
+                    << "rhs[" << j << "] = " << rhs[j] << std::endl;
+            result[i] += this->m_matrix[i][j] * rhs[j];
+            std::cout << "result[" << i << "] = " << result[i] << std::endl;
         }
     }
     rhs = result;

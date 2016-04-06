@@ -21,7 +21,7 @@ class Wireframe : public Shape {
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer);
-
+        virtual void transform(TMatrix *matrix) override;
         virtual void clipToWindow(WorldWindow *w) override;
 };
 

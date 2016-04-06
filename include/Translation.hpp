@@ -12,7 +12,7 @@ private:
     double m_dx;  // Translation along the x axis
     double m_dy;  // Translation along the y axis
 
-protected:
+public:
     Translation(unsigned order, double dx, double dy);
     virtual ~Translation() {}
     //virtual void rebuildTMatrix(TMatrix *);

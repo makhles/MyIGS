@@ -10,7 +10,7 @@
 #include <vector>
 
 class TMatrix {
-private:
+protected:
     std::vector<std::vector<double> > m_matrix;
 
     unsigned m_order; // Number of rows and columns

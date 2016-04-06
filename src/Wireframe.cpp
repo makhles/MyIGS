@@ -48,3 +48,8 @@ void Wireframe::clipToWindow(WorldWindow *w) {
         p++;
     }
 }
+
+
+void Wireframe::transform(TMatrix *matrix) {
+    
+}

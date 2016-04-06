@@ -31,6 +31,8 @@ public:
 
     void createShape(ShapeType);
     void finalizeShapeCreation(Shape *shape);
+    void transform(const std::string &obj);
+    Shape* findShape(const std::string &obj);
     void update(Shape *shape);
     void updateShapes();
     void toViewport(Shape *shape);
