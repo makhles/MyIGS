@@ -14,7 +14,8 @@ protected:
 
     // Signal handlers
     bool on_button_press_event(GdkEventButton* button_event) override;
-    void on_menu_file_popup_generic();
+    void on_menu_popup_transform();
+    void on_menu_popup_delete();
 
     //Tree model columns:
     class ModelColumns : public Gtk::TreeModel::ColumnRecord {
@@ -36,6 +37,7 @@ protected:
 public:
     ObjectsTreeView();
     virtual ~ObjectsTreeView() {}
+    Glib::ustring get_selected_object_name();
     void appendObject(const Glib::ustring obj);
 };
 

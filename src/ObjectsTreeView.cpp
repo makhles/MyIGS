@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "ObjectsTreeView.hpp"
+#include "TransformationDialog.hpp"
 
 ObjectsTreeView::ObjectsTreeView() : m_objCount(0) {
 
@@ -21,11 +22,11 @@ ObjectsTreeView::ObjectsTreeView() : m_objCount(0) {
 
     // Fill popup menu:
     auto item = Gtk::manage(new Gtk::MenuItem("Transform", true));
-    item->signal_activate().connect(sigc::mem_fun(*this, &ObjectsTreeView::on_menu_file_popup_generic));
+    item->signal_activate().connect(sigc::mem_fun(*this, &ObjectsTreeView::on_menu_popup_transform));
     m_menuPopup.append(*item);
 
     item = Gtk::manage(new Gtk::MenuItem("Delete", true));
-    item->signal_activate().connect(sigc::mem_fun(*this, &ObjectsTreeView::on_menu_file_popup_generic));
+    item->signal_activate().connect(sigc::mem_fun(*this, &ObjectsTreeView::on_menu_popup_delete));
     m_menuPopup.append(*item);
 
     m_menuPopup.accelerate(*this);
@@ -49,18 +50,43 @@ bool ObjectsTreeView::on_button_press_event(GdkEventButton* button_event) {
 }
 
 
-void ObjectsTreeView::on_menu_file_popup_generic() {
-    std::cout << "A popup menu item was selected." << std::endl;
+void ObjectsTreeView::on_menu_popup_transform() {
 
+    Glib::ustring objName = this->get_selected_object_name();
+    
+    std::cout << "A popup menu item was selected." << std::endl;
+    std::cout << "  Selected object = " << objName << std::endl;
+
+    TransformationDialog dialog("Transformations");
+
+    int response = dialog.run();
+    if (response == Gtk::RESPONSE_OK) {
+       std::cout << "Exited with OK." << std::endl;
+    } else if (response == Gtk::RESPONSE_CANCEL) {
+        std::cout << "Exited with CANCEL." << std::endl;
+    } else if (response == Gtk::RESPONSE_DELETE_EVENT) {
+        std::cout << "Exited with DELETE_EVENT." << std::endl;
+    }
+}
+
+
+void ObjectsTreeView::on_menu_popup_delete() {
+    std::cout << "Deleting object..." << std::endl;
+}
+
+
+Glib::ustring ObjectsTreeView::get_selected_object_name() {
+    Glib::ustring objName = "";
     auto refSelection = get_selection();
     if(refSelection) {
         Gtk::TreeModel::iterator iter = refSelection->get_selected();
         if(iter) {
-            int id = (*iter)[m_columns.m_colId];
-            std::cout << "  Selected ID=" << id << std::endl;
+            objName = (*iter)[m_columns.m_colName];
         }
     }
+    return objName;
 }
+
 
 void ObjectsTreeView::appendObject(const Glib::ustring objName) {
     Gtk::TreeModel::Row row = *(m_refTreeModel->append());
