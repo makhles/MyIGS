@@ -51,5 +51,9 @@ void Wireframe::clipToWindow(WorldWindow *w) {
 
 
 void Wireframe::transform(TMatrix *matrix) {
-    
+    auto p = _vertices.begin();
+    while (p != _vertices.end()) {
+        (*p)->transform(matrix);
+        p++;
+    }
 }
