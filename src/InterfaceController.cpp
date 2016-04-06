@@ -55,7 +55,6 @@ void InterfaceController::transform(const std::string &obj) {
         shape->transform(matrix);
         this->update(shape);
         TMatrixBuilder::instance()->rollback();  // Delete transformations
-        delete matrix;
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
     }

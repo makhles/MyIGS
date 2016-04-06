@@ -21,6 +21,11 @@ TMatrixBuilder* TMatrixBuilder::instance() {
 }
 
 
+TMatrixBuilder::TMatrixBuilder() : m_globalMatrix(nullptr) {
+
+}
+
+
 void TMatrixBuilder::addTranslation(double dx, double dy) {
     TMatrix *matrix = new Translation(3, dx, dy);
     m_transformations.push_back(matrix);
@@ -59,17 +64,19 @@ void TMatrixBuilder::rollback() {
                        m_transformations.end(),
                        DeleteList<TMatrix*>());
         m_transformations.clear();
+        delete m_globalMatrix;
+        m_globalMatrix = nullptr;
     }
 }
 
 
 TMatrix* TMatrixBuilder::createMatrix() {
     auto matrix = m_transformations.cbegin();
-    TMatrix *global_matrix = new TMatrix(**matrix);  // Copies the first matrix
+    m_globalMatrix = new TMatrix(**matrix);  // Copies the first matrix
     matrix++;
     while (matrix != m_transformations.cend()) {
-        (**matrix) * (*global_matrix);  // Global matrix receives the result
+        (**matrix) * (*m_globalMatrix);  // Global matrix receives the result
         matrix++;
     }
-    return global_matrix;
+    return m_globalMatrix;
 }

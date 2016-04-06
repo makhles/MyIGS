@@ -19,8 +19,9 @@ class TMatrixBuilder {
 private:
     static TMatrixBuilder *m_pInstance;
     std::list<TMatrix*> m_transformations;
+    TMatrix *m_globalMatrix;
 
-    TMatrixBuilder() {}
+    TMatrixBuilder();
     ~TMatrixBuilder();
     TMatrixBuilder(const TMatrixBuilder &) {};
     void operator=(const TMatrixBuilder &) {};
