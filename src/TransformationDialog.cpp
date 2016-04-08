@@ -162,19 +162,16 @@ void TransformationDialog::on_my_response(int response_id) {
 
 bool TransformationDialog::translate() {
     bool success = false;
-    double dx, dy;
     std::stringstream str_dx, str_dy;
 
-    /* Get input data from dialog box entries */
+    // Get input data from dialog box entries
     str_dx << m_dxEntry->get_text().raw();
     str_dy << m_dyEntry->get_text().raw();
     
     /* Check for empty entries */
     if (str_dx.str().size() != 0 && str_dy.str().size() != 0) {
-        str_dx >> dx;
-        str_dy >> dy;
-
-        TMatrixBuilder::instance()->createTranslationMatrix(dx, dy);
+        str_dx >> m_dx;
+        str_dy >> m_dy;
         success = true;
     }
     return success;
@@ -183,19 +180,16 @@ bool TransformationDialog::translate() {
 
 bool TransformationDialog::scale() {
     bool success = false;
-    double sx, sy;
     std::stringstream str_sx, str_sy;
 
-    /* Get input data from dialog box entries */
+    // Get input data from dialog box entries
     str_sx << m_sxEntry->get_text().raw();
     str_sy << m_syEntry->get_text().raw();
     
     /* Check for empty entries */
     if (str_sx.str().size() != 0 && str_sy.str().size() != 0) {
-        str_sx >> sx;
-        str_sy >> sy;
-
-        TMatrixBuilder::instance()->createScalingMatrix(sx, sy);
+        str_sx >> m_sx;
+        str_sy >> m_sy;
         success = true;
     }
     return success;
@@ -204,13 +198,12 @@ bool TransformationDialog::scale() {
 
 bool TransformationDialog::rotate() {
     bool success = false;
-    double angle, x, y;
     std::stringstream str_angle, str_x, str_y;
 
     str_angle << m_angleEntry->get_text().raw();
 
     if (str_angle.str().size() != 0) {
-        str_angle >> angle;
+        str_angle >> m_angle;
 
         if (m_point_rbutton) {
 
@@ -219,19 +212,14 @@ bool TransformationDialog::rotate() {
 
             // Check for empty entries
             if (str_x.str().size() != 0 && str_y.str().size() != 0) {
-                str_x >> x;
-                str_y >> y;
-
-                TMatrixBuilder::instance()->createRotationMatrix(angle, x, y);
+                str_x >> m_refX;
+                str_y >> m_refY;
                 success = true;
             }
+
+        } else if (m_centroid_rbutton) {
+            success = true;
         } else {
-            x = y = 0;
-            if (m_centroid_rbutton) {
-                TMatrixBuilder::instance()->createRotationMatrix(angle);
-            } else {
-                TMatrixBuilder::instance()->createRotationMatrix(angle, x, y);
-            }
             success = true;
         }
     }

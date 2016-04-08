@@ -30,6 +30,14 @@ protected:
     bool m_point_rbutton;
     bool m_centroid_rbutton;
 
+    double m_dx;     // Translation in x
+    double m_dy;     // Translation in y
+    double m_sx;     // Scaling in x
+    double m_sy;     // Scaling in y
+    double m_angle;  // Rotation angle
+    double m_refX;   // Reference point x-coord
+    double m_refY;   // Reference point y-coord
+
     bool transform();
     bool translate();
     bool scale();
@@ -47,6 +55,14 @@ public:
     TransformationDialog(const Glib::ustring &title);
     virtual ~TransformationDialog() {}
 
+    // Getters
+    double get_dx() const {return m_dx;}
+    double get_dy() const {return m_dy;}
+    double get_sx() const {return m_sx;}
+    double get_sy() const {return m_sy;}
+    double get_refX() const {return m_refX;}
+    double get_refY() const {return m_refY;}
+    double get_angle() const {return m_angle;}
 };
 
 #endif  // TRANSFORMATION_DIALOG_HPP
