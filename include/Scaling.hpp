@@ -9,8 +9,8 @@
 
 class Scaling : public TMatrix {
 private:
-    double m_dx;  // Scaling along the x axis
-    double m_dy;  // Scaling along the y axis
+    double m_sx;  // Scaling along the x axis
+    double m_sy;  // Scaling along the y axis
 
 public:
     Scaling(unsigned order, double dx, double dy);
