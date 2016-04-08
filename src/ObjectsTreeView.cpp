@@ -13,10 +13,6 @@ ObjectsTreeView::ObjectsTreeView() : m_objCount(0) {
     m_refTreeModel = Gtk::ListStore::create(m_columns);
     set_model(m_refTreeModel);
 
-    // Fill the TreeView's model
-    this->appendObject("Object 1");
-    this->appendObject("Object 2");
-
     // Add the TreeView's view columns:
     append_column("ID", m_columns.m_colId);
     append_column("Name", m_columns.m_colName);
