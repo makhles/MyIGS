@@ -46,14 +46,10 @@ void Point::clipToWindow(WorldWindow *w) {
 
 void Point::transform(TMatrix *matrix) {
     std::vector<double> v;
-    std::cout << "x before matrix mult. = " << _x << std::endl;
-    std::cout << "y before matrix mult. = " << _y << std::endl;
     v.push_back(_x);
     v.push_back(_y);
     v.push_back(1.0);
     (*matrix) * v;  // Result is stored in v
     _x = v[0];
     _y = v[1];
-    std::cout << "x after matrix mult. = " << _x << std::endl;
-    std::cout << "y after matrix mult. = " << _y << std::endl;
 }
