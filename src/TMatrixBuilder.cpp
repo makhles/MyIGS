@@ -22,78 +22,41 @@ TMatrixBuilder* TMatrixBuilder::instance() {
 }
 
 
-TMatrixBuilder::TMatrixBuilder() : m_globalMatrix(nullptr) {
+TMatrixBuilder::TMatrixBuilder() : m_tMatrix(nullptr) {
 
 }
 
 
-void TMatrixBuilder::addTranslation(double dx, double dy) {
-    TMatrix *matrix = new Translation(3, dx, dy);
-    m_transformations.push_back(matrix);
+TMatrixBuilder::~TMatrixBuilder() {
+    this->reset();
 }
 
 
-void TMatrixBuilder::addScaling(double sx, double sy) {
-    TMatrix *matrix = new Scaling(3, sx, sy);
-    m_transformations.push_back(matrix);
+void TMatrixBuilder::createTranslationMatrix(double dx, double dy) {
+    m_tMatrix = new Translation(3, dx, dy);
 }
 
 
-void TMatrixBuilder::addRotation(double angleZ, TransformationType type) {
+void TMatrixBuilder::createScalingMatrix(double sx, double sy) {
+    m_tMatrix = new Scaling(3, sx, sy);
+}
+
+
+void TMatrixBuilder::createRotationMatrix(double angleZ, TransformationType type) {
 
 }
 
 
 // Reset all members for creating another matrix.
-// Only called if previous matrix was successfully built,
-// so there are some pointers that need to be removed from
-// the list but not deleted.
 void TMatrixBuilder::reset() {
-    m_transformations.clear();
-}
-
-
-TMatrixBuilder::~TMatrixBuilder() {
-    TMatrixBuilder::rollback();
-}
-
-
-// In case there are any dangling pointers after
-// the user has cancelled the matrix creation process.
-void TMatrixBuilder::rollback() {
-    if (!m_transformations.empty()) {
-        std::for_each (m_transformations.begin(),
-                       m_transformations.end(),
-                       DeleteList<TMatrix*>());
-        m_transformations.clear();
-        delete m_globalMatrix;
-        m_globalMatrix = nullptr;
+    if (m_tMatrix) {
+        delete m_tMatrix;
+        m_tMatrix = nullptr;
     }
 }
 
 
-TMatrix* TMatrixBuilder::createMatrix() {
-
-    // Copies the first matrix
-    auto matrix = m_transformations.cbegin();
-    m_globalMatrix = new TMatrix(**matrix);
-    matrix++;
-
-    // Temporary matrix that will receive the result of each multiplication
-    TMatrix *temp_matrix = new TMatrix(3);
-
-    while (matrix != m_transformations.cend()) {
-        m_globalMatrix->left_product(**matrix, *temp_matrix);
-        m_globalMatrix = temp_matrix;
-        matrix++;
-    }
-    return m_globalMatrix;
-}
-
-void TMatrixBuilder::addCentroid(const double x, const double y) {
-    auto matrix = m_transformations.cbegin();
-    while (matrix != m_transformations.cend()) {
-        (*matrix)->buildTMatrix(x, y);
-        matrix++;
-    }
+TMatrix* TMatrixBuilder::buildMatrix(const double x, const double y) {
+    m_tMatrix->addReferencePoint(x, y);
+    return m_tMatrix;
 }

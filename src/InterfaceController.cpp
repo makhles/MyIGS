@@ -53,14 +53,13 @@ void InterfaceController::transform(const std::string &obj) {
     Shape *shape = this->findShape(obj);
     if (shape) {
         const Coord<double> centroid = shape->getCentroid();
-        builder->addCentroid(centroid.getX(), centroid.getY());
-        TMatrix *matrix = builder->createMatrix();
+        TMatrix *matrix = builder->buildMatrix(centroid.getX(), centroid.getY());
         shape->transform(matrix);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
     }
-    builder->rollback();  // Delete transformations
+    builder->reset();
 }
 
 

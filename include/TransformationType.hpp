@@ -5,11 +5,11 @@
 #ifndef TRANSFORMATION_TYPE_HPP
 #define TRANSFORMATION_TYPE_HPP
 
-enum class TransformationType
+enum class TransformationType : int
 {
-    TRANSLATION,
-    SCALING,
-    ROTATION
+    TRANSLATION = 0,
+    SCALING = 1,
+    ROTATION = 2
 };
 
 #endif  // TRANSFORMATION_TYPE_HPP

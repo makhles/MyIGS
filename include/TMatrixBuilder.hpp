@@ -18,23 +18,22 @@ class TMatrix;
 class TMatrixBuilder {
 private:
     static TMatrixBuilder *m_pInstance;
-    std::list<TMatrix*> m_transformations;
-    TMatrix *m_globalMatrix;
+    TMatrix *m_tMatrix;
 
     TMatrixBuilder();
     ~TMatrixBuilder();
     TMatrixBuilder(const TMatrixBuilder &) {};
     void operator=(const TMatrixBuilder &) {};
-    void reset();
 
 public:
     static TMatrixBuilder* instance();
-    void addTranslation(double dx, double dy);
-    void addScaling(double sx, double sy);
-    void addRotation(double angleZ, TransformationType type);
-    void rollback();
-    void addCentroid(const double x, const double y);
-    TMatrix* createMatrix();
+
+    void createTranslationMatrix(double dx, double dy);
+    void createScalingMatrix(double sx, double sy);
+    void createRotationMatrix(double angleZ, TransformationType type);
+
+    void reset();
+    TMatrix* buildMatrix(const double x, const double y);
 };
 
 #endif  // TMATRIX_BUILDER_HPP

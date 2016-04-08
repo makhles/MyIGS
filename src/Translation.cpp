@@ -2,9 +2,7 @@
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
-#include <iostream>
 #include "Translation.hpp"
-#include "TMatrix.hpp"
 
 Translation::Translation(unsigned order, double dx, double dy) :
     TMatrix(order)
@@ -21,7 +19,6 @@ Translation::Translation(unsigned order, double dx, double dy) :
     m_matrix[2][1] = 0.0;
 }
 
-
-void Translation::buildTMatrix(const double ref_x, const double ref_y) {
-    // Nothing to do here.
+void Translation::addReferencePoint(const double x, const double y) {
+    // TODO
 }

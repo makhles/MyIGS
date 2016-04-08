@@ -15,7 +15,7 @@ private:
 public:
     Scaling(unsigned order, double dx, double dy);
     virtual ~Scaling() {}
-    void buildTMatrix(const double ref_x, const double ref_y) override;
+    void addReferencePoint(const double x, const double y) override;
 };
 
 #endif  // SCALING_HPP

@@ -33,7 +33,7 @@ public:
     // Life cycle
     CreateWireframeDialog(const Glib::ustring &title);
     ~CreateWireframeDialog() {}
-    bool buildWireframe() const { return m_totalPoints >= 3;}
+    bool buildWireframe() const { return m_totalPoints >= 3; }
 };
 
 #endif  // CREATE_WIREFRAME_DIALOG_HPP

@@ -12,7 +12,7 @@ class Translation : public TMatrix {
 public:
     Translation(unsigned order, double dx, double dy);
     virtual ~Translation() {}
-    void buildTMatrix(const double ref_x, const double ref_y) override;
+    void addReferencePoint(const double x, const double y) override;
 };
 
 #endif  // TRANSLATION_MATRIX_HPP

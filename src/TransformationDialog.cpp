@@ -5,24 +5,18 @@
 #include <iostream>
 #include "TransformationDialog.hpp"
 #include "TMatrixBuilder.hpp"
+#include "TransformationType.hpp"
 
 TransformationDialog::TransformationDialog(const Glib::ustring &title) :
     Dialog(title, true),
-    m_transformations(Gtk::manage(new Gtk::ListViewText(1))),  // 1 column
+    m_notebook(Gtk::manage(new Gtk::Notebook())),
     m_dxEntry(Gtk::manage(new Gtk::Entry())),
     m_dyEntry(Gtk::manage(new Gtk::Entry())),
     m_sxEntry(Gtk::manage(new Gtk::Entry())),
-    m_syEntry(Gtk::manage(new Gtk::Entry())),
-    m_translationsCount(0),
-    m_scalingCount(0)
+    m_syEntry(Gtk::manage(new Gtk::Entry()))
 {
     set_resizable(false);
     set_border_width(10);
-
-    Gtk::HBox * const main_box = Gtk::manage(new Gtk::HBox());
-
-    // The tabbed pane
-    Gtk::Notebook * const notebook = Gtk::manage(new Gtk::Notebook());
 
     // Transformation main boxes
     Gtk::VBox * const translation_box = Gtk::manage(new Gtk::VBox());
@@ -34,21 +28,11 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
     Gtk::Label * const scaling_label = Gtk::manage(new Gtk::Label("Scaling"));
     Gtk::Label * const rotation_label = Gtk::manage(new Gtk::Label("Rotation"));
 
-    // Transformation content
-    Gtk::Label * const label2 = Gtk::manage(new Gtk::Label("Scaling"));
-    Gtk::Label * const label3 = Gtk::manage(new Gtk::Label("Rotation"));
-
-    scaling_box->pack_start(*label2, Gtk::PACK_SHRINK, 0);
-    rotation_box->pack_start(*label3, Gtk::PACK_SHRINK, 0);
-
     // Add the pages to the tab pane
-    notebook->append_page(*translation_box, *translation_label);
-    notebook->append_page(*scaling_box, *scaling_label);
-    notebook->append_page(*rotation_box, *rotation_label);
-
-    // Add signal handler to tab switching
-    notebook->signal_switch_page().connect(sigc::mem_fun(*this, &TransformationDialog::on_notebook_switch_page));
-
+    // Pages added in the order specified in the file TransformationType.hpp
+    m_notebook->append_page(*translation_box, *translation_label);
+    m_notebook->append_page(*scaling_box, *scaling_label);
+    m_notebook->append_page(*rotation_box, *rotation_label);
 
 // --------------------------------------------------------------------------------------------- //
 // --------------------------------------- Translation ----------------------------------------- //
@@ -89,29 +73,10 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
 
 
 
-    // The left box widgets
-    m_transformations->set_column_title(0, "Transformations:");
-    Gtk::VBox * const list_box = Gtk::manage(new Gtk::VBox());
-    Gtk::ScrolledWindow * const scroll_window = Gtk::manage(new Gtk::ScrolledWindow());
-    Gtk::Button * const add_button = Gtk::manage(new Gtk::Button("Add"));
-    Gtk::Button * const rem_button = Gtk::manage(new Gtk::Button("Remove"));
-
-    // Pack the left box widgets
-    scroll_window->set_size_request(150,100);
-    scroll_window->add(*m_transformations);
-    scroll_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-    list_box->pack_start(*scroll_window, Gtk::PACK_EXPAND_WIDGET, 0);
-    list_box->pack_start(*add_button, Gtk::PACK_SHRINK, 0);
-    list_box->pack_start(*rem_button, Gtk::PACK_SHRINK, 0);
-
-    // Add signal handlers to the list box buttons
-    add_button->signal_clicked().connect(sigc::mem_fun(*this, &TransformationDialog::on_add_button_clicked));
-    rem_button->signal_clicked().connect(sigc::mem_fun(*this, &TransformationDialog::on_rem_button_clicked));
+// --------------------------------------------------------------------------------------------- //
 
     // Pack the main containers into the main box
-    get_content_area()->pack_start(*main_box);
-    main_box->pack_start(*notebook, Gtk::PACK_SHRINK, 0);
-    main_box->pack_start(*list_box, Gtk::PACK_SHRINK, 0);
+    get_content_area()->pack_start(*m_notebook, Gtk::PACK_SHRINK, 0);
 
     // Action buttons (from left to right)
     this->add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -123,39 +88,12 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title) :
 }
 
 
-void TransformationDialog::on_add_button_clicked() {
-    std::cout << "Adding transformation..." << std::endl;
-    switch (m_transformType) {
-        case TransformationType::TRANSLATION:
-        {
-            this->addTranslation();
-            break;
-        }
-        case TransformationType::SCALING:
-        {
-            this->addScaling();
-            break;
-        }
-        case TransformationType::ROTATION:
-        {
-            break;
-        }
-    }
-}
-
-
-void TransformationDialog::on_rem_button_clicked() {
-    std::cout << "Removing transformation..." << std::endl;
-}
-
-
 void TransformationDialog::on_my_response(int response_id) {
     switch (response_id) {
         case Gtk::RESPONSE_OK:
         {
             std::cout << "User pressed OK." << std::endl;
-            this->applyTransformations();
-            break;
+            this->transform();
         }
         case Gtk::RESPONSE_CANCEL:
         {
@@ -171,29 +109,7 @@ void TransformationDialog::on_my_response(int response_id) {
 }
 
 
-void TransformationDialog::on_notebook_switch_page(Gtk::Widget* page, guint page_number) {
-    std::cout << "Switched to tab with index " << page_number << std::endl;
-    switch (page_number) {
-        case 0:
-        {
-            m_transformType = TransformationType::TRANSLATION;
-            break;
-        }
-        case 1:
-        {
-            m_transformType = TransformationType::SCALING;
-            break;
-        }
-        case 2:
-        {
-            m_transformType = TransformationType::ROTATION;
-            break;
-        }
-    }
-}
-
-
-void TransformationDialog::addTranslation() {
+void TransformationDialog::translate() {
     double dx, dy;
     std::stringstream str_dx, str_dy;
 
@@ -206,15 +122,12 @@ void TransformationDialog::addTranslation() {
         str_dx >> dx;
         str_dy >> dy;
 
-        TMatrixBuilder::instance()->addTranslation(dx, dy);
-        m_transformations->append("Translation " + std::to_string(m_translationsCount));
-        m_translationsCount++;
-        std::cout << "Added new translation." << std::endl;
+        TMatrixBuilder::instance()->createTranslationMatrix(dx, dy);
     }
 }
 
 
-void TransformationDialog::addScaling() {
+void TransformationDialog::scale() {
     double sx, sy;
     std::stringstream str_sx, str_sy;
 
@@ -227,16 +140,34 @@ void TransformationDialog::addScaling() {
         str_sx >> sx;
         str_sy >> sy;
 
-        TMatrixBuilder::instance()->addScaling(sx, sy);
-        m_transformations->append("Scaling " + std::to_string(m_scalingCount));
-        m_scalingCount++;
-        std::cout << "Added new scaling." << std::endl;
+        TMatrixBuilder::instance()->createScalingMatrix(sx, sy);
     }
 }
 
 
-void TransformationDialog::applyTransformations() {
-    std::cout << "Applying all transformations." << std::endl;
-    
+void TransformationDialog::rotate() {
+
 }
 
+
+void TransformationDialog::transform() {
+    std::cout << "Adding transformation..." << std::endl;
+    switch (m_notebook->get_current_page())
+    {
+        case static_cast<int>(TransformationType::TRANSLATION) :
+        {
+            this->translate();
+            break;
+        }
+        case static_cast<int>(TransformationType::SCALING) :
+        {
+            this->scale();
+            break;
+        }
+        case static_cast<int>(TransformationType::ROTATION) :
+        {
+            this->rotate();
+            break;
+        }
+    }
+}
