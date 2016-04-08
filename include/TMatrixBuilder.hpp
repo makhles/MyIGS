@@ -30,7 +30,8 @@ public:
 
     void createTranslationMatrix(double dx, double dy);
     void createScalingMatrix(double sx, double sy);
-    void createRotationMatrix(double angleZ, TransformationType type);
+    void createRotationMatrix(double angleZ);
+    void createRotationMatrix(double angleZ, double sx, double sy);
 
     void reset();
     TMatrix* buildMatrix(const double x, const double y);

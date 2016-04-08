@@ -42,8 +42,18 @@ void TMatrixBuilder::createScalingMatrix(double sx, double sy) {
 }
 
 
-void TMatrixBuilder::createRotationMatrix(double angleZ, TransformationType type) {
+// Overloaded function to be used whern rotation is about
+// the origin or an arbitrary point
+void TMatrixBuilder::createRotationMatrix(double angleZ, double x, double y) {
+    //m_tMatrix = new Rotation(3, angleZ, x, y);
+    std::cout << "About to create rotation matrix." << std::endl;
+}
 
+
+// Overloaded function to be used whern rotation is about the centroid
+void TMatrixBuilder::createRotationMatrix(double angleZ) {
+    //m_tMatrix = new Rotation(3, angleZ);
+    std::cout << "About to create rotation matrix." << std::endl;
 }
 
 
