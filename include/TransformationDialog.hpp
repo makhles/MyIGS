@@ -22,10 +22,10 @@ protected:
     // Gtk::Entry * const m_xEntry;
     // Gtk::Entry * const m_yEntry;
 
-    void transform();
-    void translate();
-    void scale();
-    void rotate();
+    bool transform();
+    bool translate();
+    bool scale();
+    bool rotate();
 
     // Signal handlers
     void on_my_response(int response_id);

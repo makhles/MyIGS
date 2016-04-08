@@ -62,18 +62,13 @@ void ObjectsTreeView::on_menu_popup_transform() {
 
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
-       std::cout << "Exited with OK." << std::endl;
        m_controller->transform(objName.raw());
-    } else if (response == Gtk::RESPONSE_CANCEL) {
-        std::cout << "Exited with CANCEL." << std::endl;
-    } else if (response == Gtk::RESPONSE_DELETE_EVENT) {
-        std::cout << "Exited with DELETE_EVENT." << std::endl;
     }
 }
 
 
 void ObjectsTreeView::on_menu_popup_delete() {
-    std::cout << "Deleting object..." << std::endl;
+    std::cout << "Deleting object... not implemented yet." << std::endl;
 }
 
 

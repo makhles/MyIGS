@@ -93,7 +93,11 @@ void TransformationDialog::on_my_response(int response_id) {
         case Gtk::RESPONSE_OK:
         {
             std::cout << "User pressed OK." << std::endl;
-            this->transform();
+            if (!this->transform()) {
+                std::cout << "There's at least one empty Entry. Nothing to do." << std::endl;
+                signal_response().emission_stop();
+            }
+            break;
         }
         case Gtk::RESPONSE_CANCEL:
         {
@@ -109,7 +113,8 @@ void TransformationDialog::on_my_response(int response_id) {
 }
 
 
-void TransformationDialog::translate() {
+bool TransformationDialog::translate() {
+    bool success = false;
     double dx, dy;
     std::stringstream str_dx, str_dy;
 
@@ -123,11 +128,14 @@ void TransformationDialog::translate() {
         str_dy >> dy;
 
         TMatrixBuilder::instance()->createTranslationMatrix(dx, dy);
+        success = true;
     }
+    return success;
 }
 
 
-void TransformationDialog::scale() {
+bool TransformationDialog::scale() {
+    bool success = false;
     double sx, sy;
     std::stringstream str_sx, str_sy;
 
@@ -141,33 +149,37 @@ void TransformationDialog::scale() {
         str_sy >> sy;
 
         TMatrixBuilder::instance()->createScalingMatrix(sx, sy);
+        success = true;
     }
+    return success;
 }
 
 
-void TransformationDialog::rotate() {
-
+bool TransformationDialog::rotate() {
+    bool success = false;
+    return success;
 }
 
 
-void TransformationDialog::transform() {
-    std::cout << "Adding transformation..." << std::endl;
+bool TransformationDialog::transform() {
+    bool success = false;
     switch (m_notebook->get_current_page())
     {
         case static_cast<int>(TransformationType::TRANSLATION) :
         {
-            this->translate();
+            success = this->translate();
             break;
         }
         case static_cast<int>(TransformationType::SCALING) :
         {
-            this->scale();
+            success = this->scale();
             break;
         }
         case static_cast<int>(TransformationType::ROTATION) :
         {
-            this->rotate();
+            success = this->rotate();
             break;
         }
     }
+    return success;
 }
