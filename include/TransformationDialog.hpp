@@ -10,9 +10,15 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
 
+// Forward declarations
+class InterfaceController;
+
+
 class TransformationDialog : public Gtk::Dialog {
 
 protected:
+
+    InterfaceController * const m_controller;
 
     Gtk::Notebook * const m_notebook;  // The tabbed pane
 
@@ -52,7 +58,7 @@ protected:
     void on_my_response(int response_id);
 
 public:
-    TransformationDialog(const Glib::ustring &title);
+    TransformationDialog(const Glib::ustring&, InterfaceController*);
     virtual ~TransformationDialog() {}
 
     // Getters

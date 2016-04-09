@@ -14,6 +14,7 @@ class ObjectsTreeView : public Gtk::TreeView {
 protected:
     InterfaceController *m_controller;
     unsigned m_objCount;
+    std::string m_selectedObjName;
 
     // Signal handlers
     bool on_button_press_event(GdkEventButton* button_event) override;
@@ -37,12 +38,14 @@ protected:
     Glib::RefPtr<Gtk::ListStore> m_refTreeModel;
     Gtk::Menu m_menuPopup;
 
+    void set_selected_object();
+
 public:
     ObjectsTreeView();
     virtual ~ObjectsTreeView() {}
     void setInterfaceController(InterfaceController *controller) {m_controller = controller;}
-    Glib::ustring get_selected_object_name();
     void appendObject(const Glib::ustring obj);
+    std::string get_selected_object() const {return m_selectedObjName;}
 };
 
 #endif  // OBJECTS_TREE_VIEW_HPP

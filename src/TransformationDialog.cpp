@@ -4,12 +4,15 @@
 
 #include <iostream>
 #include <gtkmm/radiobutton.h>
+#include "InterfaceController.hpp"
 #include "TransformationDialog.hpp"
 #include "TMatrixBuilder.hpp"
 #include "TransformationType.hpp"
 
-TransformationDialog::TransformationDialog(const Glib::ustring &title) :
+TransformationDialog::TransformationDialog(const Glib::ustring &title,
+        InterfaceController *controller) :
     Dialog(title, true),
+    m_controller(controller),
     m_notebook(Gtk::manage(new Gtk::Notebook())),
     m_dxEntry(Gtk::manage(new Gtk::Entry())),
     m_dyEntry(Gtk::manage(new Gtk::Entry())),

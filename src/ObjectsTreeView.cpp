@@ -7,7 +7,10 @@
 #include "TransformationDialog.hpp"
 #include "InterfaceController.hpp"
 
-ObjectsTreeView::ObjectsTreeView() : m_objCount(0) {
+ObjectsTreeView::ObjectsTreeView() :
+    m_objCount(0),
+    m_selectedObjName(nullptr)
+{
 
     // Create the tree model
     m_refTreeModel = Gtk::ListStore::create(m_columns);
@@ -48,18 +51,11 @@ bool ObjectsTreeView::on_button_press_event(GdkEventButton* button_event) {
 
 
 void ObjectsTreeView::on_menu_popup_transform() {
-
-    Glib::ustring objName = this->get_selected_object_name();
-    
     std::cout << "A popup menu item was selected." << std::endl;
-    std::cout << "  Selected object = " << objName << std::endl;
+    std::cout << "  Selected object = " << m_selectedObjName << std::endl;
 
-    TransformationDialog dialog("Transformations");
-
-    int response = dialog.run();
-    if (response == Gtk::RESPONSE_OK) {
-       m_controller->transform(objName.raw());
-    }
+    TransformationDialog dialog("Transformations", m_controller);
+    dialog.run();
 }
 
 
@@ -68,16 +64,16 @@ void ObjectsTreeView::on_menu_popup_delete() {
 }
 
 
-Glib::ustring ObjectsTreeView::get_selected_object_name() {
+void ObjectsTreeView::set_selected_object() {
     Glib::ustring objName = "";
     auto refSelection = get_selection();
     if(refSelection) {
         Gtk::TreeModel::iterator iter = refSelection->get_selected();
         if(iter) {
             objName = (*iter)[m_columns.m_colName];
+            m_selectedObjName = objName.raw();
         }
     }
-    return objName;
 }
 
 
