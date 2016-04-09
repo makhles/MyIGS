@@ -8,22 +8,24 @@
 #include "WorldWindow.hpp"
 #include "ShapeType.hpp"
 
+// Forward declarations
 class MyIGS;
 class Canvas;
 class Shape;
 template <class T> class Coord;
 
+
 class InterfaceController {
 
 protected:
-    std::list<Shape*> _shapes;
-    MyIGS *_interface;
-    Canvas *_canvas;
-    WorldWindow _window;
-    int _xViewportMin; // TODO : change to getter method from Canvas
-    int _xViewportMax;
-    int _yViewportMin;
-    int _yViewportMax;
+    std::list<Shape*> m_shapes;
+    MyIGS * const m_interface;
+    Canvas * const m_canvas;
+    WorldWindow m_window;
+    int m_xViewportMin; // TODO : change to getter method from Canvas
+    int m_xViewportMax;
+    int m_yViewportMin;
+    int m_yViewportMax;
 
 public:
     InterfaceController(MyIGS *interface, Canvas *canvas);

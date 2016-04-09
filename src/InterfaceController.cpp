@@ -14,22 +14,23 @@
 
 
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
-        _interface(interface),
-        _canvas(canvas),
-        _xViewportMin(0),
-        _xViewportMax(500),
-        _yViewportMin(0),
-        _yViewportMax(500) {
+    m_interface(interface),
+    m_canvas(canvas),
+    m_xViewportMin(0),
+    m_xViewportMax(500),
+    m_yViewportMin(0),
+    m_yViewportMax(500)
+{
 }
 
 
 InterfaceController::~InterfaceController() {
-    auto shape = _shapes.begin();
-    while (shape != _shapes.end()) {
+    auto shape = m_shapes.begin();
+    while (shape != m_shapes.end()) {
         delete *shape;
         shape++;
     }
-    _shapes.clear();
+    m_shapes.clear();
 }
 
 
@@ -41,9 +42,9 @@ void InterfaceController::createShape(ShapeType type) {
 
 
 void InterfaceController::finalizeShapeCreation(Shape *shape) {
-    _canvas->addToDisplayFile(shape);
-    _shapes.push_back(shape);
-    _interface->appendObject(shape->get_name());
+    m_canvas->addToDisplayFile(shape);
+    m_shapes.push_back(shape);
+    m_interface->appendObject(shape->get_name());
     this->update(shape);
 }
 
@@ -65,8 +66,8 @@ void InterfaceController::transform(const std::string &obj) {
 
 Shape* InterfaceController::findShape(const std::string &obj) {
     Shape *shapeToReturn = nullptr;
-    auto shape = _shapes.cbegin();
-    while (shape != _shapes.cend()) {
+    auto shape = m_shapes.cbegin();
+    while (shape != m_shapes.cend()) {
         if ((*shape)->get_name() == obj) {
             shapeToReturn = *shape;
         }
@@ -77,16 +78,16 @@ Shape* InterfaceController::findShape(const std::string &obj) {
 
 
 void InterfaceController::update(Shape *shape) {
-    shape->clipToWindow(&_window);
+    shape->clipToWindow(&m_window);
     this->toViewport(shape);
-    _canvas->invalidateCanvas();
+    m_canvas->invalidateCanvas();
 }
 
 
 // Called whenever the Window is translated or rotated.
 void InterfaceController::updateShapes() {
-    auto shape = _shapes.begin();
-    while (shape != _shapes.end()) {
+    auto shape = m_shapes.begin();
+    while (shape != m_shapes.end()) {
         this->update((*shape));
         shape++;
     }
@@ -114,29 +115,29 @@ void InterfaceController::toViewport(Shape *shape) {
 
 int InterfaceController::xWindowToViewport(const double xWindow) {
     double xViewport;
-    xViewport = xWindow - _window.getXMin();
-    xViewport *= (_xViewportMax - _xViewportMin)/(_window.getXMax() - _window.getXMin());
-    xViewport += _xViewportMin;
+    xViewport = xWindow - m_window.getXMin();
+    xViewport *= (m_xViewportMax - m_xViewportMin)/(m_window.getXMax() - m_window.getXMin());
+    xViewport += m_xViewportMin;
     return (int) xViewport;
 }
 
 
 int InterfaceController::yWindowToViewport(const double yWindow) {
     double yViewport;
-    yViewport = (_yViewportMax - _yViewportMin) / (_window.getYMax() - _window.getYMin());
-    yViewport *= (yWindow - _window.getYMin());
-    yViewport = _yViewportMax - yViewport;
+    yViewport = (m_yViewportMax - m_yViewportMin) / (m_window.getYMax() - m_window.getYMin());
+    yViewport *= (yWindow - m_window.getYMin());
+    yViewport = m_yViewportMax - yViewport;
     return (int) yViewport;
 }
 
 
 void InterfaceController::moveWindow(int moveX, int moveY) {
-    _window.moveWindow(moveX, moveY);
+    m_window.moveWindow(moveX, moveY);
     this->updateShapes();
 }
 
 
 void InterfaceController::zoomWindow(int inOrOut) {
-    _window.zoomWindow(inOrOut);
+    m_window.zoomWindow(inOrOut);
     this->updateShapes();
 }
