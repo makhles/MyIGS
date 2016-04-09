@@ -12,6 +12,7 @@
 
 // Forward declarations
 class InterfaceController;
+class ObjectsTreeView;
 
 
 class TransformationDialog : public Gtk::Dialog {
@@ -19,6 +20,7 @@ class TransformationDialog : public Gtk::Dialog {
 protected:
 
     InterfaceController * const m_controller;
+    ObjectsTreeView * const m_objTreeView;
 
     Gtk::Notebook * const m_notebook;  // The tabbed pane
 
@@ -58,7 +60,7 @@ protected:
     void on_my_response(int response_id);
 
 public:
-    TransformationDialog(const Glib::ustring&, InterfaceController*);
+    TransformationDialog(const Glib::ustring&, InterfaceController*, ObjectsTreeView *);
     virtual ~TransformationDialog() {}
 
     // Getters
@@ -69,6 +71,7 @@ public:
     double get_refX() const {return m_refX;}
     double get_refY() const {return m_refY;}
     double get_angle() const {return m_angle;}
+    std::string get_selected_object() const;
 };
 
 #endif  // TRANSFORMATION_DIALOG_HPP

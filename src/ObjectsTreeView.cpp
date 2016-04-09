@@ -8,8 +8,7 @@
 #include "InterfaceController.hpp"
 
 ObjectsTreeView::ObjectsTreeView() :
-    m_objCount(0),
-    m_selectedObjName(nullptr)
+    m_objCount(0)
 {
 
     // Create the tree model
@@ -51,10 +50,12 @@ bool ObjectsTreeView::on_button_press_event(GdkEventButton* button_event) {
 
 
 void ObjectsTreeView::on_menu_popup_transform() {
+    this->set_selected_object();
+
     std::cout << "A popup menu item was selected." << std::endl;
     std::cout << "  Selected object = " << m_selectedObjName << std::endl;
 
-    TransformationDialog dialog("Transformations", m_controller);
+    TransformationDialog dialog("Transformations", m_controller, this);
     dialog.run();
 }
 

@@ -7,7 +7,7 @@
 
 
 // Constructor
-TMatrix::TMatrix(unsigned int order) : m_order(order) {
+TMatrix::TMatrix() : m_order(3) {
 
     // Resize number of rows
     m_matrix.resize(m_order);
@@ -16,13 +16,6 @@ TMatrix::TMatrix(unsigned int order) : m_order(order) {
     for (unsigned i = 0; i < m_order; i++) {
         m_matrix[i].resize(m_order, 0.0);
     }
-}
-
-
-// Copy contructor
-TMatrix::TMatrix(const TMatrix &rhs) {
-    m_matrix = rhs.m_matrix;
-    m_order = rhs.getOrder();
 }
 
 

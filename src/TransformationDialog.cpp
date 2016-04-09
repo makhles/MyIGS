@@ -6,13 +6,14 @@
 #include <gtkmm/radiobutton.h>
 #include "InterfaceController.hpp"
 #include "TransformationDialog.hpp"
-#include "TMatrixBuilder.hpp"
 #include "TransformationType.hpp"
+#include "ObjectsTreeView.hpp"
 
 TransformationDialog::TransformationDialog(const Glib::ustring &title,
-        InterfaceController *controller) :
+        InterfaceController *controller, ObjectsTreeView *objTreeView) :
     Dialog(title, true),
     m_controller(controller),
+    m_objTreeView(objTreeView),
     m_notebook(Gtk::manage(new Gtk::Notebook())),
     m_dxEntry(Gtk::manage(new Gtk::Entry())),
     m_dyEntry(Gtk::manage(new Gtk::Entry())),
@@ -176,6 +177,7 @@ bool TransformationDialog::translate() {
         str_dx >> m_dx;
         str_dy >> m_dy;
         success = true;
+        m_controller->translate(*this);
     }
     return success;
 }
@@ -194,6 +196,7 @@ bool TransformationDialog::scale() {
         str_sx >> m_sx;
         str_sy >> m_sy;
         success = true;
+        m_controller->scale(*this);
     }
     return success;
 }
@@ -218,12 +221,15 @@ bool TransformationDialog::rotate() {
                 str_x >> m_refX;
                 str_y >> m_refY;
                 success = true;
+                m_controller->rotate(*this);
             }
 
         } else if (m_centroid_rbutton) {
             success = true;
+            m_controller->rotateAboutCentroid(*this);
         } else {
             success = true;
+            m_controller->rotate(*this);
         }
     }
     return success;
@@ -296,4 +302,9 @@ void TransformationDialog::hide_reference_point() {
     m_yEntry->hide();
     m_xLabel->hide();
     m_yLabel->hide();
+}
+
+
+std::string TransformationDialog::get_selected_object() const {
+    return m_objTreeView->get_selected_object();
 }

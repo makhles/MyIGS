@@ -11,6 +11,7 @@
 // Forward declarations
 class MyIGS;
 class Canvas;
+class TransformationDialog;
 class Shape;
 template <class T> class Coord;
 
@@ -44,6 +45,10 @@ public:
     /* Transformation methods */
     void moveWindow(int moveX, int moveY);
     void zoomWindow(int inOrOut);
+    void translate(const TransformationDialog &dialog);
+    void rotateAboutCentroid(const TransformationDialog &dialog);
+    void rotate(const TransformationDialog &dialog);
+    void scale(const TransformationDialog &dialog);
 };
 
 #endif  // InterfaceController_H

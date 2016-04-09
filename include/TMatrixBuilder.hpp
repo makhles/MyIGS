@@ -13,9 +13,12 @@
 #include <string>
 #include "TransformationType.hpp"
 
+// Forward declarations
 class TMatrix;
 
+
 class TMatrixBuilder {
+
 private:
     static TMatrixBuilder *m_pInstance;
     TMatrix *m_tMatrix;
@@ -28,13 +31,11 @@ private:
 public:
     static TMatrixBuilder* instance();
 
-    void createTranslationMatrix(double dx, double dy);
-    void createScalingMatrix(double sx, double sy);
-    void createRotationMatrix(double angleZ);
-    void createRotationMatrix(double angleZ, double sx, double sy);
+    TMatrix* createTranslationMatrix(double dx, double dy);
+    TMatrix* createScalingMatrix(double sx, double sy, double x, double y);
+    TMatrix* createRotationMatrix(double angleZ, double x, double y);
 
     void reset();
-    TMatrix* buildMatrix(const double x, const double y);
 };
 
 #endif  // TMATRIX_BUILDER_HPP

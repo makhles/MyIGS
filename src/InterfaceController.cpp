@@ -4,6 +4,7 @@
 #include "InterfaceController.hpp"
 #include "MyIGS.hpp"
 #include "Canvas.hpp"
+#include "TransformationDialog.hpp"
 #include "ShapeBuilder.hpp"
 #include "Point.hpp"
 #include "Line.hpp"
@@ -49,18 +50,68 @@ void InterfaceController::finalizeShapeCreation(Shape *shape) {
 }
 
 
-void InterfaceController::transform(const std::string &obj) {
-    TMatrixBuilder *builder = TMatrixBuilder::instance();
-    Shape *shape = this->findShape(obj);
+void InterfaceController::translate(const TransformationDialog &dialog) {
+    double dx = dialog.get_dx();
+    double dy = dialog.get_dy();
+    std::string obj_name = dialog.get_selected_object();
+    Shape *shape = this->findShape(obj_name);
     if (shape) {
-        const Coord<double> centroid = shape->getCentroid();
-        TMatrix *matrix = builder->buildMatrix(centroid.getX(), centroid.getY());
+        TMatrix *matrix = TMatrixBuilder::instance()->createTranslationMatrix(dx, dy);
         shape->transform(matrix);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
     }
-    builder->reset();
+}
+
+
+void InterfaceController::scale(const TransformationDialog &dialog) {
+    double sx = dialog.get_sx();
+    double sy = dialog.get_sy();
+    std::string obj_name = dialog.get_selected_object();
+    Shape *shape = this->findShape(obj_name);
+    if (shape) {
+        const Coord<double> centroid = shape->getCentroid();
+        TMatrix *matrix = TMatrixBuilder::instance()->createScalingMatrix(
+                sx, sy, centroid.getX(), centroid.getY());
+        shape->transform(matrix);
+        this->update(shape);
+    } else {
+        std::cout << "Couldn't find specified object!" << std::endl;
+    }
+}
+
+
+void InterfaceController::rotateAboutCentroid(const TransformationDialog &dialog) {
+    double angle = dialog.get_angle();
+    std::string obj_name = dialog.get_selected_object();
+    Shape *shape = this->findShape(obj_name);
+    if (shape) {
+        const Coord<double> centroid = shape->getCentroid();
+        TMatrix *matrix = TMatrixBuilder::instance()->createRotationMatrix(
+                angle, centroid.getX(), centroid.getY());
+        shape->transform(matrix);
+        this->update(shape);
+    } else {
+        std::cout << "Couldn't find specified object!" << std::endl;
+    }
+}
+
+
+// Apply a rotation about the origin or some arbitrary point
+void InterfaceController::rotate(const TransformationDialog &dialog) {
+    double angle = dialog.get_angle();
+    double x = dialog.get_refX();
+    double y = dialog.get_refY();
+    std::string obj_name = dialog.get_selected_object();
+    Shape *shape = this->findShape(obj_name);
+    if (shape) {
+        TMatrix *matrix = TMatrixBuilder::instance()->createRotationMatrix(angle, x, y);
+        shape->transform(matrix);
+        this->update(shape);
+    } else {
+        std::cout << "Couldn't find specified object!" << std::endl;
+    }
 }
 
 
