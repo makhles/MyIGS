@@ -40,25 +40,28 @@ public:
     virtual ~InterfaceController();
     void set_canvas(Canvas &canvas);
 
+    // Shape editing
     void create_shape(ShapeType);
     void finalize_shape(Shape *shape);
-    void transform(const std::string &obj);
-    Shape* find_shape(const std::string &obj);
     void update(Shape *shape);
     void update_shapes();
     void draw_shapes(ShapeDrawer &drawer);
+    Shape* find_shape(const std::string &obj);
 
     // void to_viewport(Shape *shape);
     // int x_wWindowToViewport(const double xWindow);
     // int yWindowToViewport(const double yWindow);
 
-    // Transformation methods
+    // Window transformations
     void move_window(int moveX, int moveY);
     void scale_window(double factor);
+    void rotate_window(double angle);
+
+    // Shape transformations
     void translate(const TransformationDialog &dialog);
-    void rotate_about_centroid(const TransformationDialog &dialog);
-    void rotate(const TransformationDialog &dialog);
     void scale(const TransformationDialog &dialog);
+    void rotate(const TransformationDialog &dialog);
+    void rotate_about_centroid(const TransformationDialog &dialog);
 };
 
 #endif  // InterfaceController_H

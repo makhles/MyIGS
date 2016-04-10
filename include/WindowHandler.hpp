@@ -23,6 +23,7 @@ public:
     void set_viewport(Canvas *canvas) { m_viewport = canvas; }
     void translate_window(int rightOrLeft, int upOrDown);
     void scale_window(double factor);
+    void rotate_window(double angle);
 };
 
 #endif  // WINDOW_HANDLER_HPP

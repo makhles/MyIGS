@@ -20,3 +20,8 @@ void WindowHandler::translate_window(int rightOrLeft, int upOrDown) {
 void WindowHandler::scale_window(double factor) {
     m_window.scale(factor);
 }
+
+
+void WindowHandler::rotate_window(double angle) {
+    m_window.rotate(angle);
+}

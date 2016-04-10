@@ -28,9 +28,9 @@ private:
 
     double m_xc;
     double m_yc;
-    double m_width;          // Width in WC
-    double m_height;         // Height in WC
-    double m_angle;          // Angle to Ywc
+    double m_width;   // Width in WC
+    double m_height;  // Height in WC
+    double m_angle;   // Angle to Ywc
 
 public:
     Window();

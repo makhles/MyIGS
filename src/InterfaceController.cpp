@@ -85,21 +85,6 @@ void InterfaceController::scale(const TransformationDialog &dialog) {
 }
 
 
-void InterfaceController::rotate_about_centroid(const TransformationDialog &dialog) {
-    double angle = dialog.get_angle();
-    std::string obj_name = dialog.get_selected_object();
-    Shape *shape = this->find_shape(obj_name);
-    if (shape) {
-        const Coord<double> c = shape->get_centroid();
-        TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, c.x(), c.y());
-        shape->transform(&m_gtm);
-        this->update(shape);
-    } else {
-        std::cout << "Couldn't find specified object!" << std::endl;
-    }
-}
-
-
 // Apply a rotation about the origin or some arbitrary point
 void InterfaceController::rotate(const TransformationDialog &dialog) {
     double angle = dialog.get_angle();
@@ -117,16 +102,18 @@ void InterfaceController::rotate(const TransformationDialog &dialog) {
 }
 
 
-Shape* InterfaceController::find_shape(const std::string &obj) {
-    Shape *shapeToReturn = nullptr;
-    auto shape = m_shapes.cbegin();
-    while (shape != m_shapes.cend()) {
-        if ((*shape)->get_name() == obj) {
-            shapeToReturn = *shape;
-        }
-        shape++;
+void InterfaceController::rotate_about_centroid(const TransformationDialog &dialog) {
+    double angle = dialog.get_angle();
+    std::string obj_name = dialog.get_selected_object();
+    Shape *shape = this->find_shape(obj_name);
+    if (shape) {
+        const Coord<double> c = shape->get_centroid();
+        TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, c.x(), c.y());
+        shape->transform(&m_gtm);
+        this->update(shape);
+    } else {
+        std::cout << "Couldn't find specified object!" << std::endl;
     }
-    return shapeToReturn;
 }
 
 
@@ -202,4 +189,23 @@ void InterfaceController::move_window(int moveX, int moveY) {
 void InterfaceController::scale_window(double factor) {
     m_windowHandler.scale_window(factor);
     this->update_shapes();
+}
+
+
+void InterfaceController::rotate_window(double angle) {
+    m_windowHandler.rotate_window(angle);
+    this->update_shapes();
+}
+
+
+Shape* InterfaceController::find_shape(const std::string &obj) {
+    Shape *shapeToReturn = nullptr;
+    auto shape = m_shapes.cbegin();
+    while (shape != m_shapes.cend()) {
+        if ((*shape)->get_name() == obj) {
+            shapeToReturn = *shape;
+        }
+        shape++;
+    }
+    return shapeToReturn;
 }
