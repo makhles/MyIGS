@@ -22,6 +22,7 @@ public:
     ~WindowHandler() {}
     void set_viewport(Canvas *canvas) { m_viewport = canvas; }
     void translate_window(int rightOrLeft, int upOrDown);
+    void scale_window(double factor);
 };
 
 #endif  // WINDOW_HANDLER_HPP

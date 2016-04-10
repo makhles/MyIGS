@@ -15,3 +15,8 @@ void WindowHandler::translate_window(int rightOrLeft, int upOrDown) {
     double dy = DEVICE_DISPLACEMENT * m_window.height() / m_viewport->get_viewport_height();
     m_window.translate(rightOrLeft * dx, upOrDown * dy);
 }
+
+
+void WindowHandler::scale_window(double factor) {
+    m_window.scale(factor);
+}

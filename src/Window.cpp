@@ -46,8 +46,9 @@ void Window::translate(double dh, double dv) {
 }
 
 
-void Window::scale(double ratio) {
-    // TODO
+void Window::scale(double factor) {
+    m_width = DEFAULT_WIDTH / factor;
+    m_height = DEFAULT_HEIGHT / factor;
 }
 
 

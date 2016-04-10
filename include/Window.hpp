@@ -31,7 +31,6 @@ private:
     double m_width;          // Width in WC
     double m_height;         // Height in WC
     double m_angle;          // Angle to Ywc
-    // Coord<double> m_center;  // Window center (0,0) in WC
 
 public:
     Window();
@@ -41,11 +40,10 @@ public:
     const double width() const { return m_width; }
     const double height() const { return m_height; }
     const double angle() const { return m_width; }
-    // const Coord<double>& center() const { return m_center; }
 
     // Operations
     void translate(double dh, double dv);
-    void scale(double ratio);
+    void scale(double factor);
     void rotate(double angle);
 };
 

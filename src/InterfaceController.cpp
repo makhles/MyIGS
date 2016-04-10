@@ -200,6 +200,6 @@ void InterfaceController::move_window(int moveX, int moveY) {
 
 
 void InterfaceController::scale_window(double factor) {
-    m_window.scale(factor);
+    m_windowHandler.scale_window(factor);
     this->update_shapes();
 }
