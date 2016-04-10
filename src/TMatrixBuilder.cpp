@@ -65,3 +65,26 @@ void TMatrixBuilder::rotation_matrix(TMatrix &m, double angle, double x, double 
     m(2,1) = 0.0;
     m(2,2) = 1.0;
 }
+
+
+void TMatrixBuilder::normalizing_matrix(TMatrix &m, double dx, double dy, double sx,
+            double sy, double angle) {
+
+    double radians = angle * PI / 180.0;
+    double cos_angle = cos (radians);
+    double sin_angle = sin (radians);
+    double sx_sin = sx * sin_angle;
+    double sx_cos = sx * cos_angle;
+    double sy_sin = sy * sin_angle;
+    double sy_cos = sy * cos_angle;
+
+    m(0,0) = sx_cos;
+    m(0,1) = - sy_sin;
+    m(0,2) = sx_cos * dx - sy_sin * dy;
+    m(1,0) = sx_sin;
+    m(1,1) = sy_cos;
+    m(1,2) = sx_sin * dx + sy_cos * dy;
+    m(2,0) = 0.0;
+    m(2,1) = 0.0;
+    m(2,2) = 1.0;
+}

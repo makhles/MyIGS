@@ -10,7 +10,7 @@
 #include "Coord.hpp"
 
 void ShapeDrawer::draw(Point *point) {
-    const Coord<int> *p = (point->getViewportCoordinates())->front();
+    const Coord<int> *p = (point->viewport_coordinates())->front();
     m_cr->set_line_cap(Cairo::LINE_CAP_ROUND);
     m_cr->set_line_width(2.0);
     m_cr->move_to(p->x(), p->y());
@@ -22,7 +22,7 @@ void ShapeDrawer::draw(Line *line) {
     m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     m_cr->set_line_width(1.0);
 
-    const std::list<const Coord<int>*> *coordinates = line->getViewportCoordinates();
+    const std::list<const Coord<int>*> *coordinates = line->viewport_coordinates();
     auto coord = coordinates->cbegin();
     m_cr->move_to((*coord)->x(), (*coord)->y());
     coord++;
@@ -36,7 +36,7 @@ void ShapeDrawer::draw(Wireframe *wireframe) {
     m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     m_cr->set_line_width(1.0);
     
-    const std::list<const Coord<int>*> *coordinates = wireframe->getViewportCoordinates();
+    const std::list<const Coord<int>*> *coordinates = wireframe->viewport_coordinates();
     auto coord = coordinates->cbegin();
     x = x0 = (*coord)->x();
     y = y0 = (*coord)->y();

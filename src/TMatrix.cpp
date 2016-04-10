@@ -41,10 +41,7 @@ void TMatrix::operator*(std::vector<double> &rhs) {
     std::vector<double> result(rhs.size());
     for (unsigned i = 0; i < m_order; i++) {
         for (unsigned j = 0; j < m_order; j++) {
-            std::cout << "m_matrix[" << i << "][" << j << "] = " << m_matrix[i][j] << "       "
-                    << "rhs[" << j << "] = " << rhs[j] << std::endl;
             result[i] += this->m_matrix[i][j] * rhs[j];
-            std::cout << "result[" << i << "] = " << result[i] << std::endl;
         }
     }
     rhs = result;

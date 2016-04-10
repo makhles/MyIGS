@@ -11,23 +11,23 @@
 
 Point::Point(const std::string name, const double x, const double y) :
         Shape(name, ShapeType::POINT),
-        m_x(x),
-        m_y(y) {
+        m_xwc(x),
+        m_ywc(y) {
 }
 
 
 Point::~Point() {
-    auto coord = _wCoords.begin();
-    while (coord != _wCoords.end()) {
+    auto coord = m_wcList.begin();
+    while (coord != m_wcList.end()) {
         delete *coord;
         coord++;
     }
-    _wCoords.clear();
+    m_wcList.clear();
 }
 
 
 const Coord<double> Point::get_centroid() {
-    return Coord<double>(m_x, m_y);
+    return Coord<double>(m_xwc, m_ywc);
 }
 
 
@@ -37,21 +37,32 @@ void Point::accept(AbstractDrawer *drawer) {
 }
 
 
-void Point::clip_to_window(Window *w) {
-    std::cout << "Clipping to window." << std::endl;
-
-    /* Temporary implementation */
-    _wCoords.clear();
-    _wCoords.push_back(new Coord<double>(m_x, m_y));
+void Point::transform(TMatrix &matrix) {
+    std::vector<double> v;
+    v.push_back(m_xwc);
+    v.push_back(m_ywc);
+    v.push_back(1.0);
+    matrix * v;  // Result is stored in v
+    m_xwc = v[0];
+    m_ywc = v[1];
 }
 
 
-void Point::transform(TMatrix *matrix) {
+void Point::normalize(TMatrix &matrix) {
     std::vector<double> v;
-    v.push_back(m_x);
-    v.push_back(m_y);
+    v.push_back(m_xnc);
+    v.push_back(m_ync);
     v.push_back(1.0);
-    (*matrix) * v;  // Result is stored in v
-    m_x = v[0];
-    m_y = v[1];
+    matrix * v;  // Result is stored in v
+    m_xnc = v[0];
+    m_ync = v[1];
+}
+
+
+void Point::clip_to_window(Window &window) {
+    std::cout << "Clipping to window." << std::endl;
+
+    /* Temporary implementation */
+    m_wcList.clear();
+    m_wcList.push_back(new Coord<double>(m_xwc, m_ywc));
 }

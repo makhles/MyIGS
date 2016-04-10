@@ -1,4 +1,6 @@
-/* Line.cpp */
+// Line.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include <iostream>
 #include "Line.hpp"
@@ -10,24 +12,24 @@
 
 Line::Line(const std::string name, Point *p1, Point *p2) :
         Shape(name, ShapeType::LINE),
-        _p1(p1),
-        _p2(p2) {
+        m_p1(p1),
+        m_p2(p2) {
 }
 
 
 Line::~Line() {
-    auto coord = _wCoords.begin();
-    while (coord != _wCoords.end()) {
+    auto coord = m_wcList.begin();
+    while (coord != m_wcList.end()) {
         delete *coord;
         coord++;
     }
-    _wCoords.clear();
+    m_wcList.clear();
 }
 
 
 const Coord<double> Line::get_centroid() {
-    double x = (_p1->getX() + _p2->getX()) / 2.0;
-    double y = (_p1->getY() + _p2->getY()) / 2.0;
+    double x = (m_p1->xwc() + m_p2->xwc()) / 2.0;
+    double y = (m_p1->ywc() + m_p2->ywc()) / 2.0;
     return Coord<double>(x, y);
 }
 
@@ -38,20 +40,26 @@ void Line::accept(AbstractDrawer *drawer) {
 }
 
 
-void Line::clip_to_window(Window *w) {
+void Line::transform(TMatrix &matrix) {
+    m_p1->transform(matrix);
+    m_p2->transform(matrix);
+}
+
+
+void Line::normalize(TMatrix &matrix) {
+    m_p1->normalize(matrix);
+    m_p2->normalize(matrix);
+}
+
+
+void Line::clip_to_window(Window &window) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */
     Coord<double> *coord;
-    _wCoords.clear();
-    coord = new Coord<double>(_p1->getX(), _p1->getY());
-    _wCoords.push_back(coord);
-    coord = new Coord<double>(_p2->getX(), _p2->getY());
-    _wCoords.push_back(coord);
-}
-
-
-void Line::transform(TMatrix *matrix) {
-    _p1->transform(matrix);
-    _p2->transform(matrix);
+    m_wcList.clear();
+    coord = new Coord<double>(m_p1->xwc(), m_p1->ywc());
+    m_wcList.push_back(coord);
+    coord = new Coord<double>(m_p2->xwc(), m_p2->ywc());
+    m_wcList.push_back(coord);
 }

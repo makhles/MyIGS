@@ -37,6 +37,8 @@ public:
     ~Window();
 
     // Getters
+    const double x_center() const { return m_xc; }
+    const double y_center() const { return m_yc; }
     const double width() const { return m_width; }
     const double height() const { return m_height; }
     const double angle() const { return m_width; }

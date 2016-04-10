@@ -1,29 +1,34 @@
-/* Point.h */
+// Line.hpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
-#ifndef LINE_H
-#define LINE_H
+#ifndef LINE_HPP
+#define LINE_HPP
 
 #include "Shape.hpp"
 
+// Forward declarations
 class Point;
 
+
 class Line : public Shape {
+protected:
+    Point *m_p1;
+    Point *m_p2;
 
-    protected:
-        Point *_p1;
-        Point *_p2;
+public:
+    Line(const std::string name, Point *p1, Point *p2);
+    ~Line();
+    const Point* p1() const { return m_p1; }
+    const Point* p2() const { return m_p2; }
+    const Coord<double> get_centroid() override;
 
-    public:
-        Line(const std::string name, Point *p1, Point *p2);
-        ~Line();
-        const Point* get_p1() const {return _p1;}
-        const Point* get_p2() const {return _p2;}
-        const Coord<double> get_centroid() override;
+    // Visitor
+    void accept(AbstractDrawer *drawer);
 
-        // Visitor
-        virtual void accept(AbstractDrawer *drawer);
-
-        virtual void transform(TMatrix *matrix) override;
-        virtual void clip_to_window(Window *w) override;
+    void transform(TMatrix &matrix) override;
+    void normalize(TMatrix &matrix) override;
+    void clip_to_window(Window &window) override;
 };
-#endif
+
+#endif  // LINE_HPP

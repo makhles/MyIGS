@@ -49,7 +49,7 @@ void InterfaceController::create_shape(ShapeType type) {
 
 void InterfaceController::finalize_shape(Shape *shape) {
     m_shapes.push_back(shape);
-    m_interface->append_object(shape->get_name());
+    m_interface->append_object(shape->name());
     this->update(shape);
 }
 
@@ -61,7 +61,7 @@ void InterfaceController::translate(const TransformationDialog &dialog) {
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
         TMatrixBuilder::instance()->translation_matrix(m_gtm, dx, dy);
-        shape->transform(&m_gtm);
+        shape->transform(m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -77,7 +77,7 @@ void InterfaceController::scale(const TransformationDialog &dialog) {
     if (shape) {
         const Coord<double> c = shape->get_centroid();
         TMatrixBuilder::instance()->scaling_matrix(m_gtm, sx, sy, c.x(), c.y());
-        shape->transform(&m_gtm);
+        shape->transform(m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -94,7 +94,7 @@ void InterfaceController::rotate(const TransformationDialog &dialog) {
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
         TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, x, y);
-        shape->transform(&m_gtm);
+        shape->transform(m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -109,7 +109,7 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
     if (shape) {
         const Coord<double> c = shape->get_centroid();
         TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, c.x(), c.y());
-        shape->transform(&m_gtm);
+        shape->transform(m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -118,7 +118,7 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
 
 
 void InterfaceController::update(Shape *shape) {
-    shape->clip_to_window(&m_window);
+    shape->clip_to_window(m_window);
     // this->toViewport(shape);
     m_canvas->invalidate();
 }
@@ -138,6 +138,23 @@ void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
         (*shape)->accept(&drawer);
+        shape++;
+    }
+}
+
+
+void InterfaceController::normalize_shapes() {
+    double dx = m_window.x_center();
+    double dy = m_window.y_center();
+    double sx = 2.0 / m_window.width();
+    double sy = 2.0 / m_window.height();
+    double angle = m_window.angle();
+
+    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
+
+    auto shape = m_shapes.begin();
+    while (shape != m_shapes.end()) {
+        (*shape)->normalize(m_gtm);
         shape++;
     }
 }
@@ -202,7 +219,7 @@ Shape* InterfaceController::find_shape(const std::string &obj) {
     Shape *shapeToReturn = nullptr;
     auto shape = m_shapes.cbegin();
     while (shape != m_shapes.cend()) {
-        if ((*shape)->get_name() == obj) {
+        if ((*shape)->name() == obj) {
             shapeToReturn = *shape;
         }
         shape++;

@@ -28,6 +28,8 @@ public:
     void translation_matrix(TMatrix &m, double dx, double dy);
     void scaling_matrix(TMatrix &m, double sx, double sy, double x, double y);
     void rotation_matrix(TMatrix &m, double angleZ, double x, double y);
+    void normalizing_matrix(TMatrix &m, double dx, double dy, double sx,
+            double sy, double angle);
 };
 
 #endif  // TMATRIX_BUILDER_HPP

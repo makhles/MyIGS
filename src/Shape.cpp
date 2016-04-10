@@ -1,17 +1,19 @@
-/* Shape.cpp */
+// Shape.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include "Shape.hpp"
 #include "Window.hpp"
 
 Shape::Shape(const std::string name, const ShapeType type) :
-        _name(name),
-        _type(type) {
+        m_name(name),
+        m_type(type) {
 }
 
-void Shape::clearViewportCoordinates() {
-    _vpCoords.clear();
+void Shape::clear_viewport_coordinates() {
+    m_vpList.clear();
 }
 
-void Shape::addViewportCoordinate(const Coord<int> *coord) {
-    _vpCoords.push_back(coord);
+void Shape::add_viewport_coordinate(const Coord<int> *coord) {
+    m_vpList.push_back(coord);
 }

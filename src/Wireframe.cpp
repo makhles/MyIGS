@@ -1,4 +1,6 @@
-/* Wireframe.cpp */
+// Wireframe.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include <iostream>
 #include "Wireframe.hpp"
@@ -7,44 +9,45 @@
 #include "Window.hpp"
 #include "AbstractDrawer.hpp"
 
+
 Wireframe::Wireframe(const std::string name) :
         Shape(name, ShapeType::WIREFRAME) {
 }
 
 
 Wireframe::~Wireframe() {
-    auto coord = _wCoords.begin();
-    while (coord != _wCoords.end()) {
+    auto coord = m_wcList.begin();
+    while (coord != m_wcList.end()) {
         delete *coord;
         coord++;
     }
-    _wCoords.clear();
-    auto point = _vertices.begin();
-    while (point != _vertices.end()) {
+    m_wcList.clear();
+    auto point = m_vertices.begin();
+    while (point != m_vertices.end()) {
         delete *point;
         point++;
     }
-    _vertices.clear();
+    m_vertices.clear();
 }
 
 
 const Coord<double> Wireframe::get_centroid() {
     double x = 0.0;
     double y = 0.0;
-    auto p = _vertices.begin();
-    while (p != _vertices.end()) {
-        x += (*p)->getX();
-        y += (*p)->getY();
+    auto p = m_vertices.begin();
+    while (p != m_vertices.end()) {
+        x += (*p)->xwc();
+        y += (*p)->ywc();
         p++;
     }
-    x = x / (double) _vertices.size();
-    y = y / (double) _vertices.size();
+    x = x / (double) m_vertices.size();
+    y = y / (double) m_vertices.size();
     return Coord<double>(x, y);
 }
 
 
 void Wireframe::add_point(Point *point) {
-    _vertices.push_back(point);
+    m_vertices.push_back(point);
 }
 
 
@@ -54,25 +57,34 @@ void Wireframe::accept(AbstractDrawer *drawer) {
 }
 
 
-void Wireframe::clip_to_window(Window *w) {
-    std::cout << "Clipping to window." << std::endl;
-
-    /* Temporary implementation */
-    Coord<double> *coord;
-    _wCoords.clear();
-    auto p = _vertices.begin();
-    while (p != _vertices.end()) {
-        coord = new Coord<double>((*p)->getX(), (*p)->getY());
-        _wCoords.push_back(coord);
+void Wireframe::transform(TMatrix &matrix) {
+    auto p = m_vertices.begin();
+    while (p != m_vertices.end()) {
+        (*p)->transform(matrix);
         p++;
     }
 }
 
 
-void Wireframe::transform(TMatrix *matrix) {
-    auto p = _vertices.begin();
-    while (p != _vertices.end()) {
-        (*p)->transform(matrix);
+void Wireframe::normalize(TMatrix &matrix) {
+    auto p = m_vertices.begin();
+    while (p != m_vertices.end()) {
+        (*p)->normalize(matrix);
+        p++;
+    }
+}
+
+
+void Wireframe::clip_to_window(Window &window) {
+    std::cout << "Clipping to window." << std::endl;
+
+    /* Temporary implementation */
+    Coord<double> *coord;
+    m_wcList.clear();
+    auto p = m_vertices.begin();
+    while (p != m_vertices.end()) {
+        coord = new Coord<double>((*p)->xwc(), (*p)->ywc());
+        m_wcList.push_back(coord);
         p++;
     }
 }
