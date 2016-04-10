@@ -1,4 +1,6 @@
-/* ShapeDrawer.cpp */
+// ShapeDrawer.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include <iostream>
 #include "ShapeDrawer.hpp"
@@ -9,42 +11,45 @@
 
 void ShapeDrawer::draw(Point *point) {
     const Coord<int> *p = (point->getViewportCoordinates())->front();
-    _cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-    _cr->set_line_width(2.0);
-    _cr->move_to(p->getX(), p->getY());
-    _cr->line_to(p->getX(), p->getY());
+    m_cr->set_line_cap(Cairo::LINE_CAP_ROUND);
+    m_cr->set_line_width(2.0);
+    m_cr->move_to(p->x(), p->y());
+    m_cr->line_to(p->x(), p->y());
+    m_cr->stroke();
 }
 
 void ShapeDrawer::draw(Line *line) {
-    _cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-    _cr->set_line_width(1.0);
+    m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+    m_cr->set_line_width(1.0);
 
     const std::list<const Coord<int>*> *coordinates = line->getViewportCoordinates();
     auto coord = coordinates->cbegin();
-    _cr->move_to((*coord)->getX(), (*coord)->getY());
+    m_cr->move_to((*coord)->x(), (*coord)->y());
     coord++;
-    _cr->line_to((*coord)->getX(), (*coord)->getY());
+    m_cr->line_to((*coord)->x(), (*coord)->y());
+    m_cr->stroke();
 }
 
 void ShapeDrawer::draw(Wireframe *wireframe) {
     int x, y, x0, y0;
 
-    _cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-    _cr->set_line_width(1.0);
+    m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+    m_cr->set_line_width(1.0);
     
     const std::list<const Coord<int>*> *coordinates = wireframe->getViewportCoordinates();
     auto coord = coordinates->cbegin();
-    x = x0 = (*coord)->getX();
-    y = y0 = (*coord)->getY();
-    _cr->move_to(x,y);
+    x = x0 = (*coord)->x();
+    y = y0 = (*coord)->y();
+    m_cr->move_to(x,y);
     coord++;
     while (coord != coordinates->cend()) {
-        x = (*coord)->getX();
-        y = (*coord)->getY();
+        x = (*coord)->x();
+        y = (*coord)->y();
         std::cout << "line_to -> (" << x << "," << y << ")" << std::endl;
-        _cr->line_to(x,y);
+        m_cr->line_to(x,y);
         coord++;
     }
     // Go back to first point
-    _cr->line_to(x0,y0);
+    m_cr->line_to(x0,y0);
+    m_cr->stroke();
 }

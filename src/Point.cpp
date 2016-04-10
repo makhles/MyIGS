@@ -1,4 +1,6 @@
-/* Point.cpp */
+// Point.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include <iostream>
 #include "Point.hpp"
@@ -9,8 +11,8 @@
 
 Point::Point(const std::string name, const double x, const double y) :
         Shape(name, ShapeType::POINT),
-        _x(x),
-        _y(y) {
+        m_x(x),
+        m_y(y) {
 }
 
 
@@ -24,8 +26,8 @@ Point::~Point() {
 }
 
 
-const Coord<double> Point::getCentroid() {
-    return Coord<double>(_x, _y);
+const Coord<double> Point::get_centroid() {
+    return Coord<double>(m_x, m_y);
 }
 
 
@@ -35,21 +37,21 @@ void Point::accept(AbstractDrawer *drawer) {
 }
 
 
-void Point::clipToWindow(Window *w) {
+void Point::clip_to_window(Window *w) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */
     _wCoords.clear();
-    _wCoords.push_back(new Coord<double>(_x, _y));
+    _wCoords.push_back(new Coord<double>(m_x, m_y));
 }
 
 
 void Point::transform(TMatrix *matrix) {
     std::vector<double> v;
-    v.push_back(_x);
-    v.push_back(_y);
+    v.push_back(m_x);
+    v.push_back(m_y);
     v.push_back(1.0);
     (*matrix) * v;  // Result is stored in v
-    _x = v[0];
-    _y = v[1];
+    m_x = v[0];
+    m_y = v[1];
 }

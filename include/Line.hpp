@@ -18,12 +18,12 @@ class Line : public Shape {
         ~Line();
         const Point* get_p1() const {return _p1;}
         const Point* get_p2() const {return _p2;}
-        const Coord<double> getCentroid() override;
+        const Coord<double> get_centroid() override;
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer);
 
         virtual void transform(TMatrix *matrix) override;
-        virtual void clipToWindow(Window *w) override;
+        virtual void clip_to_window(Window *w) override;
 };
 #endif

@@ -25,7 +25,7 @@ Line::~Line() {
 }
 
 
-const Coord<double> Line::getCentroid() {
+const Coord<double> Line::get_centroid() {
     double x = (_p1->getX() + _p2->getX()) / 2.0;
     double y = (_p1->getY() + _p2->getY()) / 2.0;
     return Coord<double>(x, y);
@@ -38,7 +38,7 @@ void Line::accept(AbstractDrawer *drawer) {
 }
 
 
-void Line::clipToWindow(Window *w) {
+void Line::clip_to_window(Window *w) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */

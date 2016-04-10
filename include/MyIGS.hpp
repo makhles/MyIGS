@@ -17,25 +17,26 @@ protected:
     ObjectsTreeView * const m_objectsView;
     OutputBoard * const m_board;
     Canvas * const m_canvas;
+    Glib::RefPtr<Gtk::Adjustment> m_scaleAdjustment;
+
     InterfaceController * m_controller;
 
     // Control
-    void zoomWindowIn();
-    void zoomWindowOut();
-    void moveWindowUp();
-    void moveWindowRight();
-    void moveWindowDown();
-    void moveWindowLeft();
+    void on_window_adjustment_value_changed();
+    void move_window_up();
+    void move_window_right();
+    void move_window_down();
+    void move_window_left();
 
     // Objects creation
-    void createPoint();
-    void createLine();
-    void createWireframe();
+    void create_point();
+    void create_line();
+    void create_wireframe();
 
 public:
     MyIGS();
     virtual ~MyIGS();
-    void appendObject(const Glib::ustring obj);
+    void append_object(const Glib::ustring obj);
 };
 
 #endif  // MYIGS_H

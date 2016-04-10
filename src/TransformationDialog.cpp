@@ -226,7 +226,7 @@ bool TransformationDialog::rotate() {
 
         } else if (m_centroid_rbutton) {
             success = true;
-            m_controller->rotateAboutCentroid(*this);
+            m_controller->rotate_about_centroid(*this);
         } else {
             success = true;
             m_controller->rotate(*this);

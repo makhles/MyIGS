@@ -31,17 +31,17 @@ private:
     ShapeBuilder(const ShapeBuilder &) {};
     void operator=(const ShapeBuilder &) {};
     void reset();
-    Point* createPoint();
-    Line* createLine();
-    Wireframe* createWireframe();
+    Point* create_point();
+    Line* create_line();
+    Wireframe* create_wireframe();
 
 public:
     static ShapeBuilder* instance();
-    void addName(const std::string &);
-    void addPoint(const double, const double);
-    void addPoint(const std::string &, const double, const double);
+    void add_name(const std::string &);
+    void add_point(const double, const double);
+    void add_point(const std::string &, const double, const double);
     void rollback();
-    Shape* createShape(ShapeType);
+    Shape* create_shape(ShapeType);
 };
 
 #endif  // SHAPE_BUILDER_HPP

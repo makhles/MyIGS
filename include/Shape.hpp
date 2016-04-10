@@ -29,7 +29,7 @@ class Shape {
         ShapeType get_type() const {return _type;}
         const std::list<Coord<double>*>* getWindowCoordinates() const {return &_wCoords;}
         const std::list<const Coord<int>*>* getViewportCoordinates() const {return &_vpCoords;}
-        virtual const Coord<double> getCentroid() = 0;
+        virtual const Coord<double> get_centroid() = 0;
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer) = 0;
@@ -37,7 +37,7 @@ class Shape {
         virtual void transform(TMatrix *matrix) = 0;
         void clearViewportCoordinates();
         void addViewportCoordinate(const Coord<int> *coord);
-        virtual void clipToWindow(Window *w) = 0;
+        virtual void clip_to_window(Window *w) = 0;
 };
 
 #endif  // SHAPE_H

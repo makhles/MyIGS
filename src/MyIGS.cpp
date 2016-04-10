@@ -13,7 +13,8 @@
 MyIGS::MyIGS() :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_board(Gtk::manage(new OutputBoard())),
-    m_canvas(Gtk::manage(new Canvas()))
+    m_canvas(Gtk::manage(new Canvas())),
+    m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25))
 {
     m_controller = new InterfaceController(this, m_canvas);
     m_objectsView->setInterfaceController(m_controller);
@@ -25,7 +26,7 @@ MyIGS::MyIGS() :
 
     // Main widgets
     Gtk::HBox  * const mainBox = Gtk::manage(new Gtk::HBox());
-    Gtk::Frame * const controlFrame = Gtk::manage(new Gtk::Frame("Control"));
+    Gtk::Frame * const controlFrame = Gtk::manage(new Gtk::Frame("Window control"));
     Gtk::Frame * const viewportFrame = Gtk::manage(new Gtk::Frame("Viewport"));
     Gtk::Frame * const objectsFrame = Gtk::manage(new Gtk::Frame("Objects"));
 
@@ -37,37 +38,27 @@ MyIGS::MyIGS() :
     objectsFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
 
 // --------------------------------------------------------------------------------------------- //
-// ---------------------------------------- Zoom Frame ----------------------------------------- //
+// ------------------------------------- Control Frame ----------------------------------------- //
 
     Gtk::VBox * const controlBox = Gtk::manage(new Gtk::VBox());
     Gtk::Frame * const scaleFrame = Gtk::manage(new Gtk::Frame("Scaling"));
-    Gtk::Frame * const translateFrame = Gtk::manage(new Gtk::Frame("Translation"));
-    Gtk::HBox * const scaleBox = Gtk::manage(new Gtk::HBox());
-    Gtk::Grid * const scaleGrid = Gtk::manage(new Gtk::Grid());
+    Gtk::Frame * const moveFrame = Gtk::manage(new Gtk::Frame("Translation"));
 
+    controlBox->pack_start(*moveFrame, Gtk::PACK_SHRINK, 1);
     controlBox->pack_start(*scaleFrame, Gtk::PACK_SHRINK, 1);
-    controlBox->pack_start(*translateFrame, Gtk::PACK_SHRINK, 1);
+
+    // Scale
+    m_scaleAdjustment->signal_value_changed().connect(sigc::mem_fun(*this,
+            &MyIGS::on_window_adjustment_value_changed));
+    Gtk::Scale * const windowScale = Gtk::manage(new Gtk::Scale(m_scaleAdjustment));
+    windowScale->set_digits(2);
+    windowScale->set_value_pos(Gtk::POS_BOTTOM);
+    windowScale->set_draw_value();
 
     // Scaling frame
     scaleFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     scaleFrame->set_border_width(5);
-    scaleFrame->add(*scaleBox);
-
-    // Translation frame
-    translateFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
-    translateFrame->set_border_width(5);
-    translateFrame->add(*scaleGrid);
-
-    // Scale buttons
-    Gtk::Button * const scaleOutButton = Gtk::manage(new Gtk::Button("Out"));
-    Gtk::Button * const scaleInButton = Gtk::manage(new Gtk::Button("In"));
-
-    // Scale buttons signals
-    scaleOutButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowOut));
-    scaleInButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::zoomWindowIn));
-
-    scaleBox->pack_start(*scaleOutButton, Gtk::PACK_EXPAND_WIDGET, 1);
-    scaleBox->pack_start(*scaleInButton, Gtk::PACK_EXPAND_WIDGET, 1);
+    scaleFrame->add(*windowScale);
 
     // Translation buttons
     Gtk::Button * const moveUpButton = Gtk::manage(new Gtk::Button("Up"));
@@ -76,16 +67,22 @@ MyIGS::MyIGS() :
     Gtk::Button * const moveLeftButton = Gtk::manage(new Gtk::Button("Left"));
 
     // Translation buttons signals
-    moveUpButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowUp));
-    moveRightButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowRight));
-    moveDownButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowDown));
-    moveLeftButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::moveWindowLeft));
+    moveUpButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::move_window_up));
+    moveRightButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::move_window_right));
+    moveDownButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::move_window_down));
+    moveLeftButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::move_window_left));
 
-    scaleGrid->attach(*moveUpButton,2,1,1,1);
-    scaleGrid->attach(*moveRightButton,3,2,1,1);
-    scaleGrid->attach(*moveDownButton,2,3,1,1);
-    scaleGrid->attach(*moveLeftButton,1,2,1,1);
+    Gtk::Grid * const moveGrid = Gtk::manage(new Gtk::Grid());
+    moveGrid->attach(*moveUpButton,2,1,1,1);
+    moveGrid->attach(*moveRightButton,3,2,1,1);
+    moveGrid->attach(*moveDownButton,2,3,1,1);
+    moveGrid->attach(*moveLeftButton,1,2,1,1);
     
+    // Translation frame
+    moveFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    moveFrame->set_border_width(5);
+    moveFrame->add(*moveGrid);
+
     controlFrame->add(*controlBox);
 
 // --------------------------------------------------------------------------------------------- //
@@ -104,9 +101,9 @@ MyIGS::MyIGS() :
     Gtk::Button * const createLineButton = Gtk::manage(new Gtk::Button("Line"));
     Gtk::Button * const createWireframeButton = Gtk::manage(new Gtk::Button("Wireframe"));
 
-    createPointButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createPoint));
-    createLineButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createLine));
-    createWireframeButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::createWireframe));
+    createPointButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_point));
+    createLineButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_line));
+    createWireframeButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_wireframe));
 
     Gtk::VBox * const objectsBox = Gtk::manage(new Gtk::VBox());
     Gtk::Label * const labelCreateObjects = Gtk::manage(new Gtk::Label("Create a new object:"));
@@ -138,66 +135,61 @@ MyIGS::~MyIGS() {
 }
 
 
-void MyIGS::zoomWindowIn() {
-    m_controller->zoomWindow(1);
+void MyIGS::on_window_adjustment_value_changed() {
+    m_controller->scale_window(m_scaleAdjustment->get_value());
 }
 
 
-void MyIGS::zoomWindowOut() {
-    m_controller->zoomWindow(-1);
+void MyIGS::move_window_up() {
+    m_controller->move_window(0,1);
 }
 
 
-void MyIGS::moveWindowUp() {
-    m_controller->moveWindow(0,1);
+void MyIGS::move_window_right() {
+    m_controller->move_window(1,0);
 }
 
 
-void MyIGS::moveWindowRight() {
-    m_controller->moveWindow(1,0);
+void MyIGS::move_window_down() {
+    m_controller->move_window(0,-1);
 }
 
 
-void MyIGS::moveWindowDown() {
-    m_controller->moveWindow(0,-1);
+void MyIGS::move_window_left() {
+    m_controller->move_window(-1,0);
 }
 
 
-void MyIGS::moveWindowLeft() {
-    m_controller->moveWindow(-1,0);
-}
-
-
-void MyIGS::createPoint() {
+void MyIGS::create_point() {
     std::cout << "Creating point..." << std::endl;
     CreatePointDialog dialog("Create a new point");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
-       m_controller->createShape(ShapeType::POINT);
+       m_controller->create_shape(ShapeType::POINT);
     }
 }
 
 
-void MyIGS::createLine() {
+void MyIGS::create_line() {
     std::cout << "Creating line..." << std::endl;
     CreateLineDialog dialog("Create a new line");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
-       m_controller->createShape(ShapeType::LINE);
+       m_controller->create_shape(ShapeType::LINE);
     }
 }
 
 
-void MyIGS::createWireframe() {
+void MyIGS::create_wireframe() {
     std::cout << "Creating wireframe..." << std::endl;
     CreateWireframeDialog dialog("Create a new wireframe");
     int response = dialog.run();
-    if (response == Gtk::RESPONSE_OK && dialog.buildWireframe()) {
-       m_controller->createShape(ShapeType::WIREFRAME);
+    if (response == Gtk::RESPONSE_OK && dialog.build_wireframe()) {
+       m_controller->create_shape(ShapeType::WIREFRAME);
     }
 }
 
 
-void MyIGS::appendObject(const Glib::ustring obj) {
-    m_objectsView->appendObject(obj);
+void MyIGS::append_object(const Glib::ustring obj) {
+    m_objectsView->append_object(obj);
 }

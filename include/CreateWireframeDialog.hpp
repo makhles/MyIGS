@@ -13,10 +13,8 @@ namespace Gtk {
     class Entry;
 }
 
-class CreateWireframeDialog : public Gtk::Dialog
-{
+class CreateWireframeDialog : public Gtk::Dialog {
 private:
-
     // Attribute
     int m_totalPoints;
     Gtk::Label * const m_nameLabel;
@@ -25,15 +23,14 @@ private:
 
     // Signal handler
     void on_my_response(int response_id);
-    void addPoint();
-    void createShape();
+    void add_point();
+    void create_shape();
 
 public:
-
     // Life cycle
     CreateWireframeDialog(const Glib::ustring &title);
     ~CreateWireframeDialog() {}
-    bool buildWireframe() const { return m_totalPoints >= 3; }
+    bool build_wireframe() const { return m_totalPoints >= 3; }
 };
 
 #endif  // CREATE_WIREFRAME_DIALOG_HPP

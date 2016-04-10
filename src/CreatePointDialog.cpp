@@ -11,30 +11,30 @@
 
 CreatePointDialog::CreatePointDialog(const Glib::ustring & title) :
     Dialog(title, true),
-    _nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
-    _xLabel(Gtk::manage(new Gtk::Label("x: "))),
-    _yLabel(Gtk::manage(new Gtk::Label("y: "))),
-    _nameEntry(Gtk::manage(new Gtk::Entry())),
-    _xEntry(Gtk::manage(new Gtk::Entry())),
-    _yEntry(Gtk::manage(new Gtk::Entry()))
+    m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
+    m_xLabel(Gtk::manage(new Gtk::Label("x: "))),
+    m_yLabel(Gtk::manage(new Gtk::Label("y: "))),
+    m_nameEntry(Gtk::manage(new Gtk::Entry())),
+    m_xEntry(Gtk::manage(new Gtk::Entry())),
+    m_yEntry(Gtk::manage(new Gtk::Entry()))
 {
     set_resizable(false);
     set_border_width(10);
 
     /* Entries size */
-    _xEntry->set_width_chars(6);
-    _yEntry->set_width_chars(6);
+    m_xEntry->set_width_chars(6);
+    m_yEntry->set_width_chars(6);
     
     Gtk::HBox * const name_hbox = Gtk::manage(new Gtk::HBox());
-    name_hbox->pack_start(*_nameLabel, Gtk::PACK_SHRINK, 0);
-    name_hbox->pack_start(*_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
+    name_hbox->pack_start(*m_nameLabel, Gtk::PACK_SHRINK, 0);
+    name_hbox->pack_start(*m_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
     name_hbox->set_homogeneous(false);
 
     Gtk::HBox * const coord_hbox = Gtk::manage(new Gtk::HBox());
-    coord_hbox->pack_start(*_xLabel, Gtk::PACK_EXPAND_PADDING, 0);
-    coord_hbox->pack_start(*_xEntry, Gtk::PACK_SHRINK, 0);
-    coord_hbox->pack_start(*_yLabel, Gtk::PACK_EXPAND_PADDING, 0);
-    coord_hbox->pack_start(*_yEntry, Gtk::PACK_SHRINK, 0);
+    coord_hbox->pack_start(*m_xLabel, Gtk::PACK_EXPAND_PADDING, 0);
+    coord_hbox->pack_start(*m_xEntry, Gtk::PACK_SHRINK, 0);
+    coord_hbox->pack_start(*m_yLabel, Gtk::PACK_EXPAND_PADDING, 0);
+    coord_hbox->pack_start(*m_yEntry, Gtk::PACK_SHRINK, 0);
     coord_hbox->set_homogeneous(false);
 
     get_content_area()->pack_start(*name_hbox);
@@ -59,9 +59,9 @@ void CreatePointDialog::on_my_response(int response_id) {
             std::stringstream stringX, stringY;
 
             /* Get input data from dialog box entries */
-            name = _nameEntry->get_text().raw();
-            stringX << _xEntry->get_text().raw();
-            stringY << _yEntry->get_text().raw();
+            name = m_nameEntry->get_text().raw();
+            stringX << m_xEntry->get_text().raw();
+            stringY << m_yEntry->get_text().raw();
             
             /* Check for empty entries */
             if (!name.empty() && stringX.str().size() != 0 && stringY.str().size() != 0) {
@@ -69,7 +69,7 @@ void CreatePointDialog::on_my_response(int response_id) {
                 stringY >> y;
 
                 /* Create the new point */
-                ShapeBuilder::instance()->addPoint(name, x, y);
+                ShapeBuilder::instance()->add_point(name, x, y);
                 std::cout << "Added point to ShapeBuilder." << std::endl;
             }
             break;

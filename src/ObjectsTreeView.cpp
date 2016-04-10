@@ -78,7 +78,7 @@ void ObjectsTreeView::set_selected_object() {
 }
 
 
-void ObjectsTreeView::appendObject(const Glib::ustring objName) {
+void ObjectsTreeView::append_object(const Glib::ustring objName) {
     Gtk::TreeModel::Row row = *(m_refTreeModel->append());
     row[m_columns.m_colId] = m_objCount++;
     row[m_columns.m_colName] = objName;

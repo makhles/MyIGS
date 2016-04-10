@@ -28,7 +28,7 @@ Wireframe::~Wireframe() {
 }
 
 
-const Coord<double> Wireframe::getCentroid() {
+const Coord<double> Wireframe::get_centroid() {
     double x = 0.0;
     double y = 0.0;
     auto p = _vertices.begin();
@@ -43,7 +43,7 @@ const Coord<double> Wireframe::getCentroid() {
 }
 
 
-void Wireframe::addPoint(Point *point) {
+void Wireframe::add_point(Point *point) {
     _vertices.push_back(point);
 }
 
@@ -54,7 +54,7 @@ void Wireframe::accept(AbstractDrawer *drawer) {
 }
 
 
-void Wireframe::clipToWindow(Window *w) {
+void Wireframe::clip_to_window(Window *w) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */

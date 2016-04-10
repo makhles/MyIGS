@@ -44,7 +44,7 @@ public:
     ObjectsTreeView();
     virtual ~ObjectsTreeView() {}
     void setInterfaceController(InterfaceController *controller) {m_controller = controller;}
-    void appendObject(const Glib::ustring obj);
+    void append_object(const Glib::ustring obj);
     std::string get_selected_object() const {return m_selectedObjName;}
 };
 

@@ -1,9 +1,12 @@
-/* Canvas.cpp */
+// Canvas.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include <cairomm/context.h>
 #include <iostream>
 #include "Canvas.hpp"
 #include "Shape.hpp"
+#include "InterfaceController.hpp"
 
 Canvas::Canvas() {
     set_size_request(500,500);
@@ -12,14 +15,13 @@ Canvas::Canvas() {
 Canvas::~Canvas() {
 }
 
-bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context> &cr) {
-    this->drawCenterLines(cr);
-    std::cout << "Drawing shapes..." << std::endl;
-    this->drawShapes(cr);
+bool Canvas::on_draw(const CairoCtx &cr) {
+    this->draw_center_lines(cr);
+    this->draw_shapes(cr);
     return true;
 }
 
-void Canvas::drawCenterLines(const Cairo::RefPtr<Cairo::Context> &cr) {
+void Canvas::draw_center_lines(const CairoCtx &cr) {
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();
     const int height = allocation.get_height();
@@ -43,21 +45,16 @@ void Canvas::drawCenterLines(const Cairo::RefPtr<Cairo::Context> &cr) {
     cr->unset_dash();
 }
 
-void Canvas::drawShapes(const Cairo::RefPtr<Cairo::Context> &cr) {
-    _drawer.setCairoContext(cr);
-    auto shape = _displayFile.begin();
-    while (shape != _displayFile.end()) {
-        (*shape)->accept(&_drawer);
-        shape++;
-        cr->stroke();
-    }
+void Canvas::draw_shapes(const CairoCtx &cr) {
+    m_drawer.set_cairo_context(cr);
+    m_controller->draw_shapes(m_drawer);
 }
 
-void Canvas::addToDisplayFile(Shape *shape) {
-    _displayFile.push_back(shape);
-}
+// void Canvas::addToDisplayFile(Shape *shape) {
+//     _displayFile.push_back(shape);
+// }
 
-void Canvas::invalidateCanvas() {
+void Canvas::invalidate() {
     std::cout << "Invalidating canvas..." << std::endl;
     auto win = get_window();
     if (win) {

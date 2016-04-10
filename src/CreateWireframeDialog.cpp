@@ -1,4 +1,4 @@
-// CreateWireframeDialog.hpp
+// CreateWireframeDialog.cpp
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
@@ -28,9 +28,9 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     get_content_area()->pack_start(*name_hbox);
 
     // Entries for the coordinates
-    this->addPoint();
-    this->addPoint();
-    this->addPoint();
+    this->add_point();
+    this->add_point();
+    this->add_point();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -47,13 +47,13 @@ void CreateWireframeDialog::on_my_response(int response_id) {
     switch (response_id) {
         case Gtk::RESPONSE_OK:
         {
-            this->createShape();
+            this->create_shape();
             break;
         }
         case Gtk::RESPONSE_APPLY:
         {
             std::cout << "User required to add another point." << std::endl;
-            this->addPoint();
+            this->add_point();
             signal_response().emission_stop();
             break;
         }
@@ -71,14 +71,14 @@ void CreateWireframeDialog::on_my_response(int response_id) {
 }
 
 
-void CreateWireframeDialog::createShape() {
+void CreateWireframeDialog::create_shape() {
 
     ShapeBuilder *builder = ShapeBuilder::instance();
     const std::string name = m_nameEntry->get_text().raw();
 
     if (!name.empty()) {
 
-        builder->addName(name);
+        builder->add_name(name);
         
         double x, y;
         auto coord = m_coordEntries.cbegin();
@@ -96,11 +96,11 @@ void CreateWireframeDialog::createShape() {
                 sX >> x;
                 sY >> y;
                 m_totalPoints++;
-                builder->addPoint(x, y);
+                builder->add_point(x, y);
             }
         }
         // Check for minimum number of points.
-        if (!this->buildWireframe()) {
+        if (!this->build_wireframe()) {
             std::cout << "Rolling back." << std::endl;
             builder->rollback();
         }
@@ -109,7 +109,7 @@ void CreateWireframeDialog::createShape() {
 }
 
 // Called every time the user clicks the "Add point" button.
-void CreateWireframeDialog::addPoint() {
+void CreateWireframeDialog::add_point() {
 
     // Used for naming each coordinate, like x0, x1, y0, y1, etc.
     // Every time a new point is added, m_coordEntries increases by 2.

@@ -1,4 +1,6 @@
-/* Point.h */
+// Point.hpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #ifndef POINT_H
 #define POINT_H
@@ -9,20 +11,20 @@
 class Point : public Shape {
 
     private:
-        double _x;
-        double _y;
+        double m_x;
+        double m_y;
 
     public:
         Point(const std::string name, const double x, const double y);
         ~Point();
-        const double getX() const {return _x;}
-        const double getY() const {return _y;}
-        const Coord<double> getCentroid() override;
+        const double getX() const { return m_x; }
+        const double getY() const { return m_y; }
+        const Coord<double> get_centroid() override;
 
         // Visitor
         virtual void accept(AbstractDrawer *drawer);
         virtual void transform(TMatrix *matrix) override;
-        virtual void clipToWindow(Window *w) override;
+        virtual void clip_to_window(Window *w) override;
 };
 
 #endif  // POINT_H

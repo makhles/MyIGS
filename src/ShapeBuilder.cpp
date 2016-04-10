@@ -22,13 +22,13 @@ ShapeBuilder* ShapeBuilder::instance() {
 }
 
 
-void ShapeBuilder::addName(const std::string &name) {
+void ShapeBuilder::add_name(const std::string &name) {
     m_name = name;
 }
 
 
 // Called when the Shape is made up of several Points.
-void ShapeBuilder::addPoint(const double x, const double y) {
+void ShapeBuilder::add_point(const double x, const double y) {
     if (m_name.empty()) {
         m_name = "Nameless";
     }
@@ -40,28 +40,28 @@ void ShapeBuilder::addPoint(const double x, const double y) {
 
 
 // Called when the Shape is just a Point.
-void ShapeBuilder::addPoint(const std::string &name, const double x, const double y) {
+void ShapeBuilder::add_point(const std::string &name, const double x, const double y) {
     Point *p = new Point(name, x, y);
     m_points.push_back(p);
 }
 
 // Create a new shape based on the value of type parameter.
-Shape* ShapeBuilder::createShape(ShapeType type) {
+Shape* ShapeBuilder::create_shape(ShapeType type) {
     Shape *shape;
     switch (type) {
         case ShapeType::POINT:
         {
-            shape = ShapeBuilder::createPoint();
+            shape = ShapeBuilder::create_point();
             break;
         }
         case ShapeType::LINE:
         {
-            shape = ShapeBuilder::createLine();
+            shape = ShapeBuilder::create_line();
             break;
         }
         case ShapeType::WIREFRAME:
         {
-            shape = ShapeBuilder::createWireframe();
+            shape = ShapeBuilder::create_wireframe();
             break;
         }
     }
@@ -70,14 +70,14 @@ Shape* ShapeBuilder::createShape(ShapeType type) {
 }
 
 
-Point* ShapeBuilder::createPoint() {
+Point* ShapeBuilder::create_point() {
     Point *p = m_points.front();
     m_points.pop_front();
     return p;
 }
 
 
-Line* ShapeBuilder::createLine() {
+Line* ShapeBuilder::create_line() {
     Point *p1 = m_points.front();
     m_points.pop_front();
     Point *p2 = m_points.front();
@@ -86,11 +86,11 @@ Line* ShapeBuilder::createLine() {
 }
 
 
-Wireframe* ShapeBuilder::createWireframe() {
+Wireframe* ShapeBuilder::create_wireframe() {
     Wireframe *wireframe = new Wireframe(m_name);
     auto p = m_points.begin();
     while (p != m_points.end()) {
-        wireframe->addPoint((*p));
+        wireframe->add_point((*p));
         p++;
     }
     return wireframe;

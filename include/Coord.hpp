@@ -5,14 +5,15 @@
 
 template <class T>
 class Coord {
-    private:
-        const T _x;
-        const T _y;
-    public:
-        Coord(const T x, const T y) : _x(x), _y(y) {}
-        ~Coord() {}
-        const T getX() const {return _x;}
-        const T getY() const {return _y;}
+private:
+    const T m_x;
+    const T m_y;
+public:
+    Coord() : m_x(0), m_y(0) {}
+    Coord(const T x, const T y) : m_x(x), m_y(y) {}
+    ~Coord() {}
+    const T x() const { return m_x; }
+    const T y() const { return m_y; }
 };
 
 #endif  // COORD_H
