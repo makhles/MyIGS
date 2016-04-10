@@ -7,6 +7,7 @@
 #include <string>
 #include "WorldWindow.hpp"
 #include "ShapeType.hpp"
+#include "TMatrix.hpp"
 
 // Forward declarations
 class MyIGS;
@@ -27,6 +28,8 @@ protected:
     int m_xViewportMax;
     int m_yViewportMin;
     int m_yViewportMax;
+
+    TMatrix m_gtm;  // Global Transformation Matrix
 
 public:
     InterfaceController(MyIGS *interface, Canvas *canvas);

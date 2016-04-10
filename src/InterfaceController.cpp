@@ -56,8 +56,8 @@ void InterfaceController::translate(const TransformationDialog &dialog) {
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->findShape(obj_name);
     if (shape) {
-        TMatrix *matrix = TMatrixBuilder::instance()->createTranslationMatrix(dx, dy);
-        shape->transform(matrix);
+        TMatrixBuilder::instance()->translation_matrix(m_gtm, dx, dy);
+        shape->transform(&m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -72,9 +72,9 @@ void InterfaceController::scale(const TransformationDialog &dialog) {
     Shape *shape = this->findShape(obj_name);
     if (shape) {
         const Coord<double> centroid = shape->getCentroid();
-        TMatrix *matrix = TMatrixBuilder::instance()->createScalingMatrix(
-                sx, sy, centroid.getX(), centroid.getY());
-        shape->transform(matrix);
+        TMatrixBuilder::instance()->scaling_matrix(m_gtm, sx, sy,
+                centroid.getX(), centroid.getY());
+        shape->transform(&m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -88,9 +88,9 @@ void InterfaceController::rotateAboutCentroid(const TransformationDialog &dialog
     Shape *shape = this->findShape(obj_name);
     if (shape) {
         const Coord<double> centroid = shape->getCentroid();
-        TMatrix *matrix = TMatrixBuilder::instance()->createRotationMatrix(
-                angle, centroid.getX(), centroid.getY());
-        shape->transform(matrix);
+        TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle,
+                centroid.getX(), centroid.getY());
+        shape->transform(&m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
@@ -106,8 +106,8 @@ void InterfaceController::rotate(const TransformationDialog &dialog) {
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->findShape(obj_name);
     if (shape) {
-        TMatrix *matrix = TMatrixBuilder::instance()->createRotationMatrix(angle, x, y);
-        shape->transform(matrix);
+        TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, x, y);
+        shape->transform(&m_gtm);
         this->update(shape);
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
