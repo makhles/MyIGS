@@ -1,9 +1,9 @@
-/* WorldWindow.h */
+/* Window.h */
 
-#ifndef WORLDWINDOW_H
-#define WORLDWINDOW_H
+#ifndef WINDOW_HPP
+#define WINDOW_HPP
 
-class WorldWindow {
+class Window {
 
     private:
         const double WINDOW_DEFAULT_XMIN = 0;
@@ -19,8 +19,8 @@ class WorldWindow {
         double _zoom;
 
     public:
-        WorldWindow();
-        ~WorldWindow();
+        Window();
+        ~Window();
         const double getXMin() const { return _xMin; }
         const double getXMax() const { return _xMax; }
         const double getYMin() const { return _yMin; }
@@ -29,4 +29,4 @@ class WorldWindow {
         void zoomWindow(int inOrOut);
 };
 
-#endif  // WORLDWINDOW_H
+#endif  // WINDOW_HPP

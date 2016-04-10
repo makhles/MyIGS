@@ -8,7 +8,7 @@
 #include "ShapeType.hpp"
 
 template <class T> class Coord;
-class WorldWindow;
+class Window;
 class AbstractDrawer;
 class TMatrix;
 
@@ -37,7 +37,7 @@ class Shape {
         virtual void transform(TMatrix *matrix) = 0;
         void clearViewportCoordinates();
         void addViewportCoordinate(const Coord<int> *coord);
-        virtual void clipToWindow(WorldWindow *w) = 0;
+        virtual void clipToWindow(Window *w) = 0;
 };
 
 #endif  // SHAPE_H

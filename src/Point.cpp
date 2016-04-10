@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Point.hpp"
 #include "Coord.hpp"
-#include "WorldWindow.hpp"
+#include "Window.hpp"
 #include "AbstractDrawer.hpp"
 #include "TMatrix.hpp"
 
@@ -35,7 +35,7 @@ void Point::accept(AbstractDrawer *drawer) {
 }
 
 
-void Point::clipToWindow(WorldWindow *w) {
+void Point::clipToWindow(Window *w) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */

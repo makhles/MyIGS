@@ -24,6 +24,6 @@ class Line : public Shape {
         virtual void accept(AbstractDrawer *drawer);
 
         virtual void transform(TMatrix *matrix) override;
-        virtual void clipToWindow(WorldWindow *w) override;
+        virtual void clipToWindow(Window *w) override;
 };
 #endif

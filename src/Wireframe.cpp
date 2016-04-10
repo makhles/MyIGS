@@ -4,7 +4,7 @@
 #include "Wireframe.hpp"
 #include "Point.hpp"
 #include "Coord.hpp"
-#include "WorldWindow.hpp"
+#include "Window.hpp"
 #include "AbstractDrawer.hpp"
 
 Wireframe::Wireframe(const std::string name) :
@@ -54,7 +54,7 @@ void Wireframe::accept(AbstractDrawer *drawer) {
 }
 
 
-void Wireframe::clipToWindow(WorldWindow *w) {
+void Wireframe::clipToWindow(Window *w) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */

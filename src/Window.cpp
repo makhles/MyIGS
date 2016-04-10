@@ -1,27 +1,27 @@
-/* WorldWindow.cpp */
+/* Window.cpp */
 
 #include <iostream>
-#include "WorldWindow.hpp"
+#include "Window.hpp"
 
-WorldWindow::WorldWindow() :
-        _xMin(WorldWindow::WINDOW_DEFAULT_XMIN),
-        _xMax(WorldWindow::WINDOW_DEFAULT_XMAX),
-        _yMin(WorldWindow::WINDOW_DEFAULT_YMIN),
-        _yMax(WorldWindow::WINDOW_DEFAULT_YMAX),
+Window::Window() :
+        _xMin(Window::WINDOW_DEFAULT_XMIN),
+        _xMax(Window::WINDOW_DEFAULT_XMAX),
+        _yMin(Window::WINDOW_DEFAULT_YMIN),
+        _yMax(Window::WINDOW_DEFAULT_YMAX),
         _zoom(1.0) {
 }
 
-WorldWindow::~WorldWindow() {
+Window::~Window() {
 }
 
-void WorldWindow::moveWindow(int moveX, int moveY) {
+void Window::moveWindow(int moveX, int moveY) {
     _xMin += moveX * DEFAULT_DISPLACEMENT;
     _xMax += moveX * DEFAULT_DISPLACEMENT;
     _yMin += moveY * DEFAULT_DISPLACEMENT;
     _yMax += moveY * DEFAULT_DISPLACEMENT;
 }
 
-void WorldWindow::zoomWindow(int inOrOut) {
+void Window::zoomWindow(int inOrOut) {
     if ((inOrOut == -1 && _zoom > 1.0) || (inOrOut == 1)) {
         _zoom += inOrOut * DEFAULT_ZOOM;
         double percentage = 1.0 / _zoom;

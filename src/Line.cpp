@@ -4,7 +4,7 @@
 #include "Line.hpp"
 #include "Point.hpp"
 #include "Coord.hpp"
-#include "WorldWindow.hpp"
+#include "Window.hpp"
 #include "AbstractDrawer.hpp"
 #include "TMatrix.hpp"
 
@@ -38,7 +38,7 @@ void Line::accept(AbstractDrawer *drawer) {
 }
 
 
-void Line::clipToWindow(WorldWindow *w) {
+void Line::clipToWindow(Window *w) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */
