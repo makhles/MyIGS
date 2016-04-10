@@ -1,4 +1,6 @@
-/* Window.h */
+// Window.hpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
@@ -25,7 +27,7 @@ class Window {
         const double getXMax() const { return _xMax; }
         const double getYMin() const { return _yMin; }
         const double getYMax() const { return _yMax; }
-        void moveWindow(int moveX, int moveY);
+        void translate_window(int moveX, int moveY);
         void zoomWindow(int inOrOut);
 };
 

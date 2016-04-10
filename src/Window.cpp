@@ -1,4 +1,6 @@
-/* Window.cpp */
+// Window.cpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #include <iostream>
 #include "Window.hpp"
@@ -14,7 +16,7 @@ Window::Window() :
 Window::~Window() {
 }
 
-void Window::moveWindow(int moveX, int moveY) {
+void Window::translate_window(int moveX, int moveY) {
     _xMin += moveX * DEFAULT_DISPLACEMENT;
     _xMax += moveX * DEFAULT_DISPLACEMENT;
     _yMin += moveY * DEFAULT_DISPLACEMENT;

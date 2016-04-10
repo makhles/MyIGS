@@ -183,7 +183,7 @@ int InterfaceController::yWindowToViewport(const double yWindow) {
 
 
 void InterfaceController::moveWindow(int moveX, int moveY) {
-    m_window.moveWindow(moveX, moveY);
+    m_window.translate_window(moveX, moveY);
     this->updateShapes();
 }
 
