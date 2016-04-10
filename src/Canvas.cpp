@@ -62,3 +62,13 @@ void Canvas::invalidate() {
         win->invalidate_rect(r, false);
     }
 }
+
+
+double Canvas::get_viewport_width() const {
+    return get_allocation().get_width();
+}
+
+
+double Canvas::get_viewport_height() const {
+    return get_allocation().get_height();
+}

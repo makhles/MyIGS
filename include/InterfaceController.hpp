@@ -7,6 +7,7 @@
 
 #include <list>
 #include <string>
+#include "WindowHandler.hpp"
 #include "Window.hpp"
 #include "ShapeType.hpp"
 #include "TMatrix.hpp"
@@ -24,6 +25,7 @@ protected:
     std::list<Shape*> m_shapes;
     MyIGS * const m_interface;
     Canvas * const m_canvas;
+    WindowHandler m_windowHandler;
     Window m_window;
 
     int m_xViewportMin; // TODO : change to getter method from Canvas

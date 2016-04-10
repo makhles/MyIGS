@@ -26,6 +26,7 @@ InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
     m_yViewportMax(500)
 {
     m_canvas->set_controller(this);
+    m_windowHandler.set_viewport(m_canvas);
 }
 
 
@@ -193,7 +194,7 @@ void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
 
 
 void InterfaceController::move_window(int moveX, int moveY) {
-    m_window.translate(moveX, moveY);
+    m_windowHandler.translate_window(moveX, moveY);
     this->update_shapes();
 }
 
