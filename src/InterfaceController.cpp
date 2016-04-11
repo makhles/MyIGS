@@ -169,7 +169,7 @@ void InterfaceController::scale_window(double factor) {
 
 
 void InterfaceController::rotate_window(double angle) {
-    m_window.rotate(angle);
+    m_window.rotate(-angle);  // The window and viewport rotate to opposing directions
     this->update_shapes();
 }
 

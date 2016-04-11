@@ -18,6 +18,7 @@ protected:
     OutputBoard * const m_board;
     Canvas * const m_canvas;
     Glib::RefPtr<Gtk::Adjustment> m_scaleAdjustment;
+    Gtk::Entry * const m_angleEntry;
 
     InterfaceController * m_controller;
 
@@ -27,6 +28,7 @@ protected:
     void move_window_right();
     void move_window_down();
     void move_window_left();
+    void rotate_window();
 
     // Objects creation
     void create_point();

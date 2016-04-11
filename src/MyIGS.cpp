@@ -14,7 +14,8 @@ MyIGS::MyIGS() :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_board(Gtk::manage(new OutputBoard())),
     m_canvas(Gtk::manage(new Canvas())),
-    m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25))
+    m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25)),
+    m_angleEntry(Gtk::manage(new Gtk::Entry()))
 {
     m_controller = new InterfaceController(this, m_canvas);
     m_objectsView->setInterfaceController(m_controller);
@@ -41,11 +42,13 @@ MyIGS::MyIGS() :
 // ------------------------------------- Control Frame ----------------------------------------- //
 
     Gtk::VBox * const controlBox = Gtk::manage(new Gtk::VBox());
-    Gtk::Frame * const scaleFrame = Gtk::manage(new Gtk::Frame("Scaling"));
     Gtk::Frame * const moveFrame = Gtk::manage(new Gtk::Frame("Translation"));
+    Gtk::Frame * const scaleFrame = Gtk::manage(new Gtk::Frame("Scaling"));
+    Gtk::Frame * const rotateFrame = Gtk::manage(new Gtk::Frame("Rotation"));
 
     controlBox->pack_start(*moveFrame, Gtk::PACK_SHRINK, 1);
     controlBox->pack_start(*scaleFrame, Gtk::PACK_SHRINK, 1);
+    controlBox->pack_start(*rotateFrame, Gtk::PACK_SHRINK, 1);
 
     // Scale
     m_scaleAdjustment->signal_value_changed().connect(sigc::mem_fun(*this,
@@ -82,6 +85,24 @@ MyIGS::MyIGS() :
     moveFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     moveFrame->set_border_width(5);
     moveFrame->add(*moveGrid);
+
+    // Rotation frame
+    Gtk::Grid * const rotationGrid = Gtk::manage(new Gtk::Grid());
+    Gtk::Label * const angleLabel = Gtk::manage(new Gtk::Label("Angle:"));
+    Gtk::Button * const rotationButton = Gtk::manage(new Gtk::Button("Rotate"));
+
+    m_angleEntry->set_width_chars(6);
+
+    rotationButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::rotate_window));
+
+    rotationGrid->attach(*angleLabel,1,1,1,1);
+    rotationGrid->attach(*m_angleEntry,2,1,1,1);
+    rotationGrid->attach(*rotationButton,1,2,2,1);
+    rotationGrid->set_border_width(5);
+
+    rotateFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+    rotateFrame->set_border_width(5);
+    rotateFrame->add(*rotationGrid);
 
     controlFrame->add(*controlBox);
 
@@ -157,6 +178,20 @@ void MyIGS::move_window_down() {
 
 void MyIGS::move_window_left() {
     m_controller->move_window(-1,0);
+}
+
+
+void MyIGS::rotate_window() {
+    double angle;
+    std::stringstream angle_stream;
+    angle_stream << m_angleEntry->get_text().raw();
+
+    if (angle_stream.str().size() != 0) {
+        angle_stream >> angle;
+        if (angle != 0.0) {
+            m_controller->rotate_window(angle);
+        }
+    }
 }
 
 
