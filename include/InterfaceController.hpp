@@ -46,7 +46,6 @@ public:
     void update(Shape *shape);
     void update_shapes();
     void draw_shapes(ShapeDrawer &drawer);
-    void normalize_shapes();
     Shape* find_shape(const std::string &obj);
 
     // void to_viewport(Shape *shape);

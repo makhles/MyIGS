@@ -124,13 +124,24 @@ void InterfaceController::update(Shape *shape) {
 }
 
 
-// Called whenever the Window is translated or rotated.
+// Called whenever the Window is translated, scaled or rotated.
 void InterfaceController::update_shapes() {
+    double dx = m_window.x_center();
+    double dy = m_window.y_center();
+    double sx = 2.0 / m_window.width();
+    double sy = 2.0 / m_window.height();
+    double angle = m_window.angle();
+
+    // Global Transformation Matrix
+    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
+
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
-        this->update((*shape));
+        (*shape)->normalize(m_gtm);
+        (*shape)->clip_to_window(m_window);
         shape++;
     }
+    m_canvas->invalidate();
 }
 
 
@@ -142,22 +153,6 @@ void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
     }
 }
 
-
-void InterfaceController::normalize_shapes() {
-    double dx = m_window.x_center();
-    double dy = m_window.y_center();
-    double sx = 2.0 / m_window.width();
-    double sy = 2.0 / m_window.height();
-    double angle = m_window.angle();
-
-    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
-
-    auto shape = m_shapes.begin();
-    while (shape != m_shapes.end()) {
-        (*shape)->normalize(m_gtm);
-        shape++;
-    }
-}
 
 
 // void InterfaceController::toViewport(Shape *shape) {
