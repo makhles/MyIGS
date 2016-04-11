@@ -27,8 +27,10 @@ protected:
 public:
     Canvas();
     virtual ~Canvas();
-    double get_viewport_width() const;
-    double get_viewport_height() const;
+    double xvp_min() const { return 0; }  // temporary
+    double yvp_max() const { return this->vp_height(); }  // temporary
+    double vp_width() const;
+    double vp_height() const;
     void set_controller(InterfaceController *controller) { m_controller = controller; }
     void invalidate();
 };

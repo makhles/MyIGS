@@ -16,12 +16,12 @@ Wireframe::Wireframe(const std::string name) :
 
 
 Wireframe::~Wireframe() {
-    auto coord = m_wcList.begin();
-    while (coord != m_wcList.end()) {
+    auto coord = m_ncList.begin();
+    while (coord != m_ncList.end()) {
         delete *coord;
         coord++;
     }
-    m_wcList.clear();
+    m_ncList.clear();
     auto point = m_vertices.begin();
     while (point != m_vertices.end()) {
         delete *point;
@@ -80,11 +80,11 @@ void Wireframe::clip_to_window(Window &window) {
 
     /* Temporary implementation */
     Coord<double> *coord;
-    m_wcList.clear();
+    m_ncList.clear();
     auto p = m_vertices.begin();
     while (p != m_vertices.end()) {
-        coord = new Coord<double>((*p)->xwc(), (*p)->ywc());
-        m_wcList.push_back(coord);
+        coord = new Coord<double>((*p)->xnc(), (*p)->ync());
+        m_ncList.push_back(coord);
         p++;
     }
 }

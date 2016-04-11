@@ -17,12 +17,12 @@ Point::Point(const std::string name, const double x, const double y) :
 
 
 Point::~Point() {
-    auto coord = m_wcList.begin();
-    while (coord != m_wcList.end()) {
+    auto coord = m_ncList.begin();
+    while (coord != m_ncList.end()) {
         delete *coord;
         coord++;
     }
-    m_wcList.clear();
+    m_ncList.clear();
 }
 
 
@@ -49,13 +49,20 @@ void Point::transform(TMatrix &matrix) {
 
 
 void Point::normalize(TMatrix &matrix) {
+    std::cout << "Normalizing point..." << std::endl;
+    std::cout << "xwc = " << m_xwc << std::endl;
+    std::cout << "ywc = " << m_ywc << std::endl;
+
     std::vector<double> v;
-    v.push_back(m_xnc);
-    v.push_back(m_ync);
+    v.push_back(m_xwc);
+    v.push_back(m_ywc);
     v.push_back(1.0);
     matrix * v;  // Result is stored in v
     m_xnc = v[0];
     m_ync = v[1];
+    std::cout << "xnc = " << m_xnc << std::endl;
+    std::cout << "ync = " << m_ync << std::endl;
+    std::cout << "-----------------------------" << std::endl;
 }
 
 
@@ -63,6 +70,6 @@ void Point::clip_to_window(Window &window) {
     std::cout << "Clipping to window." << std::endl;
 
     /* Temporary implementation */
-    m_wcList.clear();
-    m_wcList.push_back(new Coord<double>(m_xwc, m_ywc));
+    m_ncList.clear();
+    m_ncList.push_back(new Coord<double>(m_xnc, m_ync));
 }

@@ -7,7 +7,6 @@
 
 #include <list>
 #include <string>
-#include "WindowHandler.hpp"
 #include "Window.hpp"
 #include "ShapeType.hpp"
 #include "TMatrix.hpp"
@@ -22,38 +21,35 @@ template <class T> class Coord;
 
 class InterfaceController {
 protected:
+
+    const double DEVICE_DISPLACEMENT = 10.0;  // Pixels
+
     std::list<Shape*> m_shapes;
     MyIGS * const m_interface;
-    Canvas * const m_canvas;
-    WindowHandler m_windowHandler;
+    Canvas * const m_viewport;
     Window m_window;
-
-    int m_xViewportMin; // TODO : change to getter method from Canvas
-    int m_xViewportMax;
-    int m_yViewportMin;
-    int m_yViewportMax;
 
     TMatrix m_gtm;  // Global Transformation Matrix
 
 public:
     InterfaceController(MyIGS *interface, Canvas *canvas);
     virtual ~InterfaceController();
-    void set_canvas(Canvas &canvas);
 
     // Shape editing
     void create_shape(ShapeType);
     void finalize_shape(Shape *shape);
     void update(Shape *shape);
+    void update_gtm();
     void update_shapes();
     void draw_shapes(ShapeDrawer &drawer);
     Shape* find_shape(const std::string &obj);
 
-    // void to_viewport(Shape *shape);
-    // int x_wWindowToViewport(const double xWindow);
-    // int yWindowToViewport(const double yWindow);
+    void to_viewport(Shape *shape);
+    int xnc_to_xvp(const double xWindow);
+    int ync_to_yvp(const double yWindow);
 
     // Window transformations
-    void move_window(int moveX, int moveY);
+    void move_window(int rightOrLeft, int upOrDown);
     void scale_window(double factor);
     void rotate_window(double angle);
 

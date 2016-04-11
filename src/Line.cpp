@@ -18,12 +18,12 @@ Line::Line(const std::string name, Point *p1, Point *p2) :
 
 
 Line::~Line() {
-    auto coord = m_wcList.begin();
-    while (coord != m_wcList.end()) {
+    auto coord = m_ncList.begin();
+    while (coord != m_ncList.end()) {
         delete *coord;
         coord++;
     }
-    m_wcList.clear();
+    m_ncList.clear();
 }
 
 
@@ -57,9 +57,14 @@ void Line::clip_to_window(Window &window) {
 
     /* Temporary implementation */
     Coord<double> *coord;
-    m_wcList.clear();
-    coord = new Coord<double>(m_p1->xwc(), m_p1->ywc());
-    m_wcList.push_back(coord);
-    coord = new Coord<double>(m_p2->xwc(), m_p2->ywc());
-    m_wcList.push_back(coord);
+    m_ncList.clear();
+    coord = new Coord<double>(m_p1->xnc(), m_p1->ync());
+    m_ncList.push_back(coord);
+    coord = new Coord<double>(m_p2->xnc(), m_p2->ync());
+    m_ncList.push_back(coord);
+    std::cout << "x1nc = " << m_p1->xnc() << std::endl;
+    std::cout << "y1nc = " << m_p1->ync() << std::endl;
+    std::cout << "x2nc = " << m_p2->xnc() << std::endl;
+    std::cout << "y2nc = " << m_p2->ync() << std::endl;
+    std::cout << "-----------------------------" << std::endl;
 }

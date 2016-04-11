@@ -64,11 +64,11 @@ void Canvas::invalidate() {
 }
 
 
-double Canvas::get_viewport_width() const {
+double Canvas::vp_width() const {
     return get_allocation().get_width();
 }
 
 
-double Canvas::get_viewport_height() const {
+double Canvas::vp_height() const {
     return get_allocation().get_height();
 }

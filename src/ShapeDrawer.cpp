@@ -19,6 +19,7 @@ void ShapeDrawer::draw(Point *point) {
 }
 
 void ShapeDrawer::draw(Line *line) {
+    std::cout << "Drawing line" << std::endl;
     m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     m_cr->set_line_width(1.0);
 

@@ -7,14 +7,9 @@
 
 #include "Coord.hpp"
 
-// Forward declarations
-class WindowHandler;
-
 
 class Window {
 private:
-
-    friend class WindowHandler;
 
     // Constants
     const double LOCAL_WIDTH = 2.0;
@@ -41,7 +36,7 @@ public:
     const double y_center() const { return m_yc; }
     const double width() const { return m_width; }
     const double height() const { return m_height; }
-    const double angle() const { return m_width; }
+    const double angle() const { return m_angle; }
 
     // Operations
     void translate(double dh, double dv);

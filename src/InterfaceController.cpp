@@ -17,16 +17,14 @@
 #include "TMatrixBuilder.hpp"
 
 
-InterfaceController::InterfaceController(MyIGS *interface, Canvas *canvas) :
+typedef std::list<Coord<double>*> DCoordList;
+
+
+InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
     m_interface(interface),
-    m_canvas(canvas),
-    m_xViewportMin(0),
-    m_xViewportMax(500),
-    m_yViewportMin(0),
-    m_yViewportMax(500)
+    m_viewport(viewport)
 {
-    m_canvas->set_controller(this);
-    m_windowHandler.set_viewport(m_canvas);
+    m_viewport->set_controller(this);
 }
 
 
@@ -51,6 +49,141 @@ void InterfaceController::finalize_shape(Shape *shape) {
     m_shapes.push_back(shape);
     m_interface->append_object(shape->name());
     this->update(shape);
+}
+
+
+void InterfaceController::update(Shape *shape) {
+    this->update_gtm();
+    shape->normalize(m_gtm);
+    shape->clip_to_window(m_window);
+    this->to_viewport(shape);
+    m_viewport->invalidate();
+}
+
+
+void InterfaceController::update_gtm() {
+    double dx = - m_window.x_center();
+    double dy = - m_window.y_center();
+    double sx = 2.0 / m_window.width();
+    double sy = 2.0 / m_window.height();
+    double angle = - m_window.angle();
+
+    std::cout << "------------------------------" << std::endl;
+    std::cout << "Parameters for GTM:" << std::endl;
+    std::cout << "dx...: " << dx << std::endl;
+    std::cout << "dy...: " << dy << std::endl;
+    std::cout << "sx...: " << sx << std::endl;
+    std::cout << "sy...: " << sy << std::endl;
+    std::cout << "angle: " << angle << std::endl;
+
+    // Global Transformation Matrix
+    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
+
+    std::cout << "------------------------------" << std::endl;
+    std::cout << "GTM:" << std::endl;
+    std::cout << m_gtm(0,0) << "  " << m_gtm(0,1) << "  " << m_gtm(0,2) << std::endl;
+    std::cout << m_gtm(1,0) << "  " << m_gtm(1,1) << "  " << m_gtm(1,2) << std::endl;
+    std::cout << m_gtm(2,0) << "  " << m_gtm(2,1) << "  " << m_gtm(2,2) << std::endl;
+    std::cout << "------------------------------" << std::endl;
+}
+
+
+
+// Called whenever the Window is translated, scaled or rotated.
+void InterfaceController::update_shapes() {
+    this->update_gtm();
+    auto shape = m_shapes.begin();
+    while (shape != m_shapes.end()) {
+        (*shape)->normalize(m_gtm);
+        (*shape)->clip_to_window(m_window);
+        this->to_viewport(*shape);
+        shape++;
+    }
+    m_viewport->invalidate();
+}
+
+
+void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
+    auto shape = m_shapes.begin();
+    while (shape != m_shapes.end()) {
+        (*shape)->accept(&drawer);
+        shape++;
+    }
+}
+
+
+
+void InterfaceController::to_viewport(Shape *shape) {
+    std::cout << "Converting to viewport coordinates." << std::endl;
+
+    const DCoordList *ncList = shape->normalized_coordinates();
+    shape->clear_viewport_coordinates();
+
+    int xvp, yvp;
+    double xratio, yratio;
+    double xvp_min, yvp_max;
+    double xnc, ync;
+
+    auto c = ncList->begin();
+    while (c != ncList->end()) {
+
+        // Parameters
+        xratio = m_viewport->vp_width() / 2.0;
+        yratio = m_viewport->vp_height() / 2.0;
+        xvp_min = m_viewport->xvp_min();
+        yvp_max = m_viewport->yvp_max();
+        xnc = (*c)->x();
+        ync = (*c)->y();
+
+        std::cout << "-----------------------------" << std::endl;
+        std::cout << "xnc = " << xnc << std::endl;
+        std::cout << "ync = " << ync << std::endl;
+
+        // Viewport coordinates
+        xvp = (int) (xvp_min + xratio * (xnc + 1.0));
+        yvp = (int) (yvp_max - yratio * (ync + 1.0));
+
+        // Update shape
+        shape->add_viewport_coordinate(new Coord<int>(xvp, yvp));
+        c++;
+
+        std::cout << "xvp = " << xvp << std::endl;
+        std::cout << "yvp = " << yvp << std::endl;
+        std::cout << "-----------------------------" << std::endl;
+    }
+}
+
+
+void InterfaceController::move_window(int rightOrLeft, int upOrDown) {
+    double dx = DEVICE_DISPLACEMENT * m_window.width() / m_viewport->vp_width();
+    double dy = DEVICE_DISPLACEMENT * m_window.height() / m_viewport->vp_height();
+    m_window.translate(rightOrLeft * dx, upOrDown * dy);
+    this->update_shapes();
+}
+
+
+void InterfaceController::scale_window(double factor) {
+    m_window.scale(factor);
+    this->update_shapes();
+}
+
+
+void InterfaceController::rotate_window(double angle) {
+    m_window.rotate(angle);
+    this->update_shapes();
+}
+
+
+Shape* InterfaceController::find_shape(const std::string &obj) {
+    Shape *shapeToReturn = nullptr;
+    auto shape = m_shapes.cbegin();
+    while (shape != m_shapes.cend()) {
+        if ((*shape)->name() == obj) {
+            shapeToReturn = *shape;
+        }
+        shape++;
+    }
+    return shapeToReturn;
 }
 
 
@@ -114,110 +247,4 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
     }
-}
-
-
-void InterfaceController::update(Shape *shape) {
-    shape->clip_to_window(m_window);
-    // this->toViewport(shape);
-    m_canvas->invalidate();
-}
-
-
-// Called whenever the Window is translated, scaled or rotated.
-void InterfaceController::update_shapes() {
-    double dx = m_window.x_center();
-    double dy = m_window.y_center();
-    double sx = 2.0 / m_window.width();
-    double sy = 2.0 / m_window.height();
-    double angle = m_window.angle();
-
-    // Global Transformation Matrix
-    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
-
-    auto shape = m_shapes.begin();
-    while (shape != m_shapes.end()) {
-        (*shape)->normalize(m_gtm);
-        (*shape)->clip_to_window(m_window);
-        shape++;
-    }
-    m_canvas->invalidate();
-}
-
-
-void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
-    auto shape = m_shapes.begin();
-    while (shape != m_shapes.end()) {
-        (*shape)->accept(&drawer);
-        shape++;
-    }
-}
-
-
-
-// void InterfaceController::toViewport(Shape *shape) {
-//     std::cout << "Converting to viewport coordinates." << std::endl;
-
-//     const std::list<Coord<double>*>* wCoords = shape->getWindowCoordinates();
-//     shape->clearViewportCoordinates();
-
-//     int vpX, vpY;
-//     auto c = wCoords->begin();
-//     while (c != wCoords->end()) {
-//         vpX = this->xWindowToViewport((*c)->x());
-//         vpY = this->yWindowToViewport((*c)->y());
-//         shape->addViewportCoordinate(new Coord<int>(vpX, vpY));
-//         c++;
-//         std::cout << "vpX = " << vpX << std::endl;
-//         std::cout << "vpY = " << vpY << std::endl;
-//     }
-// }
-
-
-// int InterfaceController::xWindowToViewport(const double xWindow) {
-//     double xViewport;
-//     xViewport = xWindow - m_window.getXMin();
-//     xViewport *= (m_xViewportMax - m_xViewportMin)/(m_window.getXMax() - m_window.getXMin());
-//     xViewport += m_xViewportMin;
-//     return (int) xViewport;
-// }
-
-
-// int InterfaceController::yWindowToViewport(const double yWindow) {
-//     double yViewport;
-//     yViewport = (m_yViewportMax - m_yViewportMin) / (m_window.getYMax() - m_window.getYMin());
-//     yViewport *= (yWindow - m_window.getYMin());
-//     yViewport = m_yViewportMax - yViewport;
-//     return (int) yViewport;
-// }
-
-
-void InterfaceController::move_window(int moveX, int moveY) {
-    m_windowHandler.translate_window(moveX, moveY);
-    this->update_shapes();
-}
-
-
-void InterfaceController::scale_window(double factor) {
-    m_windowHandler.scale_window(factor);
-    this->update_shapes();
-}
-
-
-void InterfaceController::rotate_window(double angle) {
-    m_windowHandler.rotate_window(angle);
-    this->update_shapes();
-}
-
-
-Shape* InterfaceController::find_shape(const std::string &obj) {
-    Shape *shapeToReturn = nullptr;
-    auto shape = m_shapes.cbegin();
-    while (shape != m_shapes.cend()) {
-        if ((*shape)->name() == obj) {
-            shapeToReturn = *shape;
-        }
-        shape++;
-    }
-    return shapeToReturn;
 }
