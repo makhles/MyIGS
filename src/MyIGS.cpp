@@ -87,22 +87,24 @@ MyIGS::MyIGS() :
     moveFrame->add(*moveGrid);
 
     // Rotation frame
-    Gtk::Grid * const rotationGrid = Gtk::manage(new Gtk::Grid());
+    Gtk::HBox * const rotationBox = Gtk::manage(new Gtk::HBox());
     Gtk::Label * const angleLabel = Gtk::manage(new Gtk::Label("Angle:"));
-    Gtk::Button * const rotationButton = Gtk::manage(new Gtk::Button("Rotate"));
+    Gtk::Button * const rotationButton = Gtk::manage(new Gtk::Button());
 
     m_angleEntry->set_width_chars(6);
 
+    rotationButton->set_image_from_icon_name("object-rotate-left");
+    rotationButton->set_always_show_image();
     rotationButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::rotate_window));
 
-    rotationGrid->attach(*angleLabel,1,1,1,1);
-    rotationGrid->attach(*m_angleEntry,2,1,1,1);
-    rotationGrid->attach(*rotationButton,1,2,2,1);
-    rotationGrid->set_border_width(5);
+    rotationBox->pack_start(*angleLabel, Gtk::PACK_SHRINK, 2);
+    rotationBox->pack_start(*m_angleEntry, Gtk::PACK_SHRINK, 2);
+    rotationBox->pack_start(*rotationButton, Gtk::PACK_SHRINK, 2);
+    rotationBox->set_border_width(5);
 
     rotateFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     rotateFrame->set_border_width(5);
-    rotateFrame->add(*rotationGrid);
+    rotateFrame->add(*rotationBox);
 
     controlFrame->add(*controlBox);
 
