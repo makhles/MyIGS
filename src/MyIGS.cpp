@@ -58,10 +58,14 @@ MyIGS::MyIGS() :
     windowScale->set_value_pos(Gtk::POS_BOTTOM);
     windowScale->set_draw_value();
 
+    Gtk::HBox * const scaleBox = Gtk::manage(new Gtk::HBox());
+    scaleBox->set_border_width(5);
+    scaleBox->pack_start(*windowScale);
+
     // Scaling frame
     scaleFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     scaleFrame->set_border_width(5);
-    scaleFrame->add(*windowScale);
+    scaleFrame->add(*scaleBox);
 
     // Translation buttons
     Gtk::Button * const moveUpButton = Gtk::manage(new Gtk::Button("Up"));
@@ -82,6 +86,7 @@ MyIGS::MyIGS() :
     moveGrid->attach(*moveLeftButton,1,2,1,1);
     moveGrid->set_row_homogeneous(true);
     moveGrid->set_column_homogeneous(true);
+    moveGrid->set_border_width(5);
     
     // Translation frame
     moveFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
