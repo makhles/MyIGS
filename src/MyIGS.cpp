@@ -80,6 +80,8 @@ MyIGS::MyIGS() :
     moveGrid->attach(*moveRightButton,3,2,1,1);
     moveGrid->attach(*moveDownButton,2,3,1,1);
     moveGrid->attach(*moveLeftButton,1,2,1,1);
+    moveGrid->set_row_homogeneous(true);
+    moveGrid->set_column_homogeneous(true);
     
     // Translation frame
     moveFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
