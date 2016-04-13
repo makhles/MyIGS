@@ -58,6 +58,8 @@ public:
     void scale(const TransformationDialog &dialog);
     void rotate(const TransformationDialog &dialog);
     void rotate_about_centroid(const TransformationDialog &dialog);
+
+    void write_shapes_to_file();
 };
 
 #endif  // InterfaceController_H

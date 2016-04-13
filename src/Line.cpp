@@ -68,3 +68,8 @@ void Line::clip_to_window(Window &window) {
     std::cout << "y2nc = " << m_p2->ync() << std::endl;
     std::cout << "-----------------------------" << std::endl;
 }
+
+
+void Line::write_to_file(std::ofstream &file) {
+
+}

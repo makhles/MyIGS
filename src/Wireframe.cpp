@@ -88,3 +88,8 @@ void Wireframe::clip_to_window(Window &window) {
         p++;
     }
 }
+
+
+void Wireframe::write_to_file(std::ofstream &file) {
+
+}

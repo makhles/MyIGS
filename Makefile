@@ -1,7 +1,7 @@
 # Created by aszdrick graf <aszdrick@gmail.com>
 # Compiler
 CXX       :=g++
-LDLIBS    :=-lstdc++
+LDLIBS    :=-lstdc++ -g++
 LDFLAGS   :=
 CXXFLAGS  :=`pkg-config --cflags --libs gtkmm-3.0` -std=c++11 -Wall
 # Source directory

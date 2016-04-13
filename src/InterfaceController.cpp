@@ -3,6 +3,7 @@
 //          Makhles Reuter Lange
 
 #include <iostream>
+#include <fstream>
 #include "InterfaceController.hpp"
 #include "MyIGS.hpp"
 #include "Canvas.hpp"
@@ -247,4 +248,18 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
     } else {
         std::cout << "Couldn't find specified object!" << std::endl;
     }
+}
+
+
+void InterfaceController::write_shapes_to_file() {
+    std::ofstream file;
+    file.open("Wavefront.obj", std::ios::out | std::ios::app);
+    if (file.is_open()) {
+        auto shape = m_shapes.begin();
+        while (shape != m_shapes.end()) {
+            (*shape)->write_to_file(file);
+            shape++;
+        }
+    }
+    file.close();
 }

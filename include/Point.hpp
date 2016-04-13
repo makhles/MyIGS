@@ -28,7 +28,8 @@ public:
     void accept(AbstractDrawer *drawer);
     void transform(TMatrix &matrix) override;
     void normalize(TMatrix &matrix) override;
-    virtual void clip_to_window(Window &window) override;
+    void clip_to_window(Window &window) override;
+    void write_to_file(std::ofstream &file) override;
 };
 
 #endif  // POINT_HPP

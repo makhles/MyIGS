@@ -73,3 +73,8 @@ void Point::clip_to_window(Window &window) {
     m_ncList.clear();
     m_ncList.push_back(new Coord<double>(m_xnc, m_ync));
 }
+
+
+void Point::write_to_file(std::ofstream &file) {
+    file << "v " << m_xnc << " " << m_ync << std::endl;
+}
