@@ -54,7 +54,7 @@ MyIGS::MyIGS() :
     m_scaleAdjustment->signal_value_changed().connect(sigc::mem_fun(*this,
             &MyIGS::on_window_adjustment_value_changed));
     Gtk::Scale * const windowScale = Gtk::manage(new Gtk::Scale(m_scaleAdjustment));
-    windowScale->set_digits(2);
+    windowScale->set_digits(1);
     windowScale->set_value_pos(Gtk::POS_BOTTOM);
     windowScale->set_draw_value();
 
@@ -118,9 +118,13 @@ MyIGS::MyIGS() :
 // --------------------------------------------------------------------------------------------- //
 // ------------------------------------ Viewport Frame ----------------------------------------- //
 
+    Gtk::HBox * const canvasBox = Gtk::manage(new Gtk::HBox());
     Gtk::VBox * const viewportBox = Gtk::manage(new Gtk::VBox());
-    viewportBox->pack_start(*m_canvas, Gtk::PACK_EXPAND_WIDGET, 1);
-    viewportBox->pack_start(*m_board, Gtk::PACK_EXPAND_WIDGET, 1);
+    canvasBox->set_border_width(10);
+    canvasBox->pack_start(*m_canvas, Gtk::PACK_EXPAND_WIDGET, 0);
+
+    viewportBox->pack_start(*canvasBox, Gtk::PACK_EXPAND_WIDGET, 0);
+    viewportBox->pack_start(*m_board, Gtk::PACK_EXPAND_WIDGET, 0);
     viewportFrame->add(*viewportBox);
 
 // --------------------------------------------------------------------------------------------- //

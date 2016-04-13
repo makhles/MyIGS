@@ -18,6 +18,8 @@ class Canvas : public Gtk::DrawingArea {
 protected:
     InterfaceController *m_controller;
     ShapeDrawer m_drawer;
+    bool m_darkBG;
+    bool m_drawGridlines;
 
 protected:
     bool on_draw(const CairoCtx &cr) override;
