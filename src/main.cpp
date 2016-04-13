@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     /* Initialization */
     auto app = Gtk::Application::create(argc, argv, "org.gtkmm.examples.base");
 
-    MyIGS myIGS;
+    MyIGS myIGS(app);
 
     /* Show the window and return when closed */
     return app->run(myIGS);

@@ -10,7 +10,7 @@
 #include "CreateWireframeDialog.hpp"
 #include "ObjectsTreeView.hpp"
 
-MyIGS::MyIGS() :
+MyIGS::MyIGS(const Glib::RefPtr<Gtk::Application>& app) :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_board(Gtk::manage(new OutputBoard())),
     m_canvas(Gtk::manage(new Canvas())),

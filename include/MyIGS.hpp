@@ -4,7 +4,6 @@
 #define MYIGS_H
 
 #include <gtkmm.h>
-#include <gtkmm/selectiondata.h>
 #include "Canvas.hpp"
 #include "OutputBoard.hpp"
 
@@ -36,7 +35,7 @@ protected:
     void create_wireframe();
 
 public:
-    MyIGS();
+    MyIGS(const Glib::RefPtr<Gtk::Application>& app);
     virtual ~MyIGS();
     void append_object(const Glib::ustring obj);
 };
