@@ -29,7 +29,7 @@ public:
     void transform(TMatrix &matrix) override;
     void normalize(TMatrix &matrix) override;
     void clip_to_window(Window &window) override;
-    void write_to_file(std::ofstream &file) override;
+    void write_to_file(Writer *w) override;
 };
 
 #endif  // POINT_HPP

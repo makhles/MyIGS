@@ -17,6 +17,7 @@ class Canvas;
 class TransformationDialog;
 class Shape;
 class ShapeDrawer;
+class Writer;
 template <class T> class Coord;
 
 class InterfaceController {
@@ -28,6 +29,7 @@ protected:
     MyIGS * const m_interface;
     Canvas * const m_viewport;
     Window m_window;
+    Writer *m_writer;
 
     TMatrix m_gtm;  // Global Transformation Matrix
 

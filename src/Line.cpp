@@ -9,6 +9,7 @@
 #include "Window.hpp"
 #include "AbstractDrawer.hpp"
 #include "TMatrix.hpp"
+#include "Writer.hpp"
 
 Line::Line(const std::string name, Point *p1, Point *p2) :
         Shape(name, ShapeType::LINE),
@@ -70,6 +71,6 @@ void Line::clip_to_window(Window &window) {
 }
 
 
-void Line::write_to_file(std::ofstream &file) {
-
+void Line::write_to_file(Writer *w) {
+    w->write_to_file(*this);
 }

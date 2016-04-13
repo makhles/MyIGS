@@ -8,6 +8,7 @@
 #include "Window.hpp"
 #include "AbstractDrawer.hpp"
 #include "TMatrix.hpp"
+#include "Writer.hpp"
 
 Point::Point(const std::string name, const double x, const double y) :
         Shape(name, ShapeType::POINT),
@@ -75,6 +76,6 @@ void Point::clip_to_window(Window &window) {
 }
 
 
-void Point::write_to_file(std::ofstream &file) {
-    file << "v " << m_xnc << " " << m_ync << std::endl;
+void Point::write_to_file(Writer *w) {
+    w->write_to_file(*this);
 }

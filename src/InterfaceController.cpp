@@ -16,6 +16,8 @@
 #include "Coord.hpp"
 #include "TMatrix.hpp"
 #include "TMatrixBuilder.hpp"
+#include "Writer.hpp"
+#include "ObjWriter.hpp"
 
 
 typedef std::list<Coord<double>*> DCoordList;
@@ -36,6 +38,11 @@ InterfaceController::~InterfaceController() {
         shape++;
     }
     m_shapes.clear();
+
+    // Object writer
+    if (m_writer) {
+        delete m_writer;
+    }
 }
 
 
@@ -252,14 +259,11 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
 
 
 void InterfaceController::write_shapes_to_file() {
-    std::ofstream file;
-    file.open("Wavefront.obj", std::ios::out | std::ios::app);
-    if (file.is_open()) {
-        auto shape = m_shapes.begin();
-        while (shape != m_shapes.end()) {
-            (*shape)->write_to_file(file);
-            shape++;
-        }
+    m_writer = new ObjWriter();
+    auto shape = m_shapes.begin();
+    while (shape != m_shapes.end()) {
+        (*shape)->write_to_file(m_writer);
+        shape++;
     }
-    file.close();
+    m_writer->flush();
 }

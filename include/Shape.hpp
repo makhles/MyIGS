@@ -7,8 +7,6 @@
 
 #include <string>
 #include <list>
-#include <fstream>
-#include <iostream>
 #include "ShapeType.hpp"
 
 // Forward declarations
@@ -16,6 +14,7 @@ template <class T> class Coord;
 class Window;
 class AbstractDrawer;
 class TMatrix;
+class Writer;
 
 typedef std::list<Coord<double>*> DCoordList;
 typedef std::list<const Coord<int>*> ICoordList;
@@ -48,7 +47,7 @@ public:
     void clear_viewport_coordinates();
     void add_viewport_coordinate(const Coord<int> *coord);
     virtual void clip_to_window(Window &w) = 0;
-    virtual void write_to_file(std::ofstream &file) = 0;
+    virtual void write_to_file(Writer *w) = 0;
 };
 
 #endif  // SHAPE_H

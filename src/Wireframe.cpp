@@ -8,6 +8,7 @@
 #include "Coord.hpp"
 #include "Window.hpp"
 #include "AbstractDrawer.hpp"
+#include "Writer.hpp"
 
 
 Wireframe::Wireframe(const std::string name) :
@@ -90,6 +91,6 @@ void Wireframe::clip_to_window(Window &window) {
 }
 
 
-void Wireframe::write_to_file(std::ofstream &file) {
-
+void Wireframe::write_to_file(Writer *w) {
+    w->write_to_file(*this);
 }
