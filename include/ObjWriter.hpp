@@ -7,13 +7,16 @@
 
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include "Writer.hpp"
 
 
 class ObjWriter : public Writer {
 private:
-    int m_lineCount;
     std::ofstream m_file;
+    int m_vCount;
+    std::vector<Point*> m_points;
+
 public:
     ObjWriter();
     ~ObjWriter();
@@ -23,6 +26,9 @@ public:
     void write_to_file(Line &l) override;
     void write_to_file(Wireframe &w) override;
     void flush() override;
+
+    // Own methods
+    bool has_point(Point &p_toFind) const;
 };
 
 #endif  // OBJ_WRITER_HPP
