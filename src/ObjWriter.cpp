@@ -7,7 +7,7 @@
 ObjWriter::ObjWriter() :
     m_lineCount(0)
 {
-    m_file.open("Wavefront.obj", std::ios::out | std::ios::app);
+    m_file.open("Wavefront.obj", std::ios::out);
     if (!m_file.is_open()) {
         std::cout << "Could not open Wavefront.obj file." << std::endl;
     }
