@@ -254,7 +254,7 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
 }
 
 
-void InterfaceController::write_shapes_to_file() {
+void InterfaceController::export_obj_file() {
     m_writer = new ObjWriter();
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
