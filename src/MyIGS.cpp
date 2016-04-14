@@ -10,23 +10,37 @@
 #include "CreateWireframeDialog.hpp"
 #include "ObjectsTreeView.hpp"
 
-MyIGS::MyIGS(const Glib::RefPtr<Gtk::Application>& app) :
+MyIGS::MyIGS() :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_board(Gtk::manage(new OutputBoard())),
     m_canvas(Gtk::manage(new Canvas())),
     m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25)),
-    m_angleEntry(Gtk::manage(new Gtk::Entry()))
+    m_angleEntry(Gtk::manage(new Gtk::Entry())),
+    m_loadItem(Gtk::manage(new Gtk::MenuItem("Load OBJ file"))),
+    m_xportItem(Gtk::manage(new Gtk::MenuItem("Export OBJ file"))),
+    m_quitItem(Gtk::manage(new Gtk::MenuItem("Quit")))
 {
     m_controller = new InterfaceController(this, m_canvas);
     m_objectsView->setInterfaceController(m_controller);
 
     // Main window
     set_title("My IGS");
-    set_border_width(10);
+    set_border_width(5);
     set_resizable(false);
+    Gtk::VBox * const mainBox = Gtk::manage(new Gtk::VBox());
+
+    Gtk::MenuItem * const fileItem = Gtk::manage(new Gtk::MenuItem("File"));
+    Gtk::Menu * const fileMenu = Gtk::manage(new Gtk::Menu());
+    fileItem->set_submenu(*fileMenu);
+    fileMenu->append(*m_loadItem);
+    fileMenu->append(*m_xportItem);
+    fileMenu->append(*m_quitItem);
+    Gtk::MenuBar * const menuBar = Gtk::manage(new Gtk::MenuBar());
+    menuBar->append(*fileItem);
+    mainBox->pack_start(*menuBar, Gtk::PACK_SHRINK, 10);
 
     // Main widgets
-    Gtk::HBox  * const mainBox = Gtk::manage(new Gtk::HBox());
+    Gtk::HBox  * const framesBox = Gtk::manage(new Gtk::HBox());
     Gtk::Frame * const controlFrame = Gtk::manage(new Gtk::Frame("Window control"));
     Gtk::Frame * const viewportFrame = Gtk::manage(new Gtk::Frame("Viewport"));
     Gtk::Frame * const objectsFrame = Gtk::manage(new Gtk::Frame("Objects"));
@@ -155,9 +169,10 @@ MyIGS::MyIGS(const Glib::RefPtr<Gtk::Application>& app) :
     objectsWindow->add(*m_objectsView);
     objectsFrame->add(*objectsBox);
 
-    mainBox->pack_start(*controlFrame, Gtk::PACK_SHRINK, 1);
-    mainBox->pack_start(*viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
-    mainBox->pack_start(*objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    framesBox->pack_start(*controlFrame, Gtk::PACK_SHRINK, 1);
+    framesBox->pack_start(*viewportFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    framesBox->pack_start(*objectsFrame, Gtk::PACK_EXPAND_WIDGET, 1);
+    mainBox->pack_start(*framesBox, Gtk::PACK_SHRINK, 0);
 
     add(*mainBox);
     show_all_children();
@@ -241,3 +256,22 @@ void MyIGS::create_wireframe() {
 void MyIGS::append_object(const Glib::ustring obj) {
     m_objectsView->append_object(obj);
 }
+
+
+// --------------------------------------------------------------------------------------------- //
+// ----------------------------------- Action handlers ----------------------------------------- //
+
+void MyIGS::on_action_file_load_obj_file() {
+    std::cout << "Loading .OBJ file..." << std::endl;
+}
+
+
+void MyIGS::on_action_file_save_obj_file() {
+    std::cout << "Saving .OBJ file..." << std::endl;
+}
+
+
+void MyIGS::on_action_file_quit() {
+    hide(); //Closes the main window to stop the app->run().
+}
+

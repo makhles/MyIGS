@@ -25,7 +25,8 @@ typedef std::list<Coord<double>*> DCoordList;
 
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
     m_interface(interface),
-    m_viewport(viewport)
+    m_viewport(viewport),
+    m_writer(nullptr)
 {
     m_viewport->set_controller(this);
 }
@@ -38,11 +39,6 @@ InterfaceController::~InterfaceController() {
         shape++;
     }
     m_shapes.clear();
-
-    // Object writer
-    if (m_writer) {
-        delete m_writer;
-    }
 }
 
 
@@ -266,4 +262,6 @@ void InterfaceController::write_shapes_to_file() {
         shape++;
     }
     m_writer->flush();
+    delete m_writer;
+    m_writer = nullptr;
 }

@@ -19,6 +19,11 @@ protected:
     Glib::RefPtr<Gtk::Adjustment> m_scaleAdjustment;
     Gtk::Entry * const m_angleEntry;
 
+    // Menu items
+    Gtk::MenuItem * const m_loadItem;
+    Gtk::MenuItem * const m_xportItem;
+    Gtk::MenuItem * const m_quitItem;
+
     InterfaceController * m_controller;
 
     // Control
@@ -34,8 +39,13 @@ protected:
     void create_line();
     void create_wireframe();
 
+    // Action handlers
+    void on_action_file_load_obj_file();
+    void on_action_file_save_obj_file();
+    void on_action_file_quit();
+
 public:
-    MyIGS(const Glib::RefPtr<Gtk::Application>& app);
+    MyIGS();
     virtual ~MyIGS();
     void append_object(const Glib::ustring obj);
 };
