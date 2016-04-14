@@ -79,3 +79,13 @@ void Point::clip_to_window(Window &window) {
 void Point::write_to_file(Writer *w) {
     w->write_to_file(*this);
 }
+
+
+bool Point::operator==(const Point &rhs) const {
+    return ((rhs.m_xwc == m_xwc) && (rhs.m_ywc == m_ywc));
+}
+
+
+bool Point::operator!=(const Point &rhs) const {
+    return !(*this == rhs);
+}

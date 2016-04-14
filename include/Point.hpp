@@ -18,6 +18,8 @@ private:
 public:
     Point(const std::string name, const double x, const double y);
     ~Point();
+
+    // Getters
     const double xwc() const { return m_xwc; }
     const double ywc() const { return m_ywc; }
     const double xnc() const { return m_xnc; }
@@ -30,6 +32,10 @@ public:
     void normalize(TMatrix &matrix) override;
     void clip_to_window(Window &window) override;
     void write_to_file(Writer *w) override;
+
+    // Operator overloading
+    bool operator==(const Point &rhs) const;
+    bool operator!=(const Point &rhs) const;
 };
 
 #endif  // POINT_HPP
