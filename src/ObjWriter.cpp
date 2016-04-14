@@ -25,41 +25,87 @@ ObjWriter::~ObjWriter() {
 
 
 void ObjWriter::write_to_file(Point &p) {
-    if (this->has_point(p)) {
-        std::cout << "Point already included." << std::endl;
-    } else {
-        m_file << "v " << p.xwc() << " " << p.ywc() << "\n";
+    int idx = this->find_point(p);
+    if (idx == -1) {
         m_points.push_back(&p);
         m_vCount++;
+    } else {
+        std::cout << "Point already included." << std::endl;
     }
 }
 
 
 void ObjWriter::write_to_file(Line &l) {
     std::cout << "Writing line to obj file..." << std::endl;
-    m_file << "Writing line to obj file...";
+    Point *p;
+    int idx;
+    // -------- First point ----------------
+    p = l.p1();
+    idx = this->find_point(*p);
+    if (idx == -1) {
+        m_points.push_back(p);
+        idx = m_vCount++;
+    }
+    m_linePoints.push_back(idx);
+    // -------- Second point ----------------
+    p = l.p2();
+    idx = this->find_point(*p);
+    if (idx == -1) {
+        m_points.push_back(p);
+        idx = m_vCount++;
+    }
+    m_linePoints.push_back(idx);
 }
 
 
 void ObjWriter::write_to_file(Wireframe &w) {
-    std::cout << "Writing wireframe to obj file..." << std::endl;
-    m_file << "Writing wireframe to obj file...";
+    std::vector<unsigned> points;
+    int idx;
+    const std::vector<Point*> vertices = w.vertices();
+    for (unsigned i = 0; i < vertices.size(); i++) {
+        idx = this->find_point(*vertices[i]);
+        if (idx == -1) {
+            m_points.push_back(vertices[i]);
+            idx = ++m_vCount;
+        }
+        points.push_back(idx);
+    }
+    m_wPoints.push_back(points);
 }
 
 
-void ObjWriter::flush() {
+void ObjWriter::write_to_file() {
+
+    // Write points
+    for (unsigned i = 0; i < m_points.size(); i++) {
+        m_file << "v " << m_points[i]->xwc() << " " << m_points[i]->ywc() << "\n";
+    }
+
+    // Write lines
+    for (unsigned i = 0; i < m_linePoints.size(); i += 2) {
+        m_file << "l " << m_linePoints[i] << " " << m_linePoints[i+1] << "\n";
+    }
+
+    // Write wireframes
+    for (unsigned i = 0; i < m_wPoints.size(); i++) {
+        m_file << "f";
+        for (unsigned j = 0; j < m_wPoints[i].size(); j++) {
+            m_file << " " << m_wPoints[i][j];
+        }
+        m_file << "\n";
+    }
     m_file.flush();
 }
 
 
-bool ObjWriter::has_point(Point &p_toFind) const {
-    bool found = false;
-    auto p = m_points.cbegin();
-    while (p != m_points.cend()) {
-        if ((**p) == p_toFind) {
-            found = true;
+// Searches for a point in the points vector.
+// If it is found, its index is return, otherwise -1.
+int ObjWriter::find_point(const Point &p_toFind) const {
+    int idx = -1;
+    for (unsigned i = 0; i < m_points.size(); i++) {
+        if (*m_points[i] == p_toFind) {
+            idx = i;
         }
-        p++;
     }
-    return found;
+    return idx;
 }

@@ -16,6 +16,8 @@ private:
     std::ofstream m_file;
     int m_vCount;
     std::vector<Point*> m_points;
+    std::vector<unsigned> m_linePoints;  // List of line points
+    std::vector<std::vector<unsigned>> m_wPoints;     // List of wireframe points
 
 public:
     ObjWriter();
@@ -25,10 +27,10 @@ public:
     void write_to_file(Point &p) override;
     void write_to_file(Line &l) override;
     void write_to_file(Wireframe &w) override;
-    void flush() override;
+    void write_to_file() override;
 
     // Own methods
-    bool has_point(Point &p_toFind) const;
+    int find_point(const Point &p_toFind) const;
 };
 
 #endif  // OBJ_WRITER_HPP

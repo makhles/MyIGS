@@ -5,14 +5,13 @@
 #ifndef WIREFRAME_HPP
 #define WIREFRAME_HPP
 
-#include <list>
+#include <vector>
 #include "Shape.hpp"
 #include "Point.hpp"
 
-
 class Wireframe : public Shape {
 protected:
-    std::list<Point*> m_vertices;
+    std::vector<Point*> m_vertices;
 
 public:
     Wireframe(const std::string name);
@@ -20,6 +19,8 @@ public:
 
     const Coord<double> get_centroid() override;
     void add_point(Point *point);
+
+    const std::vector<Point*> vertices() const { return m_vertices; }
 
     // Visitor
     void accept(AbstractDrawer *drawer);

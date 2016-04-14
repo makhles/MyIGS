@@ -19,8 +19,8 @@ protected:
 public:
     Line(const std::string name, Point *p1, Point *p2);
     ~Line();
-    const Point* p1() const { return m_p1; }
-    const Point* p2() const { return m_p2; }
+    Point* p1() const { return m_p1; }
+    Point* p2() const { return m_p2; }
     const Coord<double> get_centroid() override;
 
     // Visitor

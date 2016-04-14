@@ -16,7 +16,7 @@ public:
     virtual void write_to_file(Point &p) = 0;
     virtual void write_to_file(Line &l) = 0;
     virtual void write_to_file(Wireframe &w) = 0;
-    virtual void flush() = 0;
+    virtual void write_to_file() = 0;
 };
 
 #endif  // WRITER_HPP

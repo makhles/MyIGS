@@ -261,7 +261,7 @@ void InterfaceController::export_obj_file() {
         (*shape)->write_to_file(m_writer);
         shape++;
     }
-    m_writer->flush();
+    m_writer->write_to_file();
     delete m_writer;
     m_writer = nullptr;
 }
