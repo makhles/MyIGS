@@ -41,7 +41,7 @@ protected:
 
     // Action handlers
     void on_action_file_load_obj_file();
-    void on_action_file_save_obj_file();
+    void on_action_file_export_obj_file();
     void on_action_file_quit();
 
 public:

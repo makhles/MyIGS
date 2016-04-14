@@ -29,16 +29,6 @@ MyIGS::MyIGS() :
     set_resizable(false);
     Gtk::VBox * const mainBox = Gtk::manage(new Gtk::VBox());
 
-    Gtk::MenuItem * const fileItem = Gtk::manage(new Gtk::MenuItem("File"));
-    Gtk::Menu * const fileMenu = Gtk::manage(new Gtk::Menu());
-    fileItem->set_submenu(*fileMenu);
-    fileMenu->append(*m_loadItem);
-    fileMenu->append(*m_xportItem);
-    fileMenu->append(*m_quitItem);
-    Gtk::MenuBar * const menuBar = Gtk::manage(new Gtk::MenuBar());
-    menuBar->append(*fileItem);
-    mainBox->pack_start(*menuBar, Gtk::PACK_SHRINK, 10);
-
     // Main widgets
     Gtk::HBox  * const framesBox = Gtk::manage(new Gtk::HBox());
     Gtk::Frame * const controlFrame = Gtk::manage(new Gtk::Frame("Window control"));
@@ -51,6 +41,25 @@ MyIGS::MyIGS() :
     controlFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     viewportFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     objectsFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+
+// --------------------------------------------------------------------------------------------- //
+// ---------------------------------------- Menubar -------------------------------------------- //
+
+    Gtk::MenuItem * const fileItem = Gtk::manage(new Gtk::MenuItem("File"));
+    Gtk::Menu * const fileMenu = Gtk::manage(new Gtk::Menu());
+    fileItem->set_submenu(*fileMenu);
+    fileMenu->append(*m_loadItem);
+    fileMenu->append(*m_xportItem);
+    fileMenu->append(*m_quitItem);
+
+    m_loadItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_load_obj_file));
+    m_xportItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_export_obj_file));
+    m_quitItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_quit));
+
+    Gtk::MenuBar * const menuBar = Gtk::manage(new Gtk::MenuBar());
+    menuBar->append(*fileItem);
+    mainBox->pack_start(*menuBar, Gtk::PACK_SHRINK, 10);
+
 
 // --------------------------------------------------------------------------------------------- //
 // ------------------------------------- Control Frame ----------------------------------------- //
@@ -266,8 +275,8 @@ void MyIGS::on_action_file_load_obj_file() {
 }
 
 
-void MyIGS::on_action_file_save_obj_file() {
-    std::cout << "Saving .OBJ file..." << std::endl;
+void MyIGS::on_action_file_export_obj_file() {
+    std::cout << "Exporting .OBJ file..." << std::endl;
 }
 
 
