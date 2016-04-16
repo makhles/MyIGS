@@ -255,13 +255,19 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
 
 
 void InterfaceController::export_obj_file() {
-    m_writer = new ObjWriter();
-    auto shape = m_shapes.begin();
-    while (shape != m_shapes.end()) {
-        (*shape)->write_to_file(m_writer);
-        shape++;
+    std::cout << "Exporting shapes to Wavefront.obj file...";
+    if (m_shapes.empty()) {
+        std::cout << " nothing to export." << std::endl;
+    } else {
+        m_writer = new ObjWriter();
+        auto shape = m_shapes.begin();
+        while (shape != m_shapes.end()) {
+            (*shape)->write_to_file(m_writer);
+            shape++;
+        }
+        m_writer->write_to_file();
+        std::cout << " done." << std::endl;
+        delete m_writer;
+        m_writer = nullptr;
     }
-    m_writer->write_to_file();
-    delete m_writer;
-    m_writer = nullptr;
 }

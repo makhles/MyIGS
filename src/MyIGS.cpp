@@ -274,7 +274,6 @@ void MyIGS::on_action_file_load_obj_file() {
 
 
 void MyIGS::on_action_file_export_obj_file() {
-    std::cout << "Exporting .OBJ file..." << std::endl;
     m_controller->export_obj_file();
 }
 
