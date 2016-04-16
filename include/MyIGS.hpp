@@ -5,7 +5,6 @@
 
 #include <gtkmm.h>
 #include "Canvas.hpp"
-#include "OutputBoard.hpp"
 
 class InterfaceController;
 class Shape;
@@ -14,7 +13,6 @@ class ObjectsTreeView;
 class MyIGS : public Gtk::Window {
 protected:
     ObjectsTreeView * const m_objectsView;
-    OutputBoard * const m_board;
     Canvas * const m_canvas;
     Glib::RefPtr<Gtk::Adjustment> m_scaleAdjustment;
     Gtk::Entry * const m_angleEntry;

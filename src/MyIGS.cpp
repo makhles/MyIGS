@@ -12,7 +12,6 @@
 
 MyIGS::MyIGS() :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
-    m_board(Gtk::manage(new OutputBoard())),
     m_canvas(Gtk::manage(new Canvas())),
     m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25)),
     m_angleEntry(Gtk::manage(new Gtk::Entry())),
@@ -147,7 +146,6 @@ MyIGS::MyIGS() :
     canvasBox->pack_start(*m_canvas, Gtk::PACK_EXPAND_WIDGET, 0);
 
     viewportBox->pack_start(*canvasBox, Gtk::PACK_EXPAND_WIDGET, 0);
-    viewportBox->pack_start(*m_board, Gtk::PACK_EXPAND_WIDGET, 0);
     viewportFrame->add(*viewportBox);
 
 // --------------------------------------------------------------------------------------------- //
