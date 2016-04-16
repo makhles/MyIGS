@@ -12,13 +12,6 @@
 
 
 class ObjWriter : public Writer {
-private:
-    std::ofstream m_file;
-    int m_vCount;
-    std::vector<Point*> m_points;
-    std::vector<unsigned> m_linePoints;  // List of line points
-    std::vector<std::vector<unsigned>> m_wPoints;     // List of wireframe points
-
 public:
     ObjWriter();
     ~ObjWriter();
@@ -31,6 +24,13 @@ public:
 
     // Own methods
     int find_point(const Point &p_toFind) const;
+
+private:
+    std::ofstream m_file;
+    int m_vCount;
+    std::vector<Point*> m_points;
+    std::vector<unsigned> m_linePoints;  // List of line points
+    std::vector<std::vector<unsigned>> m_wPoints;     // List of wireframe points
 };
 
 #endif  // OBJ_WRITER_HPP
