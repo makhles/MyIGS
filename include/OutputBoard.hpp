@@ -1,21 +1,25 @@
-/* OutputBoard.h */
+// OutputBoard.hpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #ifndef OUTPUT_BOARD_H
 #define OUTPUT_BOARD_H
 
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/textview.h>
-#include <gtkmm/textbuffer.h>
+#include <gtkmm.h>
 #include <string>
 
+typedef Glib::RefPtr<Gtk::TextBuffer> TBuffer;
+typedef Gtk::TextBuffer::iterator TextIter;
+
+
 class OutputBoard : public Gtk::ScrolledWindow {
-    protected:
-        Gtk::TextView _textView;
-        Glib::RefPtr<Gtk::TextBuffer> _greetingTextBuffer;
-    public:
-        OutputBoard();
-        virtual ~OutputBoard();
-        void insert_text(std::string newText);
+private:
+    Gtk::TextView m_textView;
+
+public:
+    OutputBoard();
+    ~OutputBoard();
+    void print(const std::string &msg);
 };
 
 #endif  // OUTPUT_BOARD_H
