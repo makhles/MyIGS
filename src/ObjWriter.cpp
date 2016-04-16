@@ -67,6 +67,8 @@ void ObjWriter::write_to_file(Wireframe &w) {
         if (idx == -1) {
             m_points.push_back(vertices[i]);
             idx = ++m_vCount;
+        } else {
+            idx++;
         }
         points.push_back(idx);
     }
