@@ -17,12 +17,14 @@ protected:
     Glib::RefPtr<Gtk::Adjustment> m_scaleAdjustment;
     Gtk::Entry * const m_angleEntry;
 
-    // Menu items
-    Gtk::MenuItem * const m_loadItem;
-    Gtk::MenuItem * const m_xportItem;
-    Gtk::MenuItem * const m_quitItem;
-
-    InterfaceController * m_controller;
+    // Radio buttons state
+    bool m_csActive;
+    bool m_lbActive;
+    bool m_nlnActive;
+    bool m_shActive;
+    bool m_waActive;
+    
+    InterfaceController *m_controller;
 
     // Control
     void on_window_adjustment_value_changed();
@@ -41,6 +43,11 @@ protected:
     void on_action_file_load_obj_file();
     void on_action_file_export_obj_file();
     void on_action_file_quit();
+    void on_cs_radio_toggled();
+    void on_lb_radio_toggled();
+    void on_nln_radio_toggled();
+    void on_sh_radio_toggled();
+    void on_wa_radio_toggled();
 
 public:
     MyIGS();

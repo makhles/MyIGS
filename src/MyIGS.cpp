@@ -9,15 +9,18 @@
 #include "CreateLineDialog.hpp"
 #include "CreateWireframeDialog.hpp"
 #include "ObjectsTreeView.hpp"
+#include "ClippingType.hpp"
 
 MyIGS::MyIGS() :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_canvas(Gtk::manage(new Canvas())),
     m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25)),
     m_angleEntry(Gtk::manage(new Gtk::Entry())),
-    m_loadItem(Gtk::manage(new Gtk::MenuItem("Load OBJ file"))),
-    m_xportItem(Gtk::manage(new Gtk::MenuItem("Export OBJ file"))),
-    m_quitItem(Gtk::manage(new Gtk::MenuItem("Quit")))
+    m_csActive(true),
+    m_lbActive(false),
+    m_nlnActive(false),
+    m_shActive(true),
+    m_waActive(false)
 {
     m_controller = new InterfaceController(this, m_canvas);
     m_objectsView->setInterfaceController(m_controller);
@@ -44,19 +47,68 @@ MyIGS::MyIGS() :
 // --------------------------------------------------------------------------------------------- //
 // ---------------------------------------- Menubar -------------------------------------------- //
 
+    // File menu
     Gtk::MenuItem * const fileItem = Gtk::manage(new Gtk::MenuItem("File"));
     Gtk::Menu * const fileMenu = Gtk::manage(new Gtk::Menu());
     fileItem->set_submenu(*fileMenu);
-    fileMenu->append(*m_loadItem);
-    fileMenu->append(*m_xportItem);
-    fileMenu->append(*m_quitItem);
 
-    m_loadItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_load_obj_file));
-    m_xportItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_export_obj_file));
-    m_quitItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_quit));
+    Gtk::MenuItem * const loadItem = Gtk::manage(new Gtk::MenuItem("Load OBJ file"));
+    Gtk::MenuItem * const xportItem = Gtk::manage(new Gtk::MenuItem("Export OBJ file"));
+    Gtk::MenuItem * const quitItem = Gtk::manage(new Gtk::MenuItem("Quit"));
 
+    fileMenu->append(*loadItem);
+    fileMenu->append(*xportItem);
+    fileMenu->append(*quitItem);
+
+    loadItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_load_obj_file));
+    xportItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_export_obj_file));
+    quitItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_quit));
+
+    // Window menu
+    Gtk::MenuItem * const windowItem = Gtk::manage(new Gtk::MenuItem("Window"));
+    Gtk::Menu * const windowMenu = Gtk::manage(new Gtk::Menu());
+
+    // Window menu > Clipping
+    Gtk::MenuItem * const clippingItem = Gtk::manage(new Gtk::MenuItem("Clipping"));
+    Gtk::Menu * const clippingMenu = Gtk::manage(new Gtk::Menu());
+    windowItem->set_submenu(*windowMenu);
+    windowMenu->append(*clippingItem);
+    clippingItem->set_submenu(*clippingMenu);
+
+    Gtk::RadioMenuItem::Group line_group;
+    Gtk::RadioMenuItem *radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(line_group, "Cohen-Sutherland"));
+    clippingMenu->append(*radioMenuItem);
+    radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_cs_radio_toggled)));
+    radioMenuItem->set_active();
+
+    line_group = radioMenuItem->get_group();
+    radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(line_group, "Liang-Barsky"));
+    clippingMenu->append(*radioMenuItem);
+    radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_lb_radio_toggled)));
+
+    line_group = radioMenuItem->get_group();
+    radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(line_group, "Nicholl-Lee-Nicholl"));
+    Gtk::SeparatorMenuItem *radio_separator = Gtk::manage(new Gtk::SeparatorMenuItem());
+    clippingMenu->append(*radioMenuItem);
+    clippingMenu->append(*radio_separator);
+    radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_nln_radio_toggled)));
+
+    Gtk::RadioMenuItem::Group wf_group;
+    radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(wf_group, "Sutherland-Hodgeman"));
+    clippingMenu->append(*radioMenuItem);
+    radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_sh_radio_toggled)));
+    radioMenuItem->set_active();
+
+    wf_group = radioMenuItem->get_group();
+    radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(wf_group, "Weiler-Atherton"));
+    clippingMenu->append(*radioMenuItem);
+    radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_wa_radio_toggled)));
+
+
+    // -------------------------
     Gtk::MenuBar * const menuBar = Gtk::manage(new Gtk::MenuBar());
     menuBar->append(*fileItem);
+    menuBar->append(*windowItem);
     mainBox->pack_start(*menuBar, Gtk::PACK_SHRINK, 10);
 
 
@@ -282,3 +334,47 @@ void MyIGS::on_action_file_quit() {
     hide(); //Closes the main window to stop the app->run().
 }
 
+
+void MyIGS::on_cs_radio_toggled() {
+    std::cout << "CS radio toggled!" << std::endl;
+    m_csActive ^= true;
+    if (m_csActive) {
+        m_controller->set_line_clipping_method(LineClipping::CS);
+    }
+}
+
+
+void MyIGS::on_lb_radio_toggled() {
+    std::cout << "LB radio toggled!" << std::endl;
+    m_lbActive ^= true;
+    if (m_lbActive) {
+        m_controller->set_line_clipping_method(LineClipping::LB);
+    }
+}
+
+
+void MyIGS::on_nln_radio_toggled() {
+    std::cout << "NLN radio toggled!" << std::endl;
+    m_nlnActive ^= true;
+    if (m_nlnActive) {
+        m_controller->set_line_clipping_method(LineClipping::NLN);
+    }
+}
+
+
+void MyIGS::on_sh_radio_toggled() {
+    std::cout << "SH radio toggled!" << std::endl;
+    m_shActive ^= true;
+    if (m_shActive) {
+        m_controller->set_polygon_clipping_method(PolygonClipping::SH);
+    }
+}
+
+
+void MyIGS::on_wa_radio_toggled() {
+    std::cout << "WA radio toggled!" << std::endl;
+    m_waActive ^= true;
+    if (m_waActive) {
+        m_controller->set_polygon_clipping_method(PolygonClipping::WA);
+    }
+}
