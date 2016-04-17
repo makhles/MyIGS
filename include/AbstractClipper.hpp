@@ -13,9 +13,8 @@ class Line;
 class Wireframe;
 
 class AbstractClipper {
-protected:
-    virtual ~AbstractClipper() {}
 public:
+    virtual ~AbstractClipper() {}
     virtual void clip_to_area(Point &p) = 0;
     virtual void clip_to_area(Line &line) = 0;
     virtual void clip_to_area(Wireframe &wf) = 0;
