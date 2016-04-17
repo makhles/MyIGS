@@ -18,6 +18,7 @@
 #include "TMatrixBuilder.hpp"
 #include "Writer.hpp"
 #include "ObjWriter.hpp"
+#include "WindowClipper.hpp"
 
 
 typedef std::list<Coord<double>*> DCoordList;
@@ -26,7 +27,8 @@ typedef std::list<Coord<double>*> DCoordList;
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
     m_interface(interface),
     m_viewport(viewport),
-    m_writer(nullptr)
+    m_writer(nullptr),
+    m_clipper(new WindowClipper())
 {
     m_viewport->set_controller(this);
 }
@@ -39,6 +41,7 @@ InterfaceController::~InterfaceController() {
         shape++;
     }
     m_shapes.clear();
+    delete m_clipper;
 }
 
 
@@ -271,3 +274,14 @@ void InterfaceController::export_obj_file() {
         m_writer = nullptr;
     }
 }
+
+
+void InterfaceController::set_line_clipping_method(LineClipping type) {
+    m_clipper->set_line_clipping_method(type);
+}
+
+
+void InterfaceController::set_polygon_clipping_method(PolygonClipping type) {
+    m_clipper->set_polygon_clipping_method(type);
+}
+

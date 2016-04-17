@@ -10,6 +10,7 @@
 #include "Window.hpp"
 #include "ShapeType.hpp"
 #include "TMatrix.hpp"
+#include "ClippingType.hpp"
 
 // Forward declarations
 class MyIGS;
@@ -18,6 +19,7 @@ class TransformationDialog;
 class Shape;
 class ShapeDrawer;
 class Writer;
+class AbstractClipper;
 template <class T> class Coord;
 
 class InterfaceController {
@@ -30,6 +32,7 @@ protected:
     Canvas * const m_viewport;
     Window m_window;
     Writer *m_writer;
+    AbstractClipper *m_clipper;
 
     TMatrix m_gtm;  // Global Transformation Matrix
 
@@ -62,6 +65,8 @@ public:
     void rotate_about_centroid(const TransformationDialog &dialog);
 
     void export_obj_file();
+    void set_line_clipping_method(LineClipping type);
+    void set_polygon_clipping_method(PolygonClipping type);
 };
 
 #endif  // InterfaceController_H
