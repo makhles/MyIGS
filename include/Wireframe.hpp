@@ -20,7 +20,7 @@ public:
     const Coord<double> get_centroid() override;
     void add_point(Point *point);
 
-    const std::vector<Point*> vertices() const { return m_vertices; }
+    const std::vector<Point*>& vertices() const { return m_vertices; }
 
     // Visitor
     void accept(AbstractDrawer *drawer);
