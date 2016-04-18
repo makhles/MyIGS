@@ -14,8 +14,8 @@ private:
     // Constants
     const double LOCAL_WIDTH = 2.0;
     const double LOCAL_HEIGHT = 2.0;
-    const double DEFAULT_WIDTH = 1000;
-    const double DEFAULT_HEIGHT = 1000;
+    const double DEFAULT_WIDTH = 480;
+    const double DEFAULT_HEIGHT = 480;
     const double DEFAULT_CENTER_X = 0.0;
     const double DEFAULT_CENTER_Y = 0.0;
     const double DEFAULT_DISPLACEMENT = 5.0;
