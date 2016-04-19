@@ -9,7 +9,11 @@
 #ifndef WINDOW_CLIPPER_HPP
 #define WINDOW_CLIPPER_HPP
 
+#include <vector>
 #include "AbstractClipper.hpp"
+
+
+typedef std::vector<Point*> VPoints;
 
 class WindowClipper : public AbstractClipper {
 public:
@@ -27,16 +31,31 @@ public:
     void cohen_sutherland_clipping(Line &line);
     void liang_barsky_clipping(Line &line);
     void nicholl_lee_nicholl_clipping(Line &line);
-    void sutherland_hodgeman_clipping(Wireframe &wf);
+
+    void SH_clipping(Wireframe &wf);
+    void SH_polygon_clipping(const VPoints&, VPoints&);
+    bool SH_inside(Point *p);
+    Point* SH_intersect(Point *p, Point *s);
+
     void weiler_atherton_clipping(Wireframe &wf);
 
 private:
+    // Window boundaries coordinates
     const double X_MIN = -1.0;
     const double X_MAX = +1.0;
     const double Y_MIN = -1.0;
     const double Y_MAX = +1.0;
-    LineClipping m_lineClipping;
-    PolygonClipping m_polygonClipping;
+
+    // Window boundaries (edges)
+    enum Boundary {
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
+    };
+    WindowClipper::Boundary m_edge;
+    LineClipping m_lineClipping;        // Type of line clipping
+    PolygonClipping m_polygonClipping;  // Type of polygon clipping
 };
 
 #endif  // WINDOW_CLIPPER_HPP

@@ -37,6 +37,7 @@ public:
     std::string name() const { return m_name; }
     const DCoordList* normalized_coordinates() const { return &m_ncList; }
     const ICoordList* viewport_coordinates() const { return &m_vpList; }
+    void update_normalized_points(std::vector<Point*> points);
     virtual const Coord<double> get_centroid() = 0;
 
     virtual void accept(AbstractDrawer *drawer) = 0;  // Visitor

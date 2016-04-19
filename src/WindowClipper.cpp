@@ -2,20 +2,9 @@
 // Authors: Leonardo Vailatti
 //          Makhles R. Lange
 
-#include <vector>
 #include "WindowClipper.hpp"
 #include "Point.hpp"
 #include "Wireframe.hpp"
-
-enum window_side_t { TOP, BOTTOM, LEFT, RIGHT };
-
-// Functions
-bool sh_inside(Point *p, window_side_t side);
-Point* sh_intersect(Point *p, Point *s);
-void sutherland_hodgeman_main(const std::vector<Point*> &inVertices, 
-                              std::vector<Point*> &outVertices,
-                              window_side_t side);
-
 
 
 WindowClipper::WindowClipper() :
@@ -41,7 +30,7 @@ void WindowClipper::clip_to_area(Line &line) {
 
 void WindowClipper::clip_to_area(Wireframe &wf) {
     switch(m_polygonClipping) {
-        case PolygonClipping::SH: this->sutherland_hodgeman_clipping(wf); break;
+        case PolygonClipping::SH: this->SH_clipping(wf); break;
         case PolygonClipping::WA: this->weiler_atherton_clipping(wf); break;
     }
 }
@@ -72,26 +61,33 @@ void WindowClipper::nicholl_lee_nicholl_clipping(Line &line) {
 }
 
 
-void WindowClipper::sutherland_hodgeman_clipping(Wireframe &wf) {
+void WindowClipper::SH_clipping(Wireframe &wf) {
 
-    const std::vector<Point*> vertices = wf.vertices();
-    std::vector<Point*> inVertices(vertices);
-    std::vector<Point*> outVertices;
+    const VPoints vertices = wf.vertices();
+    VPoints inVertices(vertices);
+    VPoints outVertices;
 
     // Call the algorithm for each window edge, switching in and out vectors
-    sutherland_hodgeman_main(inVertices, outVertices, window_side_t::LEFT);
+    m_edge = WindowClipper::Boundary::LEFT;
+    SH_polygon_clipping(inVertices, outVertices);
+
     inVertices.clear();
-    sutherland_hodgeman_main(outVertices, inVertices, window_side_t::BOTTOM);
+    m_edge = WindowClipper::Boundary::BOTTOM;
+    SH_polygon_clipping(outVertices, inVertices);
+
     outVertices.clear();
-    sutherland_hodgeman_main(inVertices, outVertices, window_side_t::RIGHT);
+    m_edge = WindowClipper::Boundary::RIGHT;
+    SH_polygon_clipping(inVertices, outVertices);
+    
     inVertices.clear();
-    sutherland_hodgeman_main(outVertices, inVertices, window_side_t::TOP);
+    m_edge = WindowClipper::Boundary::TOP;
+    SH_polygon_clipping(outVertices, inVertices);
+
+    // Clipped polygon is stored in inVertices
 }
 
 
-void sutherland_hodgeman_main(const std::vector<Point*> &inVertices, 
-                              std::vector<Point*> &outVertices,
-                              window_side_t side) {
+void WindowClipper::SH_polygon_clipping(const VPoints &inVertices, VPoints &outVertices) {
     Point *s;
     Point *p;
     Point *i;
@@ -100,20 +96,20 @@ void sutherland_hodgeman_main(const std::vector<Point*> &inVertices,
 
     for(unsigned j = 0; j < inVertices.size(); j++) {
         p = inVertices[j];
-        if (sh_inside(p, side)) {
-            if (sh_inside(s, side)) {
+        if (this->SH_inside(p)) {
+            if (this->SH_inside(s)) {
                 // The whole line is inside the clipping area
                 outVertices.push_back(p);
             } else {
                 // Line is entering the clipping area
-                i = sh_intersect(p, s);
+                i = this->SH_intersect(p, s);
                 outVertices.push_back(i);
                 outVertices.push_back(p);
             }
         } else {
-            if (sh_inside(s, side)) {
+            if (this->SH_inside(s)) {
                 // Line is leaving the clipping area
-                i = sh_intersect(p, s);
+                i = this->SH_intersect(p, s);
                 outVertices.push_back(i);
             }
         }
@@ -122,36 +118,36 @@ void sutherland_hodgeman_main(const std::vector<Point*> &inVertices,
 }
 
 
-bool sh_inside(Point *p, window_side_t side) {
+bool WindowClipper::SH_inside(Point *p) {
     bool inside = false;
-    switch(side) {
-        case window_side_t::LEFT:
+    switch(m_edge) {
+        case WindowClipper::Boundary::LEFT:
         {
-            double d = -1.0 - p->x();
+            double d = -1.0 - p->xnc();
             if (d <= 0.0) {
                 inside = true;
             }
             break;
         }
-        case window_side_t::BOTTOM:
+        case WindowClipper::Boundary::BOTTOM:
         {
-            double d = -1.0 - p->y();
+            double d = -1.0 - p->ync();
             if (d <= 0.0) {
                 inside = true;
             }
             break;
         }
-        case window_side_t::RIGHT:
+        case WindowClipper::Boundary::RIGHT:
         {
-            double d = p->x() - 1.0;
+            double d = p->xnc() - 1.0;
             if (d <= 0.0) {
                 inside = true;
             }
             break;
         }
-        case window_side_t::TOP:
+        case WindowClipper::Boundary::TOP:
         {
-            double d = p->y() - 1.0;
+            double d = p->ync() - 1.0;
             if (d <= 0.0) {
                 inside = true;
             }
@@ -162,8 +158,42 @@ bool sh_inside(Point *p, window_side_t side) {
 }
 
 
-Point* sh_intersect(Point *p, Point *s) {
-    return new Point("intersection", 10.0, 10.0);
+Point* WindowClipper::SH_intersect(Point *p, Point *s) {
+    double x, y;
+    double x0 = s->xnc();
+    double y0 = s->ync();
+    double x1 = p->xnc();
+    double y1 = p->ync();
+    double dydx = (y1 - y0) / (x1 - x0);
+    double dxdy = 1.0 / dydx;
+
+    switch(m_edge) {
+        case WindowClipper::Boundary::LEFT:
+        {
+            x = X_MIN;
+            y = y0 - dydx * (x0 - X_MIN);
+            break;
+        }
+        case WindowClipper::Boundary::BOTTOM:
+        {
+            x = x0 - dxdy * (y0 - Y_MIN);
+            y = Y_MIN;
+            break;
+        }
+        case WindowClipper::Boundary::RIGHT:
+        {
+            x = X_MAX;
+            y = y0 - dydx * (x0 - X_MAX);
+            break;
+        }
+        case WindowClipper::Boundary::TOP:
+        {
+            x = x0 - dxdy * (y0 - Y_MIN);
+            y = Y_MAX;
+            break;
+        }
+    }
+    return new Point("Intersection", x, y);;
 }
 
 
