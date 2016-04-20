@@ -19,12 +19,6 @@ Line::Line(const std::string name, Point *p1, Point *p2) :
 
 
 Line::~Line() {
-    auto coord = m_ncCoord.begin();
-    while (coord != m_ncCoord.end()) {
-        delete *coord;
-        coord++;
-    }
-    m_ncCoord.clear();
 }
 
 
@@ -42,7 +36,6 @@ void Line::accept(AbstractDrawer *drawer) {
 
 
 void Line::transform(TMatrix &matrix) {
-    m_ncCoord.clear();
     m_p1->transform(matrix);
     m_p2->transform(matrix);
 }
@@ -51,6 +44,7 @@ void Line::transform(TMatrix &matrix) {
 void Line::normalize(TMatrix &matrix) {
     m_p1->normalize(matrix);
     m_p2->normalize(matrix);
+    m_ncCoord.clear();
     m_ncCoord.push_back(new Coord<double>(m_p1->xnc(), m_p1->ync()));
     m_ncCoord.push_back(new Coord<double>(m_p2->xnc(), m_p2->ync()));
 }

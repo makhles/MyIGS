@@ -31,11 +31,16 @@ public:
     void set_line_clipping_method(LineClipping type) override;
     void set_polygon_clipping_method(PolygonClipping type) override;
 
-    // Own methods
+    // Own methods ----------------
+
+    // Cohen-Sutherland methods
     void cohen_sutherland_clipping(Line &line);
+    int computeOutcode(Point *p);
+
     void liang_barsky_clipping(Line &line);
     void nicholl_lee_nicholl_clipping(Line &line);
 
+    // Sutherland-Hodgeman methods
     void SH_clipping(Wireframe &wf);
     void SH_polygon_clipping(const DCoordVector&, DCoordVector&);
     bool SH_inside(Coord<double> *p);
@@ -50,12 +55,19 @@ private:
     const double Y_MIN = -1.0;
     const double Y_MAX = +1.0;
 
+    // Used on Cohen-Sutherland
+    const int INSIDE = 0;
+    const int LEFT = 1;
+    const int RIGHT = 2;
+    const int BOTTOM = 4;
+    const int TOP = 8;
+
     // Window boundaries (edges)
     enum Boundary {
-        TOP,
-        BOTTOM,
-        LEFT,
-        RIGHT
+        TOP_EDGE,
+        BOTTOM_EDGE,
+        LEFT_EDGE,
+        RIGHT_EDGE
     };
     WindowClipper::Boundary m_edge;
     LineClipping m_lineClipping;        // Type of line clipping

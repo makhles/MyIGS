@@ -29,9 +29,10 @@ protected:
     ICoordVector m_vpCoord;  // Viewport coordinates
 
     Shape(const std::string name, const ShapeType type);
+    void clear_normalized_coords();
 
 public:
-    virtual ~Shape() {}
+    virtual ~Shape();
 
     //ShapeType get_type() const {return m_type;}
     std::string name() const { return m_name; }
@@ -41,7 +42,7 @@ public:
 
     /// Updates the normalized coordinates vector to
     /// be used in the viewport transform.
-    void update_normalized_coords(DCoordVector &coords) { m_ncCoord = coords; }
+    void update_normalized_coords(DCoordVector &coords);
 
     virtual void accept(AbstractDrawer *drawer) = 0;  // Visitor
 

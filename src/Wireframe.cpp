@@ -17,12 +17,6 @@ Wireframe::Wireframe(const std::string name) :
 
 
 Wireframe::~Wireframe() {
-    auto coord = m_ncCoord.begin();
-    while (coord != m_ncCoord.end()) {
-        delete *coord;
-        coord++;
-    }
-    m_ncCoord.clear();
     auto point = m_vertices.begin();
     while (point != m_vertices.end()) {
         delete *point;

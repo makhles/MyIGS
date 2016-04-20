@@ -134,7 +134,6 @@ void InterfaceController::to_viewport(Shape *shape) {
 
         auto c = coords.begin();
         while (c != coords.end()) {
-            std::cout << "LALALA-" << std::endl;
             // Parameters
             xratio = m_viewport->vp_width() / 2.0;
             yratio = m_viewport->vp_height() / 2.0;

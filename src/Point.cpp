@@ -18,12 +18,6 @@ Point::Point(const std::string name, const double x, const double y) :
 
 
 Point::~Point() {
-    auto coord = m_ncCoord.begin();
-    while (coord != m_ncCoord.end()) {
-        delete *coord;
-        coord++;
-    }
-    m_ncCoord.clear();
 }
 
 

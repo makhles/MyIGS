@@ -6,6 +6,7 @@
 #include "WindowClipper.hpp"
 #include "Coord.hpp"
 #include "Point.hpp"
+#include "Line.hpp"
 #include "Wireframe.hpp"
 
 
@@ -17,7 +18,17 @@ WindowClipper::WindowClipper() :
 
 
 void WindowClipper::clip_to_area(Point &p) {
-    // TODO
+    double x = p.xnc();
+    double y = p.ync();
+    DCoordVector newVertice;
+
+    if (x >= X_MIN && x <= X_MAX && y >= Y_MIN && y <= Y_MAX) {
+        std::cout << "Clipped point inside (" << x << "," << y << ")" << std::endl;
+        newVertice.push_back(new Coord<double>(x, y));
+    } else {
+        std::cout << "Point outside." << std::endl;
+    }
+    p.update_normalized_coords(newVertice);
 }
 
 
@@ -49,8 +60,82 @@ void WindowClipper::set_polygon_clipping_method(PolygonClipping type) {
 
 
 void WindowClipper::cohen_sutherland_clipping(Line &line) {
-    // TODO
+    int outcode1 = computeOutcode(line.p1());
+    int outcode2 = computeOutcode(line.p2());
+    bool accept = false;
+    double x1Clip, x2Clip, y1Clip, y2Clip;
+
+    while(true) {
+        if (!(outcode1 | outcode2)) {
+            accept = true;
+            break;
+        } else if (outcode1 & outcode2) {
+            break;
+        } else {
+            double x, y;
+
+            int outcodeOut = outcode1 ? outcode1 : outcode2;
+
+            if ( outcodeOut & TOP) {
+                x = line.p1()->xnc() + (line.p2()->xnc() - line.p1()->xnc()) * (Y_MAX - line.p1()->ync()) / (line.p2()->ync()-line.p1()->ync());
+                y = Y_MAX;
+            } else if (outcodeOut & BOTTOM) {
+                x = line.p1()->xnc() + (line.p2()->xnc() - line.p1()->xnc()) * (Y_MIN - line.p1()->ync()) / (line.p2()->ync() - line.p1()->ync());
+                y = Y_MIN;
+            }
+            else if (outcodeOut & RIGHT) {
+                y = line.p1()->ync() + (line.p2()->ync() - line.p1()->ync()) * (X_MAX - line.p1()->xnc()) / (line.p2()->xnc() - line.p1()->xnc());
+                x = X_MAX;
+            }
+            else if(outcodeOut & LEFT) {
+                y = line.p1()->ync() + (line.p2()->ync() - line.p1()->ync()) * (X_MIN - line.p1()->xnc()) / (line.p2()->xnc() - line.p1()->xnc());
+                x = X_MIN;
+            }
+            if (outcodeOut == outcode1) {
+                x1Clip = x;
+                y1Clip = y;
+                outcode1 = computeOutcode(line.p1());
+            } else {
+                x2Clip = x;
+                y2Clip = y;
+                outcode2 = computeOutcode(line.p2());
+            }
+        }
+    }
+
+    if (accept) {
+        std::cout << "X1: " << x1Clip << std::endl;
+        std::cout << "Y1: " << y1Clip << std::endl;
+        std::cout << "X2: " << x2Clip << std::endl;
+        std::cout << "Y2: " << y2Clip << std::endl;
+    }
+
+    DCoordVector newVertices;
+    newVertices.push_back(new Coord<double>(x1Clip, y1Clip));
+    newVertices.push_back(new Coord<double>(x2Clip, y2Clip));
+    line.update_normalized_coords(newVertices);
 }
+
+
+int WindowClipper::computeOutcode(Point *p) {
+    int code;
+
+    code = INSIDE;
+    if (p->xnc() < X_MIN)
+        code |= LEFT;
+    else if (p->xnc() > X_MAX)
+        code |= RIGHT;
+    if (p->ync() < Y_MIN)
+        code |= BOTTOM;
+    else if (p->ync() > Y_MAX)
+        code |= TOP;
+
+    return code;
+}
+
+
+
+
 
 
 void WindowClipper::liang_barsky_clipping(Line &line) {
@@ -70,22 +155,22 @@ void WindowClipper::SH_clipping(Wireframe &wf) {
     DCoordVector outVertices;
 
     // Call the algorithm for each window edge, switching in and out vectors
-    m_edge = WindowClipper::Boundary::LEFT;
+    m_edge = WindowClipper::Boundary::LEFT_EDGE;
     std::cout << "Clipping at the LEFT edge..." << std::endl;
     SH_polygon_clipping(inVertices, outVertices);
 
     inVertices.clear();
-    m_edge = WindowClipper::Boundary::BOTTOM;
+    m_edge = WindowClipper::Boundary::BOTTOM_EDGE;
     std::cout << "Clipping at the BOTTOM edge..." << std::endl;
     SH_polygon_clipping(outVertices, inVertices);
 
     outVertices.clear();
-    m_edge = WindowClipper::Boundary::RIGHT;
+    m_edge = WindowClipper::Boundary::RIGHT_EDGE;
     std::cout << "Clipping at the RIGHT edge..." << std::endl;
     SH_polygon_clipping(inVertices, outVertices);
     
     inVertices.clear();
-    m_edge = WindowClipper::Boundary::TOP;
+    m_edge = WindowClipper::Boundary::TOP_EDGE;
     std::cout << "Clipping at the TOP edge..." << std::endl;
     SH_polygon_clipping(outVertices, inVertices);
 
@@ -128,22 +213,22 @@ void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVe
 bool WindowClipper::SH_inside(Coord<double> *p) {
     bool inside = false;
     switch(m_edge) {
-        case WindowClipper::Boundary::LEFT:
+        case WindowClipper::Boundary::LEFT_EDGE:
         {
             inside = ((-1.0 - p->x()) <= 0.0);
             break;
         }
-        case WindowClipper::Boundary::BOTTOM:
+        case WindowClipper::Boundary::BOTTOM_EDGE:
         {
             inside = ((-1.0 - p->y()) <= 0.0);
             break;
         }
-        case WindowClipper::Boundary::RIGHT:
+        case WindowClipper::Boundary::RIGHT_EDGE:
         {
             inside = ((p->x() - 1.0) <= 0.0);
             break;
         }
-        case WindowClipper::Boundary::TOP:
+        case WindowClipper::Boundary::TOP_EDGE:
         {
             inside = ((p->y() - 1.0) <= 0.0);
             break;
@@ -164,25 +249,25 @@ Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s) {
 
 
     switch(m_edge) {
-        case WindowClipper::Boundary::LEFT:
+        case WindowClipper::Boundary::LEFT_EDGE:
         {
             x = X_MIN;
             y = y0 - dydx * (x0 - X_MIN);
             break;
         }
-        case WindowClipper::Boundary::BOTTOM:
+        case WindowClipper::Boundary::BOTTOM_EDGE:
         {
             x = x0 - dxdy * (y0 - Y_MIN);
             y = Y_MIN;
             break;
         }
-        case WindowClipper::Boundary::RIGHT:
+        case WindowClipper::Boundary::RIGHT_EDGE:
         {
             x = X_MAX;
             y = y0 - dydx * (x0 - X_MAX);
             break;
         }
-        case WindowClipper::Boundary::TOP:
+        case WindowClipper::Boundary::TOP_EDGE:
         {
             x = x0 - dxdy * (y0 - Y_MAX);
             y = Y_MAX;
