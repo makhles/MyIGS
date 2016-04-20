@@ -5,8 +5,8 @@
 #include <iostream>
 #include "Point.hpp"
 #include "Coord.hpp"
-#include "Window.hpp"
 #include "AbstractDrawer.hpp"
+#include "AbstractClipper.hpp"
 #include "TMatrix.hpp"
 #include "Writer.hpp"
 
@@ -18,12 +18,12 @@ Point::Point(const std::string name, const double x, const double y) :
 
 
 Point::~Point() {
-    auto coord = m_ncList.begin();
-    while (coord != m_ncList.end()) {
+    auto coord = m_ncCoord.begin();
+    while (coord != m_ncCoord.end()) {
         delete *coord;
         coord++;
     }
-    m_ncList.clear();
+    m_ncCoord.clear();
 }
 
 
@@ -53,7 +53,6 @@ void Point::normalize(TMatrix &matrix) {
     std::cout << "Normalizing point..." << std::endl;
     std::cout << "xwc = " << m_xwc << std::endl;
     std::cout << "ywc = " << m_ywc << std::endl;
-
     std::vector<double> v;
     v.push_back(m_xwc);
     v.push_back(m_ywc);
@@ -64,15 +63,14 @@ void Point::normalize(TMatrix &matrix) {
     std::cout << "xnc = " << m_xnc << std::endl;
     std::cout << "ync = " << m_ync << std::endl;
     std::cout << "-----------------------------" << std::endl;
+    m_ncCoord.clear();
+    m_ncCoord.push_back(new Coord<double>(m_xnc, m_ync));
 }
 
 
-void Point::clip_to_window(Window &window) {
+void Point::clip_to_window(AbstractClipper &clipper) {
     std::cout << "Clipping to window." << std::endl;
-
-    /* Temporary implementation */
-    m_ncList.clear();
-    m_ncList.push_back(new Coord<double>(m_xnc, m_ync));
+    clipper.clip_to_area(*this);
 }
 
 

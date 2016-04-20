@@ -21,7 +21,7 @@
 #include "WindowClipper.hpp"
 
 
-typedef std::list<Coord<double>*> DCoordList;
+typedef std::vector<Coord<double>*> DCoordVector;
 
 
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
@@ -62,7 +62,7 @@ void InterfaceController::finalize_shape(Shape *shape) {
 void InterfaceController::update(Shape *shape) {
     this->update_gtm();
     shape->normalize(m_gtm);
-    shape->clip_to_window(m_window);
+    shape->clip_to_window(*m_clipper);
     this->to_viewport(shape);
     m_viewport->invalidate();
 }
@@ -102,7 +102,7 @@ void InterfaceController::update_shapes() {
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
         (*shape)->normalize(m_gtm);
-        (*shape)->clip_to_window(m_window);
+        (*shape)->clip_to_window(*m_clipper);
         this->to_viewport(*shape);
         shape++;
     }
@@ -123,40 +123,42 @@ void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
 void InterfaceController::to_viewport(Shape *shape) {
     std::cout << "Converting to viewport coordinates." << std::endl;
 
-    const DCoordList *ncList = shape->normalized_coordinates();
     shape->clear_viewport_coordinates();
+    const DCoordVector& coords = shape->normalized_coords();
 
-    int xvp, yvp;
-    double xratio, yratio;
-    double xvp_min, yvp_max;
-    double xnc, ync;
+    if (!coords.empty()) {
+        int xvp, yvp;
+        double xratio, yratio;
+        double xvp_min, yvp_max;
+        double xnc, ync;
 
-    auto c = ncList->begin();
-    while (c != ncList->end()) {
+        auto c = coords.begin();
+        while (c != coords.end()) {
+            std::cout << "LALALA-" << std::endl;
+            // Parameters
+            xratio = m_viewport->vp_width() / 2.0;
+            yratio = m_viewport->vp_height() / 2.0;
+            xvp_min = m_viewport->xvp_min();
+            yvp_max = m_viewport->yvp_max();
+            xnc = (*c)->x();
+            ync = (*c)->y();
 
-        // Parameters
-        xratio = m_viewport->vp_width() / 2.0;
-        yratio = m_viewport->vp_height() / 2.0;
-        xvp_min = m_viewport->xvp_min();
-        yvp_max = m_viewport->yvp_max();
-        xnc = (*c)->x();
-        ync = (*c)->y();
+            std::cout << "-----------------------------" << std::endl;
+            std::cout << "xnc = " << xnc << std::endl;
+            std::cout << "ync = " << ync << std::endl;
 
-        std::cout << "-----------------------------" << std::endl;
-        std::cout << "xnc = " << xnc << std::endl;
-        std::cout << "ync = " << ync << std::endl;
+            // Viewport coordinates
+            xvp = (int) (xvp_min + xratio * (xnc + 1.0));
+            yvp = (int) (yvp_max - yratio * (ync + 1.0));
 
-        // Viewport coordinates
-        xvp = (int) (xvp_min + xratio * (xnc + 1.0));
-        yvp = (int) (yvp_max - yratio * (ync + 1.0));
+            // Update shape
+            shape->add_viewport_coordinate(new Coord<int>(xvp, yvp));
+            c++;
 
-        // Update shape
-        shape->add_viewport_coordinate(new Coord<int>(xvp, yvp));
-        c++;
-
-        std::cout << "xvp = " << xvp << std::endl;
-        std::cout << "yvp = " << yvp << std::endl;
-        std::cout << "-----------------------------" << std::endl;
+            std::cout << "xvp = " << xvp << std::endl;
+            std::cout << "yvp = " << yvp << std::endl;
+            std::cout << "-----------------------------" << std::endl;
+        }
     }
 }
 

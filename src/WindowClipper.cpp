@@ -2,7 +2,9 @@
 // Authors: Leonardo Vailatti
 //          Makhles R. Lange
 
+#include <iostream>
 #include "WindowClipper.hpp"
+#include "Coord.hpp"
 #include "Point.hpp"
 #include "Wireframe.hpp"
 
@@ -63,38 +65,45 @@ void WindowClipper::nicholl_lee_nicholl_clipping(Line &line) {
 
 void WindowClipper::SH_clipping(Wireframe &wf) {
 
-    const VPoints vertices = wf.vertices();
-    VPoints inVertices(vertices);
-    VPoints outVertices;
+    const DCoordVector coords = wf.normalized_coords();
+    DCoordVector inVertices(coords);
+    DCoordVector outVertices;
 
     // Call the algorithm for each window edge, switching in and out vectors
     m_edge = WindowClipper::Boundary::LEFT;
+    std::cout << "Clipping at the LEFT edge..." << std::endl;
     SH_polygon_clipping(inVertices, outVertices);
 
     inVertices.clear();
     m_edge = WindowClipper::Boundary::BOTTOM;
+    std::cout << "Clipping at the BOTTOM edge..." << std::endl;
     SH_polygon_clipping(outVertices, inVertices);
 
     outVertices.clear();
     m_edge = WindowClipper::Boundary::RIGHT;
+    std::cout << "Clipping at the RIGHT edge..." << std::endl;
     SH_polygon_clipping(inVertices, outVertices);
     
     inVertices.clear();
     m_edge = WindowClipper::Boundary::TOP;
+    std::cout << "Clipping at the TOP edge..." << std::endl;
     SH_polygon_clipping(outVertices, inVertices);
 
     // Clipped polygon is stored in inVertices
+    wf.update_normalized_coords(inVertices);
 }
 
 
-void WindowClipper::SH_polygon_clipping(const VPoints &inVertices, VPoints &outVertices) {
-    Point *s;
-    Point *p;
-    Point *i;
+void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVector &outVertices) {
+    Coord<double> *s;
+    Coord<double> *p;
+    Coord<double> *i;
 
+    std::cout << "inVertices.size() = " << inVertices.size() << std::endl;
     s = inVertices.back();
 
     for(unsigned j = 0; j < inVertices.size(); j++) {
+        std::cout << "j = " << j << std::endl;
         p = inVertices[j];
         if (this->SH_inside(p)) {
             if (this->SH_inside(s)) {
@@ -118,54 +127,46 @@ void WindowClipper::SH_polygon_clipping(const VPoints &inVertices, VPoints &outV
 }
 
 
-bool WindowClipper::SH_inside(Point *p) {
+bool WindowClipper::SH_inside(Coord<double> *p) {
+    std::cout << "SH_inside called." << std::endl;
     bool inside = false;
     switch(m_edge) {
         case WindowClipper::Boundary::LEFT:
         {
-            double d = -1.0 - p->xnc();
-            if (d <= 0.0) {
-                inside = true;
-            }
+            inside = ((-1.0 - p->x()) <= 0.0);
             break;
         }
         case WindowClipper::Boundary::BOTTOM:
         {
-            double d = -1.0 - p->ync();
-            if (d <= 0.0) {
-                inside = true;
-            }
+            inside = ((-1.0 - p->y()) <= 0.0);
             break;
         }
         case WindowClipper::Boundary::RIGHT:
         {
-            double d = p->xnc() - 1.0;
-            if (d <= 0.0) {
-                inside = true;
-            }
+            inside = ((p->x() - 1.0) <= 0.0);
             break;
         }
         case WindowClipper::Boundary::TOP:
         {
-            double d = p->ync() - 1.0;
-            if (d <= 0.0) {
-                inside = true;
-            }
+            inside = ((p->y() - 1.0) <= 0.0);
             break;
         }
     }
+    std::cout << "SH_inside returned " << inside << std::endl;
     return inside;
 }
 
 
-Point* WindowClipper::SH_intersect(Point *p, Point *s) {
+Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s) {
     double x, y;
-    double x0 = s->xnc();
-    double y0 = s->ync();
-    double x1 = p->xnc();
-    double y1 = p->ync();
+    double x0 = s->x();
+    double y0 = s->y();
+    double x1 = p->x();
+    double y1 = p->y();
     double dydx = (y1 - y0) / (x1 - x0);
     double dxdy = 1.0 / dydx;
+
+    std::cout << "SH_intersect called." << std::endl;
 
     switch(m_edge) {
         case WindowClipper::Boundary::LEFT:
@@ -188,12 +189,13 @@ Point* WindowClipper::SH_intersect(Point *p, Point *s) {
         }
         case WindowClipper::Boundary::TOP:
         {
-            x = x0 - dxdy * (y0 - Y_MIN);
+            x = x0 - dxdy * (y0 - Y_MAX);
             y = Y_MAX;
             break;
         }
     }
-    return new Point("Intersection", x, y);;
+    std::cout << "SH_intersect returned." << std::endl;
+    return new Coord<double>(x, y);
 }
 
 

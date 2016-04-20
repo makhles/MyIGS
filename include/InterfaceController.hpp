@@ -5,7 +5,7 @@
 #ifndef InterfaceController_H
 #define InterfaceController_H
 
-#include <list>
+#include <vector>
 #include <string>
 #include "Window.hpp"
 #include "ShapeType.hpp"
@@ -27,7 +27,7 @@ protected:
 
     const double DEVICE_DISPLACEMENT = 10.0;  // Pixels
 
-    std::list<Shape*> m_shapes;
+    std::vector<Shape*> m_shapes;
     MyIGS * const m_interface;
     Canvas * const m_viewport;
     Window m_window;

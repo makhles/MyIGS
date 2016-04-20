@@ -23,12 +23,12 @@ public:
     Point* p2() const { return m_p2; }
     const Coord<double> get_centroid() override;
 
-    // Visitor
+    // Visitors
     void accept(AbstractDrawer *drawer);
+    void clip_to_window(AbstractClipper &clipper) override;
 
     void transform(TMatrix &matrix) override;
     void normalize(TMatrix &matrix) override;
-    void clip_to_window(Window &window) override;
     void write_to_file(Writer *w) override;
 };
 

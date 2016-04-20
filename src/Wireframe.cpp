@@ -6,8 +6,8 @@
 #include "Wireframe.hpp"
 #include "Point.hpp"
 #include "Coord.hpp"
-#include "Window.hpp"
 #include "AbstractDrawer.hpp"
+#include "AbstractClipper.hpp"
 #include "Writer.hpp"
 
 
@@ -17,18 +17,23 @@ Wireframe::Wireframe(const std::string name) :
 
 
 Wireframe::~Wireframe() {
-    auto coord = m_ncList.begin();
-    while (coord != m_ncList.end()) {
+    auto coord = m_ncCoord.begin();
+    while (coord != m_ncCoord.end()) {
         delete *coord;
         coord++;
     }
-    m_ncList.clear();
+    m_ncCoord.clear();
     auto point = m_vertices.begin();
     while (point != m_vertices.end()) {
         delete *point;
         point++;
     }
     m_vertices.clear();
+}
+
+
+void Wireframe::add_point(Point *point) {
+    m_vertices.push_back(point);
 }
 
 
@@ -44,11 +49,6 @@ const Coord<double> Wireframe::get_centroid() {
     x = x / (double) m_vertices.size();
     y = y / (double) m_vertices.size();
     return Coord<double>(x, y);
-}
-
-
-void Wireframe::add_point(Point *point) {
-    m_vertices.push_back(point);
 }
 
 
@@ -68,26 +68,19 @@ void Wireframe::transform(TMatrix &matrix) {
 
 
 void Wireframe::normalize(TMatrix &matrix) {
+    m_ncCoord.clear();
     auto p = m_vertices.begin();
     while (p != m_vertices.end()) {
         (*p)->normalize(matrix);
+        m_ncCoord.push_back(new Coord<double>((*p)->xnc(), (*p)->ync()));
         p++;
     }
 }
 
 
-void Wireframe::clip_to_window(Window &window) {
+void Wireframe::clip_to_window(AbstractClipper &clipper) {
     std::cout << "Clipping to window." << std::endl;
-
-    /* Temporary implementation */
-    Coord<double> *coord;
-    m_ncList.clear();
-    auto p = m_vertices.begin();
-    while (p != m_vertices.end()) {
-        coord = new Coord<double>((*p)->xnc(), (*p)->ync());
-        m_ncList.push_back(coord);
-        p++;
-    }
+    clipper.clip_to_area(*this);
 }
 
 

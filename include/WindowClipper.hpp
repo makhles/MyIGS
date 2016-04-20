@@ -12,8 +12,12 @@
 #include <vector>
 #include "AbstractClipper.hpp"
 
+// Forward declarations
+template <class T> class Coord;
 
-typedef std::vector<Point*> VPoints;
+// Definitions
+typedef std::vector<Coord<double>*> DCoordVector;
+
 
 class WindowClipper : public AbstractClipper {
 public:
@@ -33,9 +37,9 @@ public:
     void nicholl_lee_nicholl_clipping(Line &line);
 
     void SH_clipping(Wireframe &wf);
-    void SH_polygon_clipping(const VPoints&, VPoints&);
-    bool SH_inside(Point *p);
-    Point* SH_intersect(Point *p, Point *s);
+    void SH_polygon_clipping(const DCoordVector&, DCoordVector&);
+    bool SH_inside(Coord<double> *p);
+    Coord<double>* SH_intersect(Coord<double> *p, Coord<double> *s);
 
     void weiler_atherton_clipping(Wireframe &wf);
 

@@ -20,17 +20,18 @@ public:
     ~Point();
 
     // Getters
-    const double xwc() const { return m_xwc; }
-    const double ywc() const { return m_ywc; }
-    const double xnc() const { return m_xnc; }
-    const double ync() const { return m_ync; }
+    double xwc() const { return m_xwc; }
+    double ywc() const { return m_ywc; }
+    double xnc() const { return m_xnc; }
+    double ync() const { return m_ync; }
     const Coord<double> get_centroid() override;
 
-    // Visitor
+    // Visitors
     void accept(AbstractDrawer *drawer);
+    void clip_to_window(AbstractClipper &clipper) override;
+
     void transform(TMatrix &matrix) override;
     void normalize(TMatrix &matrix) override;
-    void clip_to_window(Window &window) override;
     void write_to_file(Writer *w) override;
 
     // Operator overloading

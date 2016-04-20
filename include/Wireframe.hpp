@@ -22,11 +22,12 @@ public:
 
     const std::vector<Point*>& vertices() const { return m_vertices; }
 
-    // Visitor
+    // Visitors
     void accept(AbstractDrawer *drawer);
+    void clip_to_window(AbstractClipper &clipper) override;
+
     void transform(TMatrix &matrix) override;
     void normalize(TMatrix &matrix) override;
-    void clip_to_window(Window &window) override;
     void write_to_file(Writer *w) override;
 };
 
