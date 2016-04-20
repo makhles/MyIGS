@@ -99,11 +99,9 @@ void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVe
     Coord<double> *p;
     Coord<double> *i;
 
-    std::cout << "inVertices.size() = " << inVertices.size() << std::endl;
     s = inVertices.back();
 
     for(unsigned j = 0; j < inVertices.size(); j++) {
-        std::cout << "j = " << j << std::endl;
         p = inVertices[j];
         if (this->SH_inside(p)) {
             if (this->SH_inside(s)) {
@@ -128,7 +126,6 @@ void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVe
 
 
 bool WindowClipper::SH_inside(Coord<double> *p) {
-    std::cout << "SH_inside called." << std::endl;
     bool inside = false;
     switch(m_edge) {
         case WindowClipper::Boundary::LEFT:
@@ -152,7 +149,6 @@ bool WindowClipper::SH_inside(Coord<double> *p) {
             break;
         }
     }
-    std::cout << "SH_inside returned " << inside << std::endl;
     return inside;
 }
 
@@ -166,7 +162,6 @@ Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s) {
     double dydx = (y1 - y0) / (x1 - x0);
     double dxdy = 1.0 / dydx;
 
-    std::cout << "SH_intersect called." << std::endl;
 
     switch(m_edge) {
         case WindowClipper::Boundary::LEFT:
@@ -194,7 +189,6 @@ Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s) {
             break;
         }
     }
-    std::cout << "SH_intersect returned." << std::endl;
     return new Coord<double>(x, y);
 }
 

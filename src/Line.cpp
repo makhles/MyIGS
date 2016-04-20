@@ -45,14 +45,14 @@ void Line::transform(TMatrix &matrix) {
     m_ncCoord.clear();
     m_p1->transform(matrix);
     m_p2->transform(matrix);
-    m_ncCoord.push_back(new Coord<double>(m_p1->xnc(), m_p1->ync()));
-    m_ncCoord.push_back(new Coord<double>(m_p2->xnc(), m_p2->ync()));
 }
 
 
 void Line::normalize(TMatrix &matrix) {
     m_p1->normalize(matrix);
     m_p2->normalize(matrix);
+    m_ncCoord.push_back(new Coord<double>(m_p1->xnc(), m_p1->ync()));
+    m_ncCoord.push_back(new Coord<double>(m_p2->xnc(), m_p2->ync()));
 }
 
 
