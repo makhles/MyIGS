@@ -64,6 +64,8 @@ MyIGS::MyIGS() :
     xportItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_export_obj_file));
     quitItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_quit));
 
+    loadItem->set_sensitive(false);
+
     // Window menu
     Gtk::MenuItem * const windowItem = Gtk::manage(new Gtk::MenuItem("Window"));
     Gtk::Menu * const windowMenu = Gtk::manage(new Gtk::Menu());
