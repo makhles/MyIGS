@@ -35,7 +35,7 @@ public:
 
     // Cohen-Sutherland methods
     void cohen_sutherland_clipping(Line &line);
-    int computeOutcode(Point *p);
+    int computeOutcode(double x, double y);
 
     void liang_barsky_clipping(Line &line);
     void nicholl_lee_nicholl_clipping(Line &line);

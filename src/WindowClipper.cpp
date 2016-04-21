@@ -60,10 +60,13 @@ void WindowClipper::set_polygon_clipping_method(PolygonClipping type) {
 
 
 void WindowClipper::cohen_sutherland_clipping(Line &line) {
-    int outcode1 = computeOutcode(line.p1());
-    int outcode2 = computeOutcode(line.p2());
+    int outcode1 = computeOutcode(line.p1()->xnc(), line.p1()->ync());
+    int outcode2 = computeOutcode(line.p2()->xnc(), line.p2()->ync());
     bool accept = false;
-    double x1Clip, x2Clip, y1Clip, y2Clip;
+    double x1 = line.p1()->xnc();
+    double x2 = line.p2()->xnc();
+    double y1 = line.p1()->ync();
+    double y2 = line.p2()->ync();
 
     while(true) {
         if (!(outcode1 | outcode2)) {
@@ -77,57 +80,56 @@ void WindowClipper::cohen_sutherland_clipping(Line &line) {
             int outcodeOut = outcode1 ? outcode1 : outcode2;
 
             if ( outcodeOut & TOP) {
-                x = line.p1()->xnc() + (line.p2()->xnc() - line.p1()->xnc()) * (Y_MAX - line.p1()->ync()) / (line.p2()->ync()-line.p1()->ync());
+                x = x1 + (x2 - x1) * (Y_MAX - y1) / (y2 - y1);
                 y = Y_MAX;
             } else if (outcodeOut & BOTTOM) {
-                x = line.p1()->xnc() + (line.p2()->xnc() - line.p1()->xnc()) * (Y_MIN - line.p1()->ync()) / (line.p2()->ync() - line.p1()->ync());
+                x = x1 + (x2 - x1) * (Y_MIN - y2) / (y2 - y1);
                 y = Y_MIN;
-            }
-            else if (outcodeOut & RIGHT) {
-                y = line.p1()->ync() + (line.p2()->ync() - line.p1()->ync()) * (X_MAX - line.p1()->xnc()) / (line.p2()->xnc() - line.p1()->xnc());
+            } else if (outcodeOut & RIGHT) {
+                y = y1 + (y2 - y1) * (X_MAX - x1) / (x2 - x1);
                 x = X_MAX;
-            }
-            else if(outcodeOut & LEFT) {
-                y = line.p1()->ync() + (line.p2()->ync() - line.p1()->ync()) * (X_MIN - line.p1()->xnc()) / (line.p2()->xnc() - line.p1()->xnc());
+            } else if(outcodeOut & LEFT) {
+                y = y1 + (y2 - y1) * (X_MIN - x1) / (x2 - x1);
                 x = X_MIN;
             }
+
             if (outcodeOut == outcode1) {
-                x1Clip = x;
-                y1Clip = y;
-                outcode1 = computeOutcode(line.p1());
+                x1 = x;
+                y1 = y;
+                outcode1 = computeOutcode(x1, y1);
             } else {
-                x2Clip = x;
-                y2Clip = y;
-                outcode2 = computeOutcode(line.p2());
+                x2 = x;
+                y2 = y;
+                outcode2 = computeOutcode(x2, y2);
             }
         }
     }
 
     if (accept) {
-        std::cout << "X1: " << x1Clip << std::endl;
-        std::cout << "Y1: " << y1Clip << std::endl;
-        std::cout << "X2: " << x2Clip << std::endl;
-        std::cout << "Y2: " << y2Clip << std::endl;
+        std::cout << "X1: " << x1 << std::endl;
+        std::cout << "Y1: " << y1 << std::endl;
+        std::cout << "X2: " << x2 << std::endl;
+        std::cout << "Y2: " << y2 << std::endl;
     }
 
     DCoordVector newVertices;
-    newVertices.push_back(new Coord<double>(x1Clip, y1Clip));
-    newVertices.push_back(new Coord<double>(x2Clip, y2Clip));
+    newVertices.push_back(new Coord<double>(x1, y1));
+    newVertices.push_back(new Coord<double>(x2, y2));
     line.update_normalized_coords(newVertices);
 }
 
 
-int WindowClipper::computeOutcode(Point *p) {
+int WindowClipper::computeOutcode(double x, double y) {
     int code;
 
     code = INSIDE;
-    if (p->xnc() < X_MIN)
+    if (x < X_MIN)
         code |= LEFT;
-    else if (p->xnc() > X_MAX)
+    else if (x > X_MAX)
         code |= RIGHT;
-    if (p->ync() < Y_MIN)
+    if (y < Y_MIN)
         code |= BOTTOM;
-    else if (p->ync() > Y_MAX)
+    else if (y > Y_MAX)
         code |= TOP;
 
     return code;
@@ -139,8 +141,64 @@ int WindowClipper::computeOutcode(Point *p) {
 
 
 void WindowClipper::liang_barsky_clipping(Line &line) {
-    // TODO
+    double t0 = 0.0;
+    double t1 = 1.0;
+    double xdelta = line.p2()->xnc() - line.p1()->xnc();
+    double ydelta = line.p2()->ync() - line.p1()->ync();
+    double p, q, r;
+
+    for (int edge = 0; edge < 4; edge++) {
+        if (edge == 0) {
+            p = -xdelta;
+            q = -(X_MIN - line.p1()->xnc());
+        }
+        if (edge == 1) {
+            p = xdelta;
+            q = (X_MAX - line.p1()->xnc());
+        }
+        if (edge == 2) {
+            p = -ydelta;
+            q = -(Y_MIN - line.p1()->ync());
+        }
+        if (edge == 3) {
+            p = ydelta;
+            q = (Y_MAX - line.p1()->ync());
+        }
+
+        r = q/p;
+        if (p == 0 && q < 0) return;  // Don't draw line at all. (Parallel line outside)
+
+        if (p < 0) {
+            if (r > t1) {
+                return; // Don't draw line at all
+            } else if (r > t0) {
+                t0 = r;  // Line is clipped
+            }
+        } else if (p > 0) {
+            if (r < t0) {
+                return; // Don't draw line at all
+            } else if (r < t1) {
+                t1 = r;
+            }
+        }
+    }
+
+    double x1 = line.p1()->xnc() + t0 * xdelta;
+    double y1 = line.p1()->ync() + t0 * ydelta;
+    double x2 = line.p1()->xnc() + t1 * xdelta;
+    double y2 = line.p1()->ync() + t1 * ydelta;
+
+    std::cout << "X1: " << x1 << std::endl;
+    std::cout << "Y1: " << y1 << std::endl;
+    std::cout << "X2: " << x2 << std::endl;
+    std::cout << "Y2: " << y2 << std::endl;
+
+    DCoordVector newVertices;
+    newVertices.push_back(new Coord<double>(x1, y1));
+    newVertices.push_back(new Coord<double>(x2, y2));
+    line.update_normalized_coords(newVertices);
 }
+
 
 
 void WindowClipper::nicholl_lee_nicholl_clipping(Line &line) {
