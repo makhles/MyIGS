@@ -92,6 +92,7 @@ MyIGS::MyIGS() :
     clippingMenu->append(*radioMenuItem);
     clippingMenu->append(*radio_separator);
     radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_nln_radio_toggled)));
+    radioMenuItem->set_sensitive(false);
 
     Gtk::RadioMenuItem::Group wf_group;
     radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(wf_group, "Sutherland-Hodgeman"));
@@ -103,6 +104,7 @@ MyIGS::MyIGS() :
     radioMenuItem = Gtk::manage(new Gtk::RadioMenuItem(wf_group, "Weiler-Atherton"));
     clippingMenu->append(*radioMenuItem);
     radioMenuItem->signal_toggled().connect((sigc::mem_fun(*this, &MyIGS::on_wa_radio_toggled)));
+    radioMenuItem->set_sensitive(false);
 
 
     // -------------------------
