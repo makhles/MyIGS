@@ -5,7 +5,7 @@
 #ifndef CREATE_WIREFRAME_DIALOG_HPP
 #define CREATE_WIREFRAME_DIALOG_HPP
 
-#include <gtkmm/dialog.h>
+#include <gtkmm.h>
 #include <list>
 
 namespace Gtk {
@@ -17,14 +17,16 @@ class CreateWireframeDialog : public Gtk::Dialog {
 private:
     // Attribute
     int m_totalPoints;
+    bool m_filled;
     Gtk::Label * const m_nameLabel;
     Gtk::Entry * const m_nameEntry;
     std::list<Gtk::Entry*> m_coordEntries;
 
     // Signal handler
     void on_my_response(int response_id);
-    void add_point();
     void create_shape();
+    void add_point();
+    void on_filled_button_toggled();
 
 public:
     // Life cycle

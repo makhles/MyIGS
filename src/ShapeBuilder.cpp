@@ -87,7 +87,7 @@ Line* ShapeBuilder::create_line() {
 
 
 Wireframe* ShapeBuilder::create_wireframe() {
-    Wireframe *wireframe = new Wireframe(m_name);
+    Wireframe *wireframe = new Wireframe(m_name, m_filled);
     auto p = m_points.begin();
     while (p != m_points.end()) {
         wireframe->add_point((*p));

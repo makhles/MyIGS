@@ -24,6 +24,7 @@ private:
     static ShapeBuilder *m_pInstance;
     std::list<Point*> m_points;
     std::string m_name;
+    bool m_filled;
 
 private:
     ShapeBuilder() {}
@@ -38,6 +39,7 @@ private:
 public:
     static ShapeBuilder* instance();
     void add_name(const std::string &);
+    void set_filled(bool filled) { m_filled = filled; }
     void add_point(const double, const double);
     void add_point(const std::string &, const double, const double);
     void rollback();

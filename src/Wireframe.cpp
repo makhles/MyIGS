@@ -11,8 +11,10 @@
 #include "Writer.hpp"
 
 
-Wireframe::Wireframe(const std::string name) :
-        Shape(name, ShapeType::WIREFRAME) {
+Wireframe::Wireframe(const std::string name, bool filled) :
+        Shape(name, ShapeType::WIREFRAME),
+        m_filled(filled)
+{
 }
 
 

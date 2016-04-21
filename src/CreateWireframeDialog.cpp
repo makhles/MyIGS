@@ -2,9 +2,6 @@
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
-#include <gtkmm/entry.h>
-#include <gtkmm/label.h>
-#include <gtkmm/button.h>
 #include <iostream>
 #include "CreateWireframeDialog.hpp"
 #include "ShapeBuilder.hpp"
@@ -12,6 +9,7 @@
 CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Dialog(title, true),
     m_totalPoints(0),
+    m_filled(false),
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
 
@@ -25,7 +23,13 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     name_hbox->pack_start(*m_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
     name_hbox->set_homogeneous(false);
 
+    // Check box for filling
+    Gtk::CheckButton * const filled_button = Gtk::manage(new Gtk::CheckButton("Filled shape"));
+    filled_button->signal_toggled().connect(sigc::mem_fun(*this, &CreateWireframeDialog::on_filled_button_toggled));
+    filled_button->set_active(false);
+
     get_content_area()->pack_start(*name_hbox);
+    get_content_area()->pack_start(*filled_button);
 
     // Entries for the coordinates
     this->add_point();
@@ -79,6 +83,7 @@ void CreateWireframeDialog::create_shape() {
     if (!name.empty()) {
 
         builder->add_name(name);
+        builder->set_filled(m_filled);
         
         double x, y;
         auto coord = m_coordEntries.cbegin();
@@ -138,4 +143,9 @@ void CreateWireframeDialog::add_point() {
     // Keep track of entries to get their values
     m_coordEntries.push_back(xEntry);
     m_coordEntries.push_back(yEntry);
+}
+
+
+void CreateWireframeDialog::on_filled_button_toggled() {
+    m_filled ^= true;
 }

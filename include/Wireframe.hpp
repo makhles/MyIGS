@@ -12,11 +12,13 @@
 class Wireframe : public Shape {
 protected:
     std::vector<Point*> m_vertices;
+    bool m_filled;  // Whether it should be painted.
 
 public:
-    Wireframe(const std::string name);
+    Wireframe(const std::string name, bool filled);
     ~Wireframe();
 
+    bool filled() const { return m_filled; }
     const Coord<double> get_centroid() override;
     void add_point(Point *point);
 
