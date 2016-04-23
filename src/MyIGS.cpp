@@ -310,7 +310,7 @@ void MyIGS::create_wireframe() {
     std::cout << "Creating wireframe..." << std::endl;
     CreateWireframeDialog dialog("Create a new wireframe");
     int response = dialog.run();
-    if (response == Gtk::RESPONSE_OK && dialog.build_wireframe()) {
+    if (response == Gtk::RESPONSE_OK && dialog.minimum_vertices()) {
        m_controller->create_shape(ShapeType::WIREFRAME);
     }
 }
@@ -322,7 +322,7 @@ void MyIGS::append_object(const Glib::ustring obj) {
 
 
 // --------------------------------------------------------------------------------------------- //
-// ----------------------------------- Action handlers ----------------------------------------- //
+// -------------------------------- Menu Action handlers --------------------------------------- //
 
 void MyIGS::on_action_file_load_obj_file() {
     std::cout << "Loading .OBJ file..." << std::endl;

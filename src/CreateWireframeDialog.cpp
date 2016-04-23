@@ -3,17 +3,21 @@
 //          Makhles Reuter Lange
 
 #include <iostream>
+#include <vector>
 #include "CreateWireframeDialog.hpp"
 #include "ShapeBuilder.hpp"
+#include "CoordBox.hpp"
+#include "Coord.hpp"
+#include "DeleteList.hpp"
 
 CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Dialog(title, true),
-    m_totalPoints(0),
+    // m_totalPoints(0),
     m_filled(false),
-    m_coordBox(Gtk::manage(new Gtk::VBox())),
+    m_minVertices(false),
+    m_coordBox(Gtk::manage(new CoordBox())),
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
-
 {
     set_size_request(-1, 230);
     set_resizable(false);
@@ -96,68 +100,34 @@ void CreateWireframeDialog::create_shape() {
     const std::string name = m_nameEntry->get_text().raw();
 
     if (!name.empty()) {
+        std::vector<Coord<double>*> coords;
+        m_coordBox->fill_coords(coords);
 
-        builder->add_name(name);
-        builder->set_filled(m_filled);
-        
-        double x, y;
-        auto coord = m_coordEntries.cbegin();
-        
-        while (coord != m_coordEntries.cend()) {
-            // Create new stringstreams at every loop iteration
-            // to make sure it's totally clear.
-            std::stringstream sX, sY;
-            sX << (*coord)->get_text().raw();
-            coord++;
-            sY << (*coord)->get_text().raw();
-            coord++;
-            
-            if (sX.str().size() != 0 && sY.str().size() != 0) {
-                sX >> x;
-                sY >> y;
-                m_totalPoints++;
-                builder->add_point(x, y);
-            }
-        }
         // Check for minimum number of points.
-        if (!this->build_wireframe()) {
+        if (coords.size() >= 3) {
+            m_minVertices = true;
+            builder->add_name(name);
+            builder->set_filled(m_filled);
+            for (unsigned i = 0; i < coords.size(); i++) {
+                builder->add_point(coords[i]->x(), coords[i]->y());
+            }
+            std::cout << "Added wireframe to ShapeBuilder." << std::endl;
+        } else {
             std::cout << "Rolling back." << std::endl;
             builder->rollback();
         }
-        std::cout << "Added wireframe to ShapeBuilder." << std::endl;
+
+        // Clean coords
+        for_each (coords.begin(),
+                  coords.end(),
+                  DeleteList<Coord<double>*>());
     }
 }
 
 // Called every time the user clicks the "Add point" button.
 void CreateWireframeDialog::add_point() {
-
-    // Used for naming each coordinate, like x0, x1, y0, y1, etc.
-    // Every time a new point is added, m_coordEntries increases by 2.
-    int pNumber = m_coordEntries.size() / 2;
-    const std::string str_xCoord = "x" + std::to_string(pNumber) + ": ";
-    const std::string str_yCoord = "y" + std::to_string(pNumber) + ": ";
-
-    Gtk::HBox * const hbox = Gtk::manage(new Gtk::HBox());
-    Gtk::Label * const xLabel = Gtk::manage(new Gtk::Label(str_xCoord));
-    Gtk::Label * const yLabel = Gtk::manage(new Gtk::Label(str_yCoord));
-    Gtk::Entry * const xEntry = Gtk::manage(new Gtk::Entry());
-    Gtk::Entry * const yEntry = Gtk::manage(new Gtk::Entry());
-
-    xEntry->set_width_chars(10);
-    yEntry->set_width_chars(10);
-
-    hbox->pack_start(*xLabel, Gtk::PACK_EXPAND_WIDGET, 0);
-    hbox->pack_start(*xEntry, Gtk::PACK_SHRINK, 0);
-    hbox->pack_start(*yLabel, Gtk::PACK_EXPAND_WIDGET, 0);
-    hbox->pack_start(*yEntry, Gtk::PACK_SHRINK, 0);
-    hbox->set_homogeneous(false);
-
-    m_coordBox->pack_start(*hbox, Gtk::PACK_EXPAND_WIDGET, 5);;
+    m_coordBox->add_coord();
     show_all_children();
-
-    // Keep track of entries to get their values
-    m_coordEntries.push_back(xEntry);
-    m_coordEntries.push_back(yEntry);
 }
 
 

@@ -6,23 +6,22 @@
 #define CREATE_WIREFRAME_DIALOG_HPP
 
 #include <gtkmm.h>
-#include <list>
+// #include <list>
 
-namespace Gtk {
-    class Label;
-    class Entry;
-}
+// Forward declarations
+class CoordBox;
 
 class CreateWireframeDialog : public Gtk::Dialog {
 private:
     // Attribute
-    int m_totalPoints;
+    // int m_totalPoints;
     bool m_filled;
-    // Gtk::ScrolledWindow * const m_scrolled;
-    Gtk::VBox * const m_coordBox;
+    bool m_minVertices;
+    // Gtk::VBox * const m_coordBox;
+    CoordBox * const m_coordBox;
     Gtk::Label * const m_nameLabel;
     Gtk::Entry * const m_nameEntry;
-    std::list<Gtk::Entry*> m_coordEntries;
+    // std::list<Gtk::Entry*> m_coordEntries;
 
     // Signal handler
     void on_my_response(int response_id);
@@ -34,7 +33,8 @@ public:
     // Life cycle
     CreateWireframeDialog(const Glib::ustring &title);
     ~CreateWireframeDialog() {}
-    bool build_wireframe() const { return m_totalPoints >= 3; }
+    // bool build_wireframe() const { return m_totalPoints >= 3; }
+    bool minimum_vertices() const { return m_minVertices; }
 };
 
 #endif  // CREATE_WIREFRAME_DIALOG_HPP
