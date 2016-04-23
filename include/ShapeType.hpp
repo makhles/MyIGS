@@ -7,7 +7,8 @@ enum class ShapeType
 {
 	POINT,
 	LINE,
-	WIREFRAME
+	WIREFRAME,
+    BEZIER_CUBIC
 };
 
 #endif  // SHAPETYPE_H

@@ -64,6 +64,11 @@ Shape* ShapeBuilder::create_shape(ShapeType type) {
             shape = ShapeBuilder::create_wireframe();
             break;
         }
+        case ShapeType::BEZIER_CUBIC:
+        {
+            //shape = ShapeBuilder::create_bezier_curve();
+            break;
+        }
     }
     ShapeBuilder::reset();
     return shape;
