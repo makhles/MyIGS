@@ -18,6 +18,8 @@ private:
     // Attribute
     int m_totalPoints;
     bool m_filled;
+    // Gtk::ScrolledWindow * const m_scrolled;
+    Gtk::VBox * const m_coordBox;
     Gtk::Label * const m_nameLabel;
     Gtk::Entry * const m_nameEntry;
     std::list<Gtk::Entry*> m_coordEntries;

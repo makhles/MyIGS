@@ -10,10 +10,12 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Dialog(title, true),
     m_totalPoints(0),
     m_filled(false),
+    m_coordBox(Gtk::manage(new Gtk::VBox())),
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
 
 {
+    set_size_request(-1, 230);
     set_resizable(false);
     set_border_width(10);
 
@@ -21,6 +23,7 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Gtk::HBox * const name_hbox = Gtk::manage(new Gtk::HBox());
     name_hbox->pack_start(*m_nameLabel, Gtk::PACK_SHRINK, 0);
     name_hbox->pack_start(*m_nameEntry, Gtk::PACK_EXPAND_WIDGET, 0);
+    name_hbox->set_spacing(0);
     name_hbox->set_homogeneous(false);
 
     // Check box for filling
@@ -28,13 +31,25 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     filled_button->signal_toggled().connect(sigc::mem_fun(*this, &CreateWireframeDialog::on_filled_button_toggled));
     filled_button->set_active(false);
 
-    get_content_area()->pack_start(*name_hbox);
-    get_content_area()->pack_start(*filled_button);
+    get_content_area()->pack_start(*name_hbox, Gtk::PACK_SHRINK, 5);
+    get_content_area()->pack_start(*filled_button, Gtk::PACK_SHRINK, 5);
+
+    Gtk::Frame * const coord_frame = Gtk::manage(new Gtk::Frame("Points"));
+    Gtk::ScrolledWindow * const scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
+
+    scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    scrolled_window->set_size_request(-1, 150);
+    scrolled_window->set_border_width(5);
+    scrolled_window->add(*m_coordBox);
+    m_coordBox->set_spacing(0);
+    coord_frame->add(*scrolled_window);
+    get_content_area()->pack_start(*coord_frame, Gtk::PACK_SHRINK, 0);
 
     // Entries for the coordinates
     this->add_point();
     this->add_point();
     this->add_point();
+
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -137,7 +152,7 @@ void CreateWireframeDialog::add_point() {
     hbox->pack_start(*yEntry, Gtk::PACK_SHRINK, 0);
     hbox->set_homogeneous(false);
 
-    get_content_area()->pack_start(*hbox);
+    m_coordBox->pack_start(*hbox, Gtk::PACK_EXPAND_WIDGET, 5);;
     show_all_children();
 
     // Keep track of entries to get their values
