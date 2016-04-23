@@ -14,8 +14,8 @@ protected:
     std::vector<Gtk::Entry*> m_entries;
 
 public:
-    CoordBox();
-    ~CoordBox();
+    CoordBox() {}
+    ~CoordBox() {}
     void add_coord();
     void fill_coords(std::vector<Coord<double>*>& coords) const;
 };

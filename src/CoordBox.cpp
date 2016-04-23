@@ -3,17 +3,6 @@
 //          Makhles Reuter Lange
 
 #include "CoordBox.hpp"
-#include "Coord.hpp"
-
-
-CoordBox::CoordBox() {
-
-}
-
-
-CoordBox::~CoordBox() {
-
-}
 
 
 void CoordBox::add_coord() {

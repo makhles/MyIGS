@@ -12,7 +12,6 @@
 
 CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Dialog(title, true),
-    // m_totalPoints(0),
     m_filled(false),
     m_minVertices(false),
     m_coordBox(Gtk::manage(new CoordBox())),
