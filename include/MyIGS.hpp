@@ -38,6 +38,7 @@ protected:
     void create_point();
     void create_line();
     void create_wireframe();
+    void create_bezier_curve();
 
     // Action handlers
     void on_action_file_load_obj_file();
