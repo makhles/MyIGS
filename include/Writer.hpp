@@ -9,6 +9,7 @@
 class Point;
 class Line;
 class Wireframe;
+class BezierCurve;
 
 class Writer {
 public:
@@ -16,6 +17,7 @@ public:
     virtual void write_to_file(Point &p) = 0;
     virtual void write_to_file(Line &l) = 0;
     virtual void write_to_file(Wireframe &w) = 0;
+    virtual void write_to_file(BezierCurve &bc) = 0;
     virtual void write_to_file() = 0;
 };
 

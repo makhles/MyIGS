@@ -8,7 +8,7 @@
 #include "Line.hpp"
 #include "Wireframe.hpp"
 #include "Coord.hpp"
-
+#include "BezierCurve.hpp"
 
 typedef std::vector<const Coord<int>*> ICoordVector;
 
@@ -69,4 +69,9 @@ void ShapeDrawer::draw(Wireframe *wireframe) {
         m_cr->restore();  // Back in black (TAM... TAMDAMDAMMM)
         m_cr->stroke();
     }
+}
+
+
+void ShapeDrawer::draw(BezierCurve &bc) {
+    // TODO
 }

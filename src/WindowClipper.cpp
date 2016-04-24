@@ -8,6 +8,7 @@
 #include "Point.hpp"
 #include "Line.hpp"
 #include "Wireframe.hpp"
+#include "BezierCurve.hpp"
 
 
 WindowClipper::WindowClipper() :
@@ -46,6 +47,11 @@ void WindowClipper::clip_to_area(Wireframe &wf) {
         case PolygonClipping::SH: this->SH_clipping(wf); break;
         case PolygonClipping::WA: this->weiler_atherton_clipping(wf); break;
     }
+}
+
+
+void WindowClipper::clip_to_area(BezierCurve &bc) {
+    // TODO
 }
 
 

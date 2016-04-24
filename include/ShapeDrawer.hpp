@@ -26,6 +26,7 @@ public:
     virtual void draw(Point *point);
     virtual void draw(Line *line);
     virtual void draw(Wireframe *wireframe);
+    void draw(BezierCurve &bc) override;
 
     // Own functions
     void set_cairo_context(const CairoCtx &cr) { m_cr = cr; }

@@ -28,6 +28,7 @@ public:
     void clip_to_area(Point &p) override;
     void clip_to_area(Line &line) override;
     void clip_to_area(Wireframe &wf) override;
+    void clip_to_area(BezierCurve &bc) override;
     void set_line_clipping_method(LineClipping type) override;
     void set_polygon_clipping_method(PolygonClipping type) override;
 
