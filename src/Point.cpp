@@ -28,7 +28,7 @@ const Coord<double> Point::get_centroid() {
 
 // Visitor
 void Point::accept(AbstractDrawer *drawer) {
-    drawer->draw(this);
+    drawer->draw(*this);
 }
 
 

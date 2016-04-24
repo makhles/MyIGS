@@ -23,9 +23,9 @@ public:
     ~ShapeDrawer() {}
 
     // AbstractDrawer functions
-    virtual void draw(Point *point);
-    virtual void draw(Line *line);
-    virtual void draw(Wireframe *wireframe);
+    virtual void draw(Point &point);
+    virtual void draw(Line &line);
+    virtual void draw(Wireframe &wireframe);
     void draw(BezierCurve &bc) override;
 
     // Own functions

@@ -31,7 +31,7 @@ const Coord<double> Line::get_centroid() {
 
 // Visitor
 void Line::accept(AbstractDrawer *drawer) {
-    drawer->draw(this);
+    drawer->draw(*this);
 }
 
 

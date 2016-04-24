@@ -13,8 +13,8 @@
 typedef std::vector<const Coord<int>*> ICoordVector;
 
 
-void ShapeDrawer::draw(Point *point) {
-    const ICoordVector& coordinates = point->viewport_coordinates();
+void ShapeDrawer::draw(Point &point) {
+    const ICoordVector& coordinates = point.viewport_coordinates();
     auto coord = coordinates[0];
     m_cr->set_line_cap(Cairo::LINE_CAP_ROUND);
     m_cr->set_line_width(2.0);
@@ -23,12 +23,12 @@ void ShapeDrawer::draw(Point *point) {
     m_cr->stroke();
 }
 
-void ShapeDrawer::draw(Line *line) {
+void ShapeDrawer::draw(Line &line) {
     std::cout << "Drawing line" << std::endl;
     m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     m_cr->set_line_width(1.0);
 
-    const ICoordVector& coordinates = line->viewport_coordinates();
+    const ICoordVector& coordinates = line.viewport_coordinates();
     auto coord = coordinates.cbegin();
     m_cr->move_to((*coord)->x(), (*coord)->y());
     coord++;
@@ -36,8 +36,8 @@ void ShapeDrawer::draw(Line *line) {
     m_cr->stroke();
 }
 
-void ShapeDrawer::draw(Wireframe *wireframe) {
-    const ICoordVector& coordinates = wireframe->viewport_coordinates();
+void ShapeDrawer::draw(Wireframe &wireframe) {
+    const ICoordVector& coordinates = wireframe.viewport_coordinates();
 
     if (!coordinates.empty()) {
         m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);

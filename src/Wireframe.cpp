@@ -50,7 +50,7 @@ const Coord<double> Wireframe::get_centroid() {
 
 // Visitor
 void Wireframe::accept(AbstractDrawer *drawer) {
-    drawer->draw(this);
+    drawer->draw(*this);
 }
 
 
