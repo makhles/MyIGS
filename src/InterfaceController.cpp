@@ -2,6 +2,14 @@
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
+// For debugging, uncomment the following define
+// #define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
 #include <iostream>
 #include <fstream>
 #include "InterfaceController.hpp"
@@ -75,23 +83,23 @@ void InterfaceController::update_gtm() {
     double sy = 2.0 / m_window.height();
     double angle = - m_window.angle();
 
-    std::cout << "------------------------------" << std::endl;
-    std::cout << "Parameters for GTM:" << std::endl;
-    std::cout << "dx...: " << dx << std::endl;
-    std::cout << "dy...: " << dy << std::endl;
-    std::cout << "sx...: " << sx << std::endl;
-    std::cout << "sy...: " << sy << std::endl;
-    std::cout << "angle: " << angle << std::endl;
+    DEBUG_MSG("------------------------------");
+    DEBUG_MSG("Parameters for GTM:");
+    DEBUG_MSG("dx...: " << dx);
+    DEBUG_MSG("dy...: " << dy);
+    DEBUG_MSG("sx...: " << sx);
+    DEBUG_MSG("sy...: " << sy);
+    DEBUG_MSG("angle: " << angle);
 
     // Global Transformation Matrix
     TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
 
-    std::cout << "------------------------------" << std::endl;
-    std::cout << "GTM:" << std::endl;
-    std::cout << m_gtm(0,0) << "  " << m_gtm(0,1) << "  " << m_gtm(0,2) << std::endl;
-    std::cout << m_gtm(1,0) << "  " << m_gtm(1,1) << "  " << m_gtm(1,2) << std::endl;
-    std::cout << m_gtm(2,0) << "  " << m_gtm(2,1) << "  " << m_gtm(2,2) << std::endl;
-    std::cout << "------------------------------" << std::endl;
+    DEBUG_MSG("------------------------------");
+    DEBUG_MSG("GTM:");
+    DEBUG_MSG(m_gtm(0,0) << "  " << m_gtm(0,1) << "  " << m_gtm(0,2));
+    DEBUG_MSG(m_gtm(1,0) << "  " << m_gtm(1,1) << "  " << m_gtm(1,2));
+    DEBUG_MSG(m_gtm(2,0) << "  " << m_gtm(2,1) << "  " << m_gtm(2,2));
+    DEBUG_MSG("------------------------------");
 }
 
 
@@ -121,7 +129,7 @@ void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
 
 
 void InterfaceController::to_viewport(Shape *shape) {
-    std::cout << "Converting to viewport coordinates." << std::endl;
+    DEBUG_MSG("Converting to viewport coordinates.");
 
     shape->clear_viewport_coordinates();
     const DCoordVector& coords = shape->normalized_coords();
@@ -142,9 +150,9 @@ void InterfaceController::to_viewport(Shape *shape) {
             xnc = (*c)->x();
             ync = (*c)->y();
 
-            std::cout << "-----------------------------" << std::endl;
-            std::cout << "xnc = " << xnc << std::endl;
-            std::cout << "ync = " << ync << std::endl;
+            DEBUG_MSG("-----------------------------");
+            DEBUG_MSG("xnc = " << xnc);
+            DEBUG_MSG("ync = " << ync);
 
             // Viewport coordinates
             xvp = (int) (xvp_min + xratio * (xnc + 1.0));
@@ -154,9 +162,9 @@ void InterfaceController::to_viewport(Shape *shape) {
             shape->add_viewport_coordinate(new Coord<int>(xvp, yvp));
             c++;
 
-            std::cout << "xvp = " << xvp << std::endl;
-            std::cout << "yvp = " << yvp << std::endl;
-            std::cout << "-----------------------------" << std::endl;
+            DEBUG_MSG("xvp = " << xvp);
+            DEBUG_MSG("yvp = " << yvp);
+            DEBUG_MSG("-----------------------------");
         }
     }
 }
@@ -205,7 +213,7 @@ void InterfaceController::translate(const TransformationDialog &dialog) {
         shape->transform(m_gtm);
         this->update(shape);
     } else {
-        std::cout << "Couldn't find specified object!" << std::endl;
+        DEBUG_MSG("Couldn't find specified object!");
     }
 }
 
@@ -221,7 +229,7 @@ void InterfaceController::scale(const TransformationDialog &dialog) {
         shape->transform(m_gtm);
         this->update(shape);
     } else {
-        std::cout << "Couldn't find specified object!" << std::endl;
+        DEBUG_MSG("Couldn't find specified object!");
     }
 }
 
@@ -238,7 +246,7 @@ void InterfaceController::rotate(const TransformationDialog &dialog) {
         shape->transform(m_gtm);
         this->update(shape);
     } else {
-        std::cout << "Couldn't find specified object!" << std::endl;
+        DEBUG_MSG("Couldn't find specified object!");
     }
 }
 
@@ -253,15 +261,15 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
         shape->transform(m_gtm);
         this->update(shape);
     } else {
-        std::cout << "Couldn't find specified object!" << std::endl;
+        DEBUG_MSG("Couldn't find specified object!");
     }
 }
 
 
 void InterfaceController::export_obj_file() {
-    std::cout << "Exporting shapes to Wavefront.obj file...";
+    DEBUG_MSG("Exporting shapes to Wavefront .obj file");
     if (m_shapes.empty()) {
-        std::cout << " nothing to export." << std::endl;
+        DEBUG_MSG(" nothing to export.");
     } else {
         m_writer = new ObjWriter();
         auto shape = m_shapes.begin();
@@ -270,7 +278,7 @@ void InterfaceController::export_obj_file() {
             shape++;
         }
         m_writer->write_to_file();
-        std::cout << " done." << std::endl;
+        DEBUG_MSG(" done.");
         delete m_writer;
         m_writer = nullptr;
     }
