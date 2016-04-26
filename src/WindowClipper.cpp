@@ -2,6 +2,14 @@
 // Authors: Leonardo Vailatti
 //          Makhles R. Lange
 
+// For debugging, uncomment the following define
+#define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
 #include <iostream>
 #include "WindowClipper.hpp"
 #include "Coord.hpp"
@@ -24,10 +32,10 @@ void WindowClipper::clip_to_area(Point &p) {
     DCoordVector newVertice;
 
     if (x >= X_MIN && x <= X_MAX && y >= Y_MIN && y <= Y_MAX) {
-        std::cout << "Clipped point inside (" << x << "," << y << ")" << std::endl;
+        DEBUG_MSG("Clipped point inside (" << x << "," << y << ")");
         newVertice.push_back(new Coord<double>(x, y));
     } else {
-        std::cout << "Point outside." << std::endl;
+        DEBUG_MSG("Point outside.");
     }
     p.update_normalized_coords(newVertice);
 }
@@ -67,11 +75,11 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
     Coord<double> previous;
     Coord<double> *new_coord;  // Intersection at an edge
 
-    std::cout << "Clipping Bézier curve..." << std::endl;
+    DEBUG_MSG("Clipping Bézier curve...");
 
     // Loop over the control points
     for (unsigned i = 0; i < norm_coords.size(); i+=4) {
-        std::cout << "  First curve:" << std::endl;
+        DEBUG_MSG("  First curve:");
 
         x0 = norm_coords[i+0]->x();
         x1 = norm_coords[i+1]->x();
@@ -82,7 +90,11 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
         y2 = norm_coords[i+2]->y();
         y3 = norm_coords[i+3]->y();
 
-        std::cout << "  > Bernstein points read." << std::endl;
+        DEBUG_MSG("  > Bernstein points read:");
+        DEBUG_MSG("    - p0 = (" << x0 << "," << y0 << ")");
+        DEBUG_MSG("    - p1 = (" << x1 << "," << y1 << ")");
+        DEBUG_MSG("    - p2 = (" << x2 << "," << y2 << ")");
+        DEBUG_MSG("    - p3 = (" << x3 << "," << y3 << ")");
 
         for (double t = 0.0; t < 1.0; t+=dt) {
             aux1 = 1.0 - t;
@@ -95,50 +107,53 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
             x = (x0 * b0) + (x1 * b1) + (x2 * b2) + (x3 * b3);
             y = (y0 * b0) + (y1 * b1) + (y2 * b2) + (y3 * b3);
 
-             std::cout << "  > t = " << t << std::endl;
-             std::cout << "  > x = " << x << std::endl;
-             std::cout << "  > y = " << y << std::endl;
+            DEBUG_MSG("  ...................... ");
+            DEBUG_MSG("  > t = " << t);
+            DEBUG_MSG("  > x = " << x);
+            DEBUG_MSG("  > y = " << y);
 
             if (coord_inside(x, y)) {
-                std::cout << "  > Current point is inside. " << std::endl;
+                DEBUG_MSG("  > Current point is inside.");
                 if (t == 0.0) {
                     // First point doesn't have a previous point, so we set it to true.
                     previous_inside = true;
                 }
                 if (previous_inside) {
                     // Both current and previous points are inside the clipping window.
-                    std::cout << "  > Previous point was inside. " << std::endl;
+                    DEBUG_MSG("  > Previous point was inside.");
                     new_coord = new Coord<double>(x, y);
                     outVertices.push_back(new_coord);
                 } else {
                     // Line is entering the window.
-                    std::cout << "  > Previous point was outside. " << std::endl;
+                    DEBUG_MSG("  > Previous point was outside.");
                     current.set_x(x);
                     current.set_y(y);
                     new_coord = WindowClipper::SH_intersect(&current, &previous);
                     outVertices.push_back(new_coord);
-                    std::cout << "  > New intersection at (" << new_coord->x() << ","
-                            << new_coord->y() << ")" << std::endl;
+                    DEBUG_MSG("  > New intersection at (" << new_coord->x() << ","
+                                                          << new_coord->y() << ")");
                     new_coord = new Coord<double>(x, y);
                     outVertices.push_back(new_coord);
+                    previous_inside = true;
                 }
             } else {
-                std::cout << "  > Current point is outside. " << std::endl;
+                DEBUG_MSG("  > Current point is outside.");
                 if (t == 0.0) {
                     // First point doesn't have a previous point, so we set it to false.
                     previous_inside = false;
                 }
                 if (previous_inside) {
                     // Line is leaving the window
-                    std::cout << "  > Previous point was inside. " << std::endl;
+                    DEBUG_MSG("  > Previous point was inside.");
                     current.set_x(x);
                     current.set_y(y);
                     new_coord = WindowClipper::SH_intersect(&current, &previous);
+                    DEBUG_MSG("  > New intersection at (" << new_coord->x() << ","
+                                                          << new_coord->y() << ")");
                     outVertices.push_back(new_coord);
-                    std::cout << "  > New intersection at (" << new_coord->x() << ","
-                            << new_coord->y() << ")" << std::endl;
+                    previous_inside = false;
                 } else {
-                    std::cout << "  > Previous point was outside. " << std::endl;
+                    DEBUG_MSG("  > Previous point was outside.");
                 }
             }
             previous.set_x(x);
@@ -155,9 +170,9 @@ bool WindowClipper::coord_inside(double x, double y) {
     // If the point is outside the clipping window, then
     // set which edge is closer to it in counterclockwise fashion.
     if (x >= X_MIN) {
-        if (y <= Y_MAX) {
+        if (y >= Y_MIN) {
             if (x <= X_MAX) {
-                if (y >= Y_MIN) {
+                if (y <= Y_MAX) {
                     inside = true;
                 } else {
                     m_edge = WindowClipper::Boundary::TOP_EDGE;
@@ -233,10 +248,10 @@ void WindowClipper::cohen_sutherland_clipping(Line &line) {
     }
 
     if (accept) {
-        std::cout << "X1: " << x1 << std::endl;
-        std::cout << "Y1: " << y1 << std::endl;
-        std::cout << "X2: " << x2 << std::endl;
-        std::cout << "Y2: " << y2 << std::endl;
+        DEBUG_MSG("X1: " << x1);
+        DEBUG_MSG("Y1: " << y1);
+        DEBUG_MSG("X2: " << x2);
+        DEBUG_MSG("Y2: " << y2);
     }
 
     DCoordVector newVertices;
@@ -315,10 +330,10 @@ void WindowClipper::liang_barsky_clipping(Line &line) {
     double x2 = line.p1()->xnc() + t1 * xdelta;
     double y2 = line.p1()->ync() + t1 * ydelta;
 
-    std::cout << "X1: " << x1 << std::endl;
-    std::cout << "Y1: " << y1 << std::endl;
-    std::cout << "X2: " << x2 << std::endl;
-    std::cout << "Y2: " << y2 << std::endl;
+    DEBUG_MSG("X1: " << x1);
+    DEBUG_MSG("Y1: " << y1);
+    DEBUG_MSG("X2: " << x2);
+    DEBUG_MSG("Y2: " << y2);
 
     DCoordVector newVertices;
     newVertices.push_back(new Coord<double>(x1, y1));
@@ -341,22 +356,22 @@ void WindowClipper::SH_clipping(Wireframe &wf) {
 
     // Call the algorithm for each window edge, switching in and out vectors
     m_edge = WindowClipper::Boundary::LEFT_EDGE;
-    std::cout << "Clipping at the LEFT edge..." << std::endl;
+    DEBUG_MSG("Clipping at the LEFT edge...");
     SH_polygon_clipping(inVertices, outVertices);
 
     inVertices.clear();
     m_edge = WindowClipper::Boundary::BOTTOM_EDGE;
-    std::cout << "Clipping at the BOTTOM edge..." << std::endl;
+    DEBUG_MSG("Clipping at the BOTTOM edge...");
     SH_polygon_clipping(outVertices, inVertices);
 
     outVertices.clear();
     m_edge = WindowClipper::Boundary::RIGHT_EDGE;
-    std::cout << "Clipping at the RIGHT edge..." << std::endl;
+    DEBUG_MSG("Clipping at the RIGHT edge...");
     SH_polygon_clipping(inVertices, outVertices);
     
     inVertices.clear();
     m_edge = WindowClipper::Boundary::TOP_EDGE;
-    std::cout << "Clipping at the TOP edge..." << std::endl;
+    DEBUG_MSG("Clipping at the TOP edge...");
     SH_polygon_clipping(outVertices, inVertices);
 
     // Clipped polygon is stored in inVertices
