@@ -9,7 +9,7 @@
 #ifndef SHAPE_BUILDER_HPP
 #define SHAPE_BUILDER_HPP
 
-#include <list>
+#include <vector>
 #include <string>
 #include "ShapeType.hpp"
 
@@ -17,12 +17,13 @@ class Shape;
 class Point;
 class Line;
 class Wireframe;
+class BezierCurve;
 
 class ShapeBuilder {
 
 private:
     static ShapeBuilder *m_pInstance;
-    std::list<Point*> m_points;
+    std::vector<Point*> m_points;
     std::string m_name;
     bool m_filled;
 
@@ -35,6 +36,7 @@ private:
     Point* create_point();
     Line* create_line();
     Wireframe* create_wireframe();
+    BezierCurve* create_bezier_curve();
 
 public:
     static ShapeBuilder* instance();

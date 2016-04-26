@@ -73,5 +73,31 @@ void ShapeDrawer::draw(Wireframe &wireframe) {
 
 
 void ShapeDrawer::draw(BezierCurve &bc) {
-    // TODO
+    const ICoordVector& coords = bc.viewport_coordinates();
+
+    if (!coords.empty()) {
+        m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+        m_cr->set_line_width(1.0);
+
+        int x = coords[0]->x();
+        int y = coords[0]->y();
+        m_cr->move_to(x,y);
+
+        for (unsigned i = 0; i < coords.size(); i++) {
+            x = coords[i]->x();
+            y = coords[i]->y();
+            std::cout << "line_to -> (" << x << "," << y << ")" << std::endl;
+            m_cr->line_to(x,y);
+        }
+
+        // Go back to first point
+        m_cr->line_to(coords[0]->x(), coords[0]->y());
+
+        // Stroke and fill it
+        m_cr->save();
+        m_cr->set_source_rgba(0.0, 0.0, 0.0, 0.4);  // Light gray fill
+        m_cr->fill_preserve();
+        m_cr->restore();  // Back in black (TAM... TAMDAMDAMMM)
+        m_cr->stroke();
+    }
 }

@@ -51,8 +51,129 @@ void WindowClipper::clip_to_area(Wireframe &wf) {
 
 
 void WindowClipper::clip_to_area(BezierCurve &bc) {
-    // TODO
+    const DCoordVector norm_coords = bc.normalized_coords();
+    DCoordVector outVertices;
+
+    bool previous_inside = false;    // Whether the last point was inside the window
+    const int steps = 100;
+    const double dt = 1.0 / (double) steps;
+
+    double x0, x1, x2, x3;  // Bézier control points
+    double y0, y1, y2, y3;  // Bézier control points
+    double b0, b1, b2, b3;  // Bernstein basis polynomials
+    double aux1, aux2, t2;  // Auxiliary variables
+    double x, y;            // Current point coordinates
+    Coord<double> current;
+    Coord<double> previous;
+    Coord<double> *new_coord;  // Intersection at an edge
+
+    std::cout << "Clipping Bézier curve..." << std::endl;
+
+    // Loop over the control points
+    for (unsigned i = 0; i < norm_coords.size(); i+=4) {
+        std::cout << "  First curve:" << std::endl;
+
+        x0 = norm_coords[i+0]->x();
+        x1 = norm_coords[i+1]->x();
+        x2 = norm_coords[i+2]->x();
+        x3 = norm_coords[i+3]->x();
+        y0 = norm_coords[i+0]->y();
+        y1 = norm_coords[i+1]->y();
+        y2 = norm_coords[i+2]->y();
+        y3 = norm_coords[i+3]->y();
+
+        std::cout << "  > Bernstein points read." << std::endl;
+
+        for (double t = 0.0; t < 1.0; t+=dt) {
+            aux1 = 1.0 - t;
+            aux2 = aux1 * aux1;
+            t2 = t * t;
+            b0 = aux1 * aux2;
+            b1 = 3.0 * t * aux2;
+            b2 = 3.0 * t2 * aux1;
+            b3 = t * t2;
+            x = (x0 * b0) + (x1 * b1) + (x2 * b2) + (x3 * b3);
+            y = (y0 * b0) + (y1 * b1) + (y2 * b2) + (y3 * b3);
+
+             std::cout << "  > t = " << t << std::endl;
+             std::cout << "  > x = " << x << std::endl;
+             std::cout << "  > y = " << y << std::endl;
+
+            if (coord_inside(x, y)) {
+                std::cout << "  > Current point is inside. " << std::endl;
+                if (t == 0.0) {
+                    // First point doesn't have a previous point, so we set it to true.
+                    previous_inside = true;
+                }
+                if (previous_inside) {
+                    // Both current and previous points are inside the clipping window.
+                    std::cout << "  > Previous point was inside. " << std::endl;
+                    new_coord = new Coord<double>(x, y);
+                    outVertices.push_back(new_coord);
+                } else {
+                    // Line is entering the window.
+                    std::cout << "  > Previous point was outside. " << std::endl;
+                    current.set_x(x);
+                    current.set_y(y);
+                    new_coord = WindowClipper::SH_intersect(&current, &previous);
+                    outVertices.push_back(new_coord);
+                    std::cout << "  > New intersection at (" << new_coord->x() << ","
+                            << new_coord->y() << ")" << std::endl;
+                    new_coord = new Coord<double>(x, y);
+                    outVertices.push_back(new_coord);
+                }
+            } else {
+                std::cout << "  > Current point is outside. " << std::endl;
+                if (t == 0.0) {
+                    // First point doesn't have a previous point, so we set it to false.
+                    previous_inside = false;
+                }
+                if (previous_inside) {
+                    // Line is leaving the window
+                    std::cout << "  > Previous point was inside. " << std::endl;
+                    current.set_x(x);
+                    current.set_y(y);
+                    new_coord = WindowClipper::SH_intersect(&current, &previous);
+                    outVertices.push_back(new_coord);
+                    std::cout << "  > New intersection at (" << new_coord->x() << ","
+                            << new_coord->y() << ")" << std::endl;
+                } else {
+                    std::cout << "  > Previous point was outside. " << std::endl;
+                }
+            }
+            previous.set_x(x);
+            previous.set_y(y);
+        }
+    }
+
+    bc.update_normalized_coords(outVertices);
 }
+
+
+bool WindowClipper::coord_inside(double x, double y) {
+    bool inside = false;
+    // If the point is outside the clipping window, then
+    // set which edge is closer to it in counterclockwise fashion.
+    if (x >= X_MIN) {
+        if (y <= Y_MAX) {
+            if (x <= X_MAX) {
+                if (y >= Y_MIN) {
+                    inside = true;
+                } else {
+                    m_edge = WindowClipper::Boundary::TOP_EDGE;
+                }
+            } else {
+                m_edge = WindowClipper::Boundary::RIGHT_EDGE;
+            }
+        } else {
+            m_edge = WindowClipper::Boundary::BOTTOM_EDGE;    
+        }
+    } else {
+        m_edge = WindowClipper::Boundary::LEFT_EDGE;
+    }
+    return inside;
+}
+
 
 
 void WindowClipper::set_line_clipping_method(LineClipping type) {

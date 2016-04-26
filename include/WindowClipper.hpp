@@ -24,7 +24,7 @@ public:
     WindowClipper();
     ~WindowClipper() {}
 
-    // Overriden virtuan methods
+    // Overriden virtual methods
     void clip_to_area(Point &p) override;
     void clip_to_area(Line &line) override;
     void clip_to_area(Wireframe &wf) override;
@@ -47,7 +47,11 @@ public:
     bool SH_inside(Coord<double> *p);
     Coord<double>* SH_intersect(Coord<double> *p, Coord<double> *s);
 
+    // Weiler-Atherton methods
     void weiler_atherton_clipping(Wireframe &wf);
+
+    // Bézier methods
+    bool coord_inside(double x, double y);
 
 private:
     // Window boundaries coordinates

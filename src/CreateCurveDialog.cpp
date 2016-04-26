@@ -42,14 +42,11 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     get_content_area()->pack_start(*coord_frame, Gtk::PACK_SHRINK, 0);
 
     // Entries for the coordinates
-    this->add_point();
-    this->add_point();
-    this->add_point();
-    this->add_point();
+    CreateCurveDialog::add_curve();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
-    add_button("Add point", Gtk::RESPONSE_APPLY);
+    add_button("Add curve", Gtk::RESPONSE_APPLY);
     add_button("OK", Gtk::RESPONSE_OK);
 
     signal_response().connect_notify(sigc::mem_fun(*this, &CreateCurveDialog::on_my_response));
@@ -67,8 +64,8 @@ void CreateCurveDialog::on_my_response(int response_id) {
         }
         case Gtk::RESPONSE_APPLY:
         {
-            std::cout << "User required to add another point." << std::endl;
-            this->add_point();
+            std::cout << "User required to add another curve." << std::endl;
+            this->add_curve();
             signal_response().emission_stop();
             break;
         }
@@ -116,7 +113,10 @@ void CreateCurveDialog::create_shape() {
 }
 
 // Called every time the user clicks the "Add point" button.
-void CreateCurveDialog::add_point() {
-    m_coordBox->add_coord();
+void CreateCurveDialog::add_curve() {
+    // Add another curve to be concatenated (4 points only)
+    for (unsigned i = 0; i < 4; i++) {
+        m_coordBox->add_coord();
+    }
     show_all_children();
 }

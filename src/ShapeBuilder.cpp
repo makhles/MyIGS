@@ -8,6 +8,7 @@
 #include "Point.hpp"
 #include "Line.hpp"
 #include "Wireframe.hpp"
+#include "BezierCurve.hpp"
 #include "DeleteList.hpp"
 
 // Global static pointer to ensure a single instance of the class.
@@ -66,7 +67,7 @@ Shape* ShapeBuilder::create_shape(ShapeType type) {
         }
         case ShapeType::BEZIER_CUBIC:
         {
-            //shape = ShapeBuilder::create_bezier_curve();
+            shape = ShapeBuilder::create_bezier_curve();
             break;
         }
     }
@@ -76,29 +77,30 @@ Shape* ShapeBuilder::create_shape(ShapeType type) {
 
 
 Point* ShapeBuilder::create_point() {
-    Point *p = m_points.front();
-    m_points.pop_front();
-    return p;
+    return m_points[0];
 }
 
 
 Line* ShapeBuilder::create_line() {
-    Point *p1 = m_points.front();
-    m_points.pop_front();
-    Point *p2 = m_points.front();
-    m_points.pop_front();
-    return new Line(m_name, p1, p2);
+    return new Line(m_name, m_points[0], m_points[1]);
 }
 
 
 Wireframe* ShapeBuilder::create_wireframe() {
     Wireframe *wireframe = new Wireframe(m_name, m_filled);
-    auto p = m_points.begin();
-    while (p != m_points.end()) {
-        wireframe->add_point((*p));
-        p++;
+    for (unsigned i = 0; i < m_points.size(); i++) {
+        wireframe->add_point(m_points[i]);
     }
     return wireframe;
+}
+
+
+BezierCurve* ShapeBuilder::create_bezier_curve() {
+    BezierCurve *bc = new BezierCurve(m_name);
+    for (unsigned i = 0; i < m_points.size(); i++) {
+        bc->add_point(m_points[i]);
+    }
+    return bc;
 }
 
 

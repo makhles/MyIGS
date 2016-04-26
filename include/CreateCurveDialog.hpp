@@ -20,7 +20,7 @@ private:
     // Signal handler
     void on_my_response(int response_id);
     void create_shape();
-    void add_point();
+    void add_curve();
 
 public:
     CreateCurveDialog(const Glib::ustring &title);
