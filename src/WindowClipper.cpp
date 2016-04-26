@@ -65,6 +65,7 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
     bool previous_inside = false;    // Whether the last point was inside the window
     const int steps = 100;
     const double dt = 1.0 / (double) steps;
+    double t;
 
     double x0, x1, x2, x3;  // Bézier control points
     double y0, y1, y2, y3;  // Bézier control points
@@ -96,7 +97,8 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
         DEBUG_MSG("    - p2 = (" << x2 << "," << y2 << ")");
         DEBUG_MSG("    - p3 = (" << x3 << "," << y3 << ")");
 
-        for (double t = 0.0; t < 1.0; t+=dt) {
+        t = 0.0;
+        for (unsigned step = 0; step < steps; step++) {
             aux1 = 1.0 - t;
             aux2 = aux1 * aux1;
             t2 = t * t;
@@ -158,6 +160,7 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
             }
             previous.set_x(x);
             previous.set_y(y);
+            t += dt;
         }
     }
 
