@@ -100,12 +100,6 @@ void ShapeDrawer::draw(BezierCurve &bc) {
 
         // Go back to first point
         m_cr->line_to(coords[0]->x(), coords[0]->y());
-
-        // Stroke and fill it
-        m_cr->save();
-        m_cr->set_source_rgba(0.0, 0.0, 0.0, 0.4);  // Light gray fill
-        m_cr->fill_preserve();
-        m_cr->restore();  // Back in black (TAM... TAMDAMDAMMM)
         m_cr->stroke();
     }
 }
