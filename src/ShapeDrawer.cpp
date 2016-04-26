@@ -97,9 +97,6 @@ void ShapeDrawer::draw(BezierCurve &bc) {
             DEBUG_MSG("line_to -> (" << x << "," << y << ")");
             m_cr->line_to(x,y);
         }
-
-        // Go back to first point
-        m_cr->line_to(coords[0]->x(), coords[0]->y());
         m_cr->stroke();
     }
 }
