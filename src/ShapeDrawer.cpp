@@ -2,6 +2,14 @@
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
+// For debugging, uncomment the following define
+// #define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
 #include <iostream>
 #include "ShapeDrawer.hpp"
 #include "Point.hpp"
@@ -24,7 +32,7 @@ void ShapeDrawer::draw(Point &point) {
 }
 
 void ShapeDrawer::draw(Line &line) {
-    std::cout << "Drawing line" << std::endl;
+    DEBUG_MSG("Drawing line");
     m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
     m_cr->set_line_width(1.0);
 
@@ -54,7 +62,7 @@ void ShapeDrawer::draw(Wireframe &wireframe) {
         while (coord != coordinates.cend()) {
             x = (*coord)->x();
             y = (*coord)->y();
-            std::cout << "line_to -> (" << x << "," << y << ")" << std::endl;
+            DEBUG_MSG("line_to -> (" << x << "," << y << ")");
             m_cr->line_to(x,y);
             coord++;
         }
@@ -86,7 +94,7 @@ void ShapeDrawer::draw(BezierCurve &bc) {
         for (unsigned i = 0; i < coords.size(); i++) {
             x = coords[i]->x();
             y = coords[i]->y();
-            std::cout << "line_to -> (" << x << "," << y << ")" << std::endl;
+            DEBUG_MSG("line_to -> (" << x << "," << y << ")");
             m_cr->line_to(x,y);
         }
 
