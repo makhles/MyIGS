@@ -6,10 +6,18 @@
 
 
 void CoordBox::add_curve() {
-    // Add another curve to be concatenated (4 points only)
-    for (unsigned i = 0; i < 4; i++) {
-        CoordBox::add_coord();
+    if (m_entries.size() == 0 || entries_filled()) {
+        // Add another curve to be concatenated (4 points only)
+        for (unsigned i = 0; i < 4; i++) {
+            CoordBox::add_coord();
+        }
     }
+}
+
+
+bool CoordBox::entries_filled() const {
+    // TODO
+    return true;
 }
 
 

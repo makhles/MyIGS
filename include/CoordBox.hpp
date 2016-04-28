@@ -16,6 +16,7 @@ protected:
 public:
     CoordBox() {}
     ~CoordBox() {}
+    bool entries_filled() const;
     void add_curve();
     void add_coord();
     void fill_coords(std::vector<Coord<double>*>& coords) const;
