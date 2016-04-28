@@ -5,6 +5,14 @@
 #include "CoordBox.hpp"
 
 
+void CoordBox::add_curve() {
+    // Add another curve to be concatenated (4 points only)
+    for (unsigned i = 0; i < 4; i++) {
+        CoordBox::add_coord();
+    }
+}
+
+
 void CoordBox::add_coord() {
     // Used for naming each coordinate, like x0, x1, y0, y1, etc.
     // Every time a new point is added, m_entries increases by 2.

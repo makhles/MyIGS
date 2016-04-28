@@ -114,9 +114,6 @@ void CreateCurveDialog::create_shape() {
 
 // Called every time the user clicks the "Add point" button.
 void CreateCurveDialog::add_curve() {
-    // Add another curve to be concatenated (4 points only)
-    for (unsigned i = 0; i < 4; i++) {
-        m_coordBox->add_coord();
-    }
+    m_coordBox->add_curve();
     show_all_children();
 }
