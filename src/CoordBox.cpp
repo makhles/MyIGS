@@ -5,19 +5,42 @@
 #include "CoordBox.hpp"
 
 
+// Add the first Bézier curve (4 points only)
 void CoordBox::add_curve() {
-    if (m_entries.size() == 0 || entries_filled()) {
-        // Add another curve to be concatenated (4 points only)
-        for (unsigned i = 0; i < 4; i++) {
-            CoordBox::add_coord();
-        }
+    for (unsigned i = 0; i < 4; i++) {
+        CoordBox::add_coord();
     }
 }
 
 
-bool CoordBox::entries_filled() const {
-    // TODO
-    return true;
+void CoordBox::add_bezier_curve() {
+    const int last_curve_begin = m_entries.size() - ENTRIES_PER_CURVE;
+
+    // Make all entries from the previous curve uneditable
+    for (unsigned i = last_curve_begin; i < m_entries.size(); i++) {
+        m_entries[i]->set_sensitive(false);
+    }
+
+    int last_entry_index = m_entries.size() - 1;
+    double last_x, last_y;
+    std::stringstream stream_last_x, stream_last_y;
+    stream_last_x << m_entries[last_entry_index - 1]->get_text().raw();
+    stream_last_y << m_entries[last_entry_index - 0]->get_text().raw();
+    stream_last_x >> last_x;
+    stream_last_y >> last_y;
+
+    for (unsigned i = 0; i < 4; i++) {
+        CoordBox::add_coord();
+    }
+
+    // The first entry of the recently added curve must have the same
+    // coordinates as the last entry of the previous curve (C0)
+    m_entries[last_entry_index + 1]->set_text(std::to_string(last_x));
+    m_entries[last_entry_index + 2]->set_text(std::to_string(last_y));
+
+    // Prevent user from messing this up
+    m_entries[last_entry_index + 1]->set_sensitive(false);
+    m_entries[last_entry_index + 2]->set_sensitive(false);
 }
 
 
@@ -51,7 +74,8 @@ void CoordBox::add_coord() {
 }
 
 
-void CoordBox::fill_coords(std::vector<Coord<double>*>& coords) const {
+bool CoordBox::fill_coords(std::vector<Coord<double>*>& coords) const {
+    bool filled = true;  // Whether all the entries are filled.
     double x, y;
     for (unsigned i = 0; i < m_entries.size(); i += 2) {
         // Create new stringstreams at every loop iteration
@@ -64,6 +88,25 @@ void CoordBox::fill_coords(std::vector<Coord<double>*>& coords) const {
             stream_x >> x;
             stream_y >> y;
             coords.push_back(new Coord<double>(x, y));
+        } else {
+            filled = false;
         }
     }
+    return filled;
+}
+
+
+bool CoordBox::entries_filled() const {
+    bool filled = true;  // Whether all the entries are filled.
+    for (unsigned i = 0; i < m_entries.size(); i++) {
+        // Create new stringstreams at every loop iteration
+        // to make sure it's totally clear.
+        std::stringstream stream;
+        stream << m_entries[i]->get_text().raw();
+        if (stream.str().size() == 0) {
+            filled = false;
+            break;
+        }
+    }
+    return filled;
 }

@@ -42,7 +42,7 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     get_content_area()->pack_start(*coord_frame, Gtk::PACK_SHRINK, 0);
 
     // Entries for the coordinates
-    CreateCurveDialog::add_curve();
+    m_coordBox->add_curve();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -90,21 +90,21 @@ void CreateCurveDialog::create_shape() {
 
     if (!name.empty()) {
         std::vector<Coord<double>*> coords;
-        m_coordBox->fill_coords(coords);
+        if (m_coordBox->fill_coords(coords)) {
 
-        // Check for minimum number of points.
-        if (coords.size() >= 4) {
-            m_minVertices = true;
-            builder->add_name(name);
-            for (unsigned i = 0; i < coords.size(); i++) {
-                builder->add_point(coords[i]->x(), coords[i]->y());
+            // Check for minimum number of points.
+            if (coords.size() >= 4) {
+                m_minVertices = true;
+                builder->add_name(name);
+                for (unsigned i = 0; i < coords.size(); i++) {
+                    builder->add_point(coords[i]->x(), coords[i]->y());
+                }
+                std::cout << "Added curve to ShapeBuilder." << std::endl;
+            } else {
+                std::cout << "Rolling back." << std::endl;
+                builder->rollback();
             }
-            std::cout << "Added curve to ShapeBuilder." << std::endl;
-        } else {
-            std::cout << "Rolling back." << std::endl;
-            builder->rollback();
         }
-
         // Clean coords
         for_each (coords.begin(),
                   coords.end(),
@@ -114,6 +114,17 @@ void CreateCurveDialog::create_shape() {
 
 // Called every time the user clicks the "Add point" button.
 void CreateCurveDialog::add_curve() {
-    m_coordBox->add_curve();
+    if (m_coordBox->entries_filled()) {
+        m_coordBox->add_bezier_curve();
+    } else {
+        Gtk::MessageDialog dialog(*this,
+                "There are unfilled entries.",
+                false,  // Markup
+                Gtk::MessageType::MESSAGE_WARNING,
+                Gtk::ButtonsType::BUTTONS_OK,
+                true);  // Modal
+        dialog.set_secondary_text("Fill all the other entries before adding a new curve.");
+        dialog.run();
+    }
     show_all_children();
 }

@@ -100,22 +100,22 @@ void CreateWireframeDialog::create_shape() {
 
     if (!name.empty()) {
         std::vector<Coord<double>*> coords;
-        m_coordBox->fill_coords(coords);
+        if (m_coordBox->fill_coords(coords)) {
 
-        // Check for minimum number of points.
-        if (coords.size() >= 3) {
-            m_minVertices = true;
-            builder->add_name(name);
-            builder->set_filled(m_filled);
-            for (unsigned i = 0; i < coords.size(); i++) {
-                builder->add_point(coords[i]->x(), coords[i]->y());
+            // Check for minimum number of points.
+            if (coords.size() >= 3) {
+                m_minVertices = true;
+                builder->add_name(name);
+                builder->set_filled(m_filled);
+                for (unsigned i = 0; i < coords.size(); i++) {
+                    builder->add_point(coords[i]->x(), coords[i]->y());
+                }
+                std::cout << "Added wireframe to ShapeBuilder." << std::endl;
+            } else {
+                std::cout << "Rolling back." << std::endl;
+                builder->rollback();
             }
-            std::cout << "Added wireframe to ShapeBuilder." << std::endl;
-        } else {
-            std::cout << "Rolling back." << std::endl;
-            builder->rollback();
         }
-
         // Clean coords
         for_each (coords.begin(),
                   coords.end(),
@@ -125,7 +125,18 @@ void CreateWireframeDialog::create_shape() {
 
 // Called every time the user clicks the "Add point" button.
 void CreateWireframeDialog::add_point() {
-    m_coordBox->add_coord();
+    if (m_coordBox->entries_filled()) {
+        m_coordBox->add_coord();
+    } else {
+        Gtk::MessageDialog dialog(*this,
+                "There are unfilled entries.",
+                false,  // Markup
+                Gtk::MessageType::MESSAGE_WARNING,
+                Gtk::ButtonsType::BUTTONS_OK,
+                true);  // Modal
+        dialog.set_secondary_text("Fill all the other entries before adding a new point.");
+        dialog.run();
+    }
     show_all_children();
 }
 
