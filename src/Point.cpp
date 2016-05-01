@@ -10,6 +10,15 @@
 #include "TMatrix.hpp"
 #include "Writer.hpp"
 
+// For debugging, uncomment the following define
+//#define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
+
 Point::Point(const std::string name, const double x, const double y) :
         Shape(name, ShapeType::POINT),
         m_xwc(x),
@@ -44,9 +53,9 @@ void Point::transform(TMatrix &matrix) {
 
 
 void Point::normalize(TMatrix &matrix) {
-    std::cout << "Normalizing point..." << std::endl;
-    std::cout << "xwc = " << m_xwc << std::endl;
-    std::cout << "ywc = " << m_ywc << std::endl;
+    DEBUG_MSG("Normalizing point...");
+    DEBUG_MSG("xwc = " << m_xwc);
+    DEBUG_MSG("ywc = " << m_ywc);
     std::vector<double> v;
     v.push_back(m_xwc);
     v.push_back(m_ywc);
@@ -54,16 +63,16 @@ void Point::normalize(TMatrix &matrix) {
     matrix * v;  // Result is stored in v
     m_xnc = v[0];
     m_ync = v[1];
-    std::cout << "xnc = " << m_xnc << std::endl;
-    std::cout << "ync = " << m_ync << std::endl;
-    std::cout << "-----------------------------" << std::endl;
+    DEBUG_MSG("xnc = " << m_xnc);
+    DEBUG_MSG("ync = " << m_ync);
+    DEBUG_MSG("-----------------------------");
     m_ncCoord.clear();
     m_ncCoord.push_back(new Coord<double>(m_xnc, m_ync));
 }
 
 
 void Point::clip_to_window(AbstractClipper &clipper) {
-    std::cout << "Clipping to window." << std::endl;
+    DEBUG_MSG("Clipping to window.");
     clipper.clip_to_area(*this);
 }
 
