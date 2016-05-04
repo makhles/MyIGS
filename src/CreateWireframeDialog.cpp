@@ -49,10 +49,9 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     get_content_area()->pack_start(*coord_frame, Gtk::PACK_SHRINK, 0);
 
     // Entries for the coordinates
-    this->add_point();
-    this->add_point();
-    this->add_point();
-
+    m_coordBox->add_coord();
+    m_coordBox->add_coord();
+    m_coordBox->add_coord();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
