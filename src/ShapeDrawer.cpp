@@ -44,8 +44,8 @@ void ShapeDrawer::draw(Line &line) {
     m_cr->stroke();
 }
 
-void ShapeDrawer::draw(Wireframe &wireframe) {
-    const ICoordVector& coordinates = wireframe.viewport_coordinates();
+void ShapeDrawer::draw(Wireframe &wf) {
+    const ICoordVector& coordinates = wf.viewport_coordinates();
 
     if (!coordinates.empty()) {
         m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
@@ -71,10 +71,12 @@ void ShapeDrawer::draw(Wireframe &wireframe) {
         m_cr->line_to(x0,y0);
 
         // Stroke and fill it
-        m_cr->save();
-        m_cr->set_source_rgba(0.0, 0.0, 0.0, 0.4);  // Light gray fill
-        m_cr->fill_preserve();
-        m_cr->restore();  // Back in black (TAM... TAMDAMDAMMM)
+        if (wf.filled()) {
+            m_cr->save();
+            m_cr->set_source_rgba(0.0, 0.0, 0.0, 0.4);  // Light gray fill
+            m_cr->fill_preserve();
+            m_cr->restore();  // Back in black (TAM... TAMDAMDAMMM)
+        }
         m_cr->stroke();
     }
 }
