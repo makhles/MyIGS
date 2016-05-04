@@ -3,7 +3,7 @@
 //          Makhles Reuter Lange
 
 // For debugging, uncomment the following define
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else
@@ -107,6 +107,7 @@ void InterfaceController::update_gtm() {
 // Called whenever the Window is translated, scaled or rotated.
 void InterfaceController::update_shapes() {
     this->update_gtm();
+    DEBUG_MSG("m_shapes.size = " << m_shapes.size());
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
         (*shape)->normalize(m_gtm);

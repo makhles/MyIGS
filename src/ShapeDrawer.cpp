@@ -3,7 +3,7 @@
 //          Makhles Reuter Lange
 
 // For debugging, uncomment the following define
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else
@@ -23,12 +23,15 @@ typedef std::vector<const Coord<int>*> ICoordVector;
 
 void ShapeDrawer::draw(Point &point) {
     const ICoordVector& coordinates = point.viewport_coordinates();
-    auto coord = coordinates[0];
-    m_cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-    m_cr->set_line_width(2.0);
-    m_cr->move_to(coord->x(), coord->y());
-    m_cr->line_to(coord->x(), coord->y());
-    m_cr->stroke();
+    if (coordinates.size() == 1) {
+        auto coord = coordinates[0];
+        m_cr->set_line_cap(Cairo::LINE_CAP_ROUND);
+        m_cr->set_line_width(2.0);
+        m_cr->move_to(coord->x(), coord->y());
+        m_cr->line_to(coord->x(), coord->y());
+        m_cr->stroke();
+        DEBUG_MSG("coord = (" << coord->x() << "," << coord->y() << ")");
+    }
 }
 
 void ShapeDrawer::draw(Line &line) {
