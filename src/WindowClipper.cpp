@@ -3,7 +3,7 @@
 //          Makhles R. Lange
 
 // For debugging, uncomment the following define
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else
@@ -361,21 +361,27 @@ void WindowClipper::SH_clipping(Wireframe &wf) {
     m_edge = WindowClipper::Boundary::LEFT_EDGE;
     DEBUG_MSG("Clipping at the LEFT edge...");
     SH_polygon_clipping(inVertices, outVertices);
-
     inVertices.clear();
-    m_edge = WindowClipper::Boundary::BOTTOM_EDGE;
-    DEBUG_MSG("Clipping at the BOTTOM edge...");
-    SH_polygon_clipping(outVertices, inVertices);
 
-    outVertices.clear();
-    m_edge = WindowClipper::Boundary::RIGHT_EDGE;
-    DEBUG_MSG("Clipping at the RIGHT edge...");
-    SH_polygon_clipping(inVertices, outVertices);
-    
-    inVertices.clear();
-    m_edge = WindowClipper::Boundary::TOP_EDGE;
-    DEBUG_MSG("Clipping at the TOP edge...");
-    SH_polygon_clipping(outVertices, inVertices);
+    if (!outVertices.empty()) {
+        m_edge = WindowClipper::Boundary::BOTTOM_EDGE;
+        DEBUG_MSG("Clipping at the BOTTOM edge...");
+        SH_polygon_clipping(outVertices, inVertices);
+
+        if (!inVertices.empty()) {
+            outVertices.clear();
+            m_edge = WindowClipper::Boundary::RIGHT_EDGE;
+            DEBUG_MSG("Clipping at the RIGHT edge...");
+            SH_polygon_clipping(inVertices, outVertices);
+            inVertices.clear();
+
+            if (!outVertices.empty()) {
+                m_edge = WindowClipper::Boundary::TOP_EDGE;
+                DEBUG_MSG("Clipping at the TOP edge...");
+                SH_polygon_clipping(outVertices, inVertices);
+            }
+        }
+    }
 
     // Clipped polygon is stored in inVertices
     wf.update_normalized_coords(inVertices);
@@ -391,21 +397,30 @@ void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVe
 
     for(unsigned j = 0; j < inVertices.size(); j++) {
         p = inVertices[j];
+        DEBUG_MSG("p = (" << p->x() << "," << p->y() << ")");
+        DEBUG_MSG("s = (" << s->x() << "," << s->y() << ")");
         if (this->SH_inside(p)) {
+            DEBUG_MSG("p is inside");
             if (this->SH_inside(s)) {
                 // The whole line is inside the clipping area
+                DEBUG_MSG("s is inside");
                 outVertices.push_back(p);
             } else {
                 // Line is entering the clipping area
+                DEBUG_MSG("s is outside");
                 i = this->SH_intersect(p, s);
                 outVertices.push_back(i);
                 outVertices.push_back(p);
             }
         } else {
+            DEBUG_MSG("p is outside");
             if (this->SH_inside(s)) {
                 // Line is leaving the clipping area
+                DEBUG_MSG("s is inside");
                 i = this->SH_intersect(p, s);
                 outVertices.push_back(i);
+            } else {
+                DEBUG_MSG("s is outside");
             }
         }
         s = p;
