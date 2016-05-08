@@ -10,15 +10,19 @@
 #include "Coord.hpp"
 #include "DeleteList.hpp"
 
+#define BEZIER_CUBIC 1
+#define BSPLINE 2
+
 CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     Dialog(title, true),
     m_minVertices(false),
     m_notebook(Gtk::manage(new Gtk::Notebook())),
-    m_coordBox(Gtk::manage(new CoordBox())),
+    m_bezier_CoordBox(Gtk::manage(new CoordBox())),
+    m_bspline_CoordBox(Gtk::manage(new CoordBox())),
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
 {
-    set_size_request(-1, 200);
+    set_size_request(300, 300);
     set_resizable(false);
     set_border_width(10);
 
@@ -31,23 +35,54 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
 
     get_content_area()->pack_start(*name_hbox, Gtk::PACK_SHRINK, 5);
 
-    Gtk::Frame * const coord_frame = Gtk::manage(new Gtk::Frame("Points"));
-    Gtk::ScrolledWindow * const scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
+    Gtk::Label * const bezier_label = Gtk::manage(new Gtk::Label("Bézier"));
+    Gtk::Label * const bspline_label = Gtk::manage(new Gtk::Label("B-Spline"));
 
-    scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-    scrolled_window->set_size_request(-1, 150);
-    scrolled_window->set_border_width(5);
-    scrolled_window->add(*m_coordBox);
-    m_coordBox->set_spacing(0);
-    coord_frame->add(*scrolled_window);
-    get_content_area()->pack_start(*coord_frame, Gtk::PACK_SHRINK, 0);
+    Gtk::VBox * const bezier_vbox = Gtk::manage(new Gtk::VBox());
+    Gtk::VBox * const bspline_vbox = Gtk::manage(new Gtk::VBox());
+
+    bezier_vbox->set_size_request(200, -1);
+    bspline_vbox->set_size_request(200, -1);
+
+    // Add the pages to the tab pane
+    m_notebook->append_page(*bezier_vbox, *bezier_label);
+    m_notebook->append_page(*bspline_vbox, *bspline_label);
+    m_notebook->signal_switch_page().connect(sigc::mem_fun(*this, &CreateCurveDialog::on_page_switch));
+
+    Gtk::ScrolledWindow * const bezier_swindow = Gtk::manage(new Gtk::ScrolledWindow());
+    Gtk::ScrolledWindow * const bspline_swindow = Gtk::manage(new Gtk::ScrolledWindow());
+
+    bezier_swindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    bezier_swindow->set_size_request(-1, 200);
+    bezier_swindow->set_border_width(5);
+    bezier_swindow->add(*m_bezier_CoordBox);
+
+    bspline_swindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    bspline_swindow->set_size_request(-1, 200);
+    bspline_swindow->set_border_width(5);
+    bspline_swindow->add(*m_bspline_CoordBox);
+
+    Gtk::Button * const bezier_add_button = Gtk::manage(new Gtk::Button("Add curve"));
+    Gtk::Button * const bspline_add_button = Gtk::manage(new Gtk::Button("Add point"));
+
+    bezier_add_button->signal_clicked().connect(sigc::mem_fun(*this, &CreateCurveDialog::on_add_bezier_curve_button_clicked));
+    bspline_add_button->signal_clicked().connect(sigc::mem_fun(*this, &CreateCurveDialog::on_add_bspline_point_button_clicked));
+
+    bezier_vbox->pack_start(*bezier_swindow, Gtk::PACK_SHRINK, 0);
+    bezier_vbox->pack_start(*bezier_add_button, Gtk::PACK_SHRINK, 0);
+    bspline_vbox->pack_start(*bspline_swindow, Gtk::PACK_SHRINK, 0);
+    bspline_vbox->pack_start(*bspline_add_button, Gtk::PACK_SHRINK, 0);
+
+    get_content_area()->pack_start(*m_notebook, Gtk::PACK_SHRINK, 0);
 
     // Entries for the coordinates
-    m_coordBox->add_cubic_curve();
+    m_bezier_CoordBox->set_spacing(0);
+    m_bspline_CoordBox->set_spacing(0);
+    m_bezier_CoordBox->add_cubic_curve();
+    m_bspline_CoordBox->add_cubic_curve();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);
-    add_button("Add curve", Gtk::RESPONSE_APPLY);
     add_button("OK", Gtk::RESPONSE_OK);
 
     signal_response().connect_notify(sigc::mem_fun(*this, &CreateCurveDialog::on_my_response));
@@ -61,13 +96,6 @@ void CreateCurveDialog::on_my_response(int response_id) {
         case Gtk::RESPONSE_OK:
         {
             this->create_shape();
-            break;
-        }
-        case Gtk::RESPONSE_APPLY:
-        {
-            std::cout << "User required to add another curve." << std::endl;
-            this->add_curve();
-            signal_response().emission_stop();
             break;
         }
         case Gtk::RESPONSE_CANCEL:
@@ -91,7 +119,13 @@ void CreateCurveDialog::create_shape() {
 
     if (!name.empty()) {
         std::vector<Coord<double>*> coords;
-        if (m_coordBox->fill_coords(coords)) {
+        bool coords_filled;
+        switch (m_notebook->get_current_page())
+        {
+            case BEZIER_CUBIC: coords_filled = m_bezier_CoordBox->fill_coords(coords); break;
+            case BSPLINE: coords_filled = m_bspline_CoordBox->fill_coords(coords); break;
+        }
+        if (coords_filled) {
 
             // Check for minimum number of points.
             if (coords.size() >= 4) {
@@ -113,19 +147,56 @@ void CreateCurveDialog::create_shape() {
     }
 }
 
-// Called every time the user clicks the "Add point" button.
-void CreateCurveDialog::add_curve() {
-    if (m_coordBox->entries_filled()) {
-        m_coordBox->add_bezier_curve();
+
+void CreateCurveDialog::on_page_switch(Widget* page, guint page_number)
+{
+    switch (page_number)
+    {
+        case BEZIER_CUBIC:
+        {
+            m_bspline_CoordBox->clear();
+            m_bspline_CoordBox->add_cubic_curve();
+            break;
+        }
+        case BSPLINE:
+        {
+            m_bezier_CoordBox->clear();
+            m_bezier_CoordBox->add_cubic_curve();
+            break;
+        }
+    }
+}
+
+void CreateCurveDialog::on_add_bezier_curve_button_clicked()
+{
+    if (m_bezier_CoordBox->entries_filled()) {
+        m_bezier_CoordBox->add_bezier_curve();
     } else {
-        Gtk::MessageDialog dialog(*this,
-                "There are unfilled entries.",
-                false,  // Markup
-                Gtk::MessageType::MESSAGE_WARNING,
-                Gtk::ButtonsType::BUTTONS_OK,
-                true);  // Modal
-        dialog.set_secondary_text("Fill all the other entries before adding a new curve.");
-        dialog.run();
+        this->show_unfilled_entries_dialog("Fill all the other entries before adding a new curve.");
     }
     show_all_children();
+}
+
+
+void CreateCurveDialog::on_add_bspline_point_button_clicked()
+{
+    if (m_bspline_CoordBox->entries_filled()) {
+        m_bspline_CoordBox->add_bezier_curve();
+    } else {
+        this->show_unfilled_entries_dialog("Fill all the other entries before adding a new point.");
+    }
+    show_all_children();
+}
+
+
+void CreateCurveDialog::show_unfilled_entries_dialog(const std::string &secondary_message)
+{
+    Gtk::MessageDialog dialog(*this,
+            "There are unfilled entries.",
+            false,  // Markup
+            Gtk::MessageType::MESSAGE_WARNING,
+            Gtk::ButtonsType::BUTTONS_OK,
+            true);  // Modal
+    dialog.set_secondary_text(secondary_message);
+    dialog.run();
 }
