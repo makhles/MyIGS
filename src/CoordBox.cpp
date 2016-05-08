@@ -26,8 +26,10 @@ void CoordBox::add_cubic_curve()
     }
 }
 
-
-void CoordBox::add_bezier_curve() {
+/* ============================================================================================= */
+void CoordBox::add_bezier_curve()
+/* ============================================================================================= */
+{
     const int last_curve_begin = m_entries.size() - ENTRIES_PER_CURVE;
 
     // Make all entries from the previous curve uneditable
@@ -86,8 +88,10 @@ void CoordBox::add_bezier_curve() {
     }
 }
 
-
-void CoordBox::add_coord() {
+/* ============================================================================================= */
+void CoordBox::add_coord()
+/* ============================================================================================= */
+{
     // Used for naming each coordinate, like x0, x1, y0, y1, etc.
     // Every time a new point is added, m_entries increases by 2.
     int pNumber = m_entries.size() / 2;
@@ -116,8 +120,10 @@ void CoordBox::add_coord() {
     m_entries.push_back(yEntry);
 }
 
-
-bool CoordBox::fill_coords(std::vector<Coord<double>*>& coords) const {
+/* ============================================================================================= */
+bool CoordBox::fill_coords(std::vector<Coord<double>*>& coords) const
+/* ============================================================================================= */
+{
     bool filled = true;  // Whether all the entries are filled.
     double x, y;
     for (unsigned i = 0; i < m_entries.size(); i += 2) {
@@ -138,8 +144,10 @@ bool CoordBox::fill_coords(std::vector<Coord<double>*>& coords) const {
     return filled;
 }
 
-
-bool CoordBox::entries_filled() const {
+/* ============================================================================================= */
+bool CoordBox::entries_filled() const
+/* ============================================================================================= */
+{
     bool filled = true;  // Whether all the entries are filled.
     for (unsigned i = 0; i < m_entries.size(); i++) {
         // Create new stringstreams at every loop iteration
@@ -164,8 +172,10 @@ void CoordBox::clear()
     children.erase(children.begin(), children.end());
 }
 
-
-bool CoordBox::on_x_entry_focus_out_event(GdkEventFocus* /* event*/) {
+/* ============================================================================================= */
+bool CoordBox::on_x_entry_focus_out_event(GdkEventFocus* /* event*/)
+/* ============================================================================================= */
+{
     int x5_entry_index = m_entries.size() - 6;
     double x5, y5;
     std::stringstream stream_x;
@@ -186,8 +196,10 @@ bool CoordBox::on_x_entry_focus_out_event(GdkEventFocus* /* event*/) {
     return true;
 }
 
-
-bool CoordBox::on_y_entry_focus_out_event(GdkEventFocus* /* event*/) {
+/* ============================================================================================= */
+bool CoordBox::on_y_entry_focus_out_event(GdkEventFocus* /* event*/)
+/* ============================================================================================= */
+{
     int y5_entry_index = m_entries.size() - 5;
     double x5, y5;
     std::stringstream stream_y;
