@@ -29,6 +29,7 @@ public:
     void add_curve();
     void add_bezier_curve();
     void add_coord();
+    void clear();
 
     // Signal handlers
     bool on_x_entry_focus_out_event(GdkEventFocus*);

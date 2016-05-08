@@ -149,6 +149,16 @@ bool CoordBox::entries_filled() const {
 }
 
 
+/* ============================================================================================= */
+void CoordBox::clear()
+/* ============================================================================================= */
+{
+    m_entries.clear();
+    std::vector<Widget*> children = this->get_children();
+    children.erase(children.begin(), children.end());
+}
+
+
 bool CoordBox::on_x_entry_focus_out_event(GdkEventFocus* /* event*/) {
     int x5_entry_index = m_entries.size() - 6;
     double x5, y5;
