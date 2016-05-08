@@ -13,8 +13,14 @@
 #define DEBUG_MSG(str) do { } while ( false )
 #endif
 
-// Add the first Bézier curve (4 points only)
-void CoordBox::add_curve() {
+
+/* ============================================================================================= */
+void CoordBox::add_cubic_curve()
+/* ============================================================================================= */
+{
+    /**
+     * Adds four entries to the box.
+     */
     for (unsigned i = 0; i < 4; i++) {
         CoordBox::add_coord();
     }

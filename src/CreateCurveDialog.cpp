@@ -43,7 +43,7 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     get_content_area()->pack_start(*coord_frame, Gtk::PACK_SHRINK, 0);
 
     // Entries for the coordinates
-    m_coordBox->add_curve();
+    m_coordBox->add_cubic_curve();
 
     // Add buttons (from left to right)
     add_button("Cancel", Gtk::RESPONSE_CANCEL);

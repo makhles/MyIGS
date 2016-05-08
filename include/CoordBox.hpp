@@ -26,7 +26,7 @@ public:
     int entries_size() const { return m_entries.size(); }
     bool entries_filled() const;
     bool fill_coords(std::vector<Coord<double>*>& coords) const;
-    void add_curve();
+    void add_cubic_curve();
     void add_bezier_curve();
     void add_coord();
     void clear();
