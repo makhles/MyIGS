@@ -13,6 +13,7 @@ class CoordBox;
 class CreateCurveDialog : public Gtk::Dialog {
 private:
     bool m_minVertices;
+    Gtk::Notebook * const m_notebook;  // The tabbed pane
     CoordBox * const m_coordBox;
     Gtk::Label * const m_nameLabel;
     Gtk::Entry * const m_nameEntry;

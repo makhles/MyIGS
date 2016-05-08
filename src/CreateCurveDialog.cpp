@@ -13,6 +13,7 @@
 CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     Dialog(title, true),
     m_minVertices(false),
+    m_notebook(Gtk::manage(new Gtk::Notebook())),
     m_coordBox(Gtk::manage(new CoordBox())),
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
