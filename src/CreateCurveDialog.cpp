@@ -10,8 +10,16 @@
 #include "Coord.hpp"
 #include "DeleteList.hpp"
 
-#define BEZIER_CUBIC 1
-#define BSPLINE 2
+// For debugging, uncomment the following define
+#define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
+#define BEZIER_CUBIC 0
+#define BSPLINE 1
 
 CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     Dialog(title, true),
@@ -150,21 +158,25 @@ void CreateCurveDialog::create_shape() {
 
 void CreateCurveDialog::on_page_switch(Widget* page, guint page_number)
 {
+    DEBUG_MSG("Page switched to " << page_number);
     switch (page_number)
     {
         case BEZIER_CUBIC:
         {
+            DEBUG_MSG("- Cubic Bézier curve selected");
             m_bspline_CoordBox->clear();
             m_bspline_CoordBox->add_cubic_curve();
             break;
         }
         case BSPLINE:
         {
+            DEBUG_MSG("- B-Spline curve selected");
             m_bezier_CoordBox->clear();
             m_bezier_CoordBox->add_cubic_curve();
             break;
         }
     }
+    show_all_children();
 }
 
 void CreateCurveDialog::on_add_bezier_curve_button_clicked()
@@ -181,7 +193,7 @@ void CreateCurveDialog::on_add_bezier_curve_button_clicked()
 void CreateCurveDialog::on_add_bspline_point_button_clicked()
 {
     if (m_bspline_CoordBox->entries_filled()) {
-        m_bspline_CoordBox->add_bezier_curve();
+        m_bspline_CoordBox->add_coord();
     } else {
         this->show_unfilled_entries_dialog("Fill all the other entries before adding a new point.");
     }

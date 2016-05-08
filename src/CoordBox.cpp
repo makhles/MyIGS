@@ -6,7 +6,7 @@
 #include "CoordBox.hpp"
 
 // For debugging, uncomment the following define
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else
@@ -155,8 +155,11 @@ bool CoordBox::entries_filled() const
         std::stringstream stream;
         stream << m_entries[i]->get_text().raw();
         if (stream.str().size() == 0) {
+            DEBUG_MSG("Entry " << i << "/" << m_entries.size() << " is empty.");
             filled = false;
             break;
+        } else {
+            DEBUG_MSG("Entry " << i << "/" << m_entries.size() << " is filled.");
         }
     }
     return filled;
@@ -169,7 +172,11 @@ void CoordBox::clear()
 {
     m_entries.clear();
     std::vector<Widget*> children = this->get_children();
-    children.erase(children.begin(), children.end());
+    auto it = children.begin();
+    while (it != children.end()) {
+        this->remove(**it);
+        it++;
+    }
 }
 
 /* ============================================================================================= */
