@@ -6,6 +6,7 @@
 #define CREATE_CURVE_DIALOG_HPP
 
 #include <gtkmm.h>
+#include <ShapeType.hpp>
 
 // Forward declarations
 class CoordBox;
@@ -32,6 +33,7 @@ public:
     CreateCurveDialog(const Glib::ustring &title);
     ~CreateCurveDialog() {}
     bool minimum_vertices() const { return m_minVertices; }
+    ShapeType selected_curve_type() const;
 };
 
 #endif  // CREATE_CURVE_DIALOG_HPP

@@ -212,12 +212,12 @@ MyIGS::MyIGS() :
     Gtk::Button * const createPointButton = Gtk::manage(new Gtk::Button("Point"));
     Gtk::Button * const createLineButton = Gtk::manage(new Gtk::Button("Line"));
     Gtk::Button * const createWireframeButton = Gtk::manage(new Gtk::Button("Wireframe"));
-    Gtk::Button * const createBezierButton = Gtk::manage(new Gtk::Button("Bézier Curve"));
+    Gtk::Button * const createBezierButton = Gtk::manage(new Gtk::Button("2D Curve"));
 
     createPointButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_point));
     createLineButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_line));
     createWireframeButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_wireframe));
-    createBezierButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_bezier_curve));
+    createBezierButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::create_curve2d));
 
     Gtk::VBox * const objectsBox = Gtk::manage(new Gtk::VBox());
     Gtk::Label * const labelCreateObjects = Gtk::manage(new Gtk::Label("Create a new object:"));
@@ -320,12 +320,12 @@ void MyIGS::create_wireframe() {
 }
 
 
-void MyIGS::create_bezier_curve() {
-    std::cout << "Creating Bézier curve..." << std::endl;
-    CreateCurveDialog dialog("Create a new Bézier curve");
+void MyIGS::create_curve2d() {
+    std::cout << "Creating 2D curve..." << std::endl;
+    CreateCurveDialog dialog("Create a new 2D curve");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK && dialog.minimum_vertices()) {
-       m_controller->create_shape(ShapeType::BEZIER_CUBIC);
+       m_controller->create_shape(dialog.selected_curve_type());
     }
 }
 

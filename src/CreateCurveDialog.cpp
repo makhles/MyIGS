@@ -18,8 +18,8 @@
 #define DEBUG_MSG(str) do { } while ( false )
 #endif
 
-#define BEZIER_CUBIC 0
-#define BSPLINE 1
+#define CURVE_BEZIER_CUBIC 0
+#define CURVE_BSPLINE 1
 
 CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     Dialog(title, true),
@@ -130,8 +130,8 @@ void CreateCurveDialog::create_shape() {
         bool coords_filled;
         switch (m_notebook->get_current_page())
         {
-            case BEZIER_CUBIC: coords_filled = m_bezier_CoordBox->fill_coords(coords); break;
-            case BSPLINE: coords_filled = m_bspline_CoordBox->fill_coords(coords); break;
+            case CURVE_BEZIER_CUBIC: coords_filled = m_bezier_CoordBox->fill_coords(coords); break;
+            case CURVE_BSPLINE: coords_filled = m_bspline_CoordBox->fill_coords(coords); break;
         }
         if (coords_filled) {
 
@@ -161,14 +161,14 @@ void CreateCurveDialog::on_page_switch(Widget* page, guint page_number)
     DEBUG_MSG("Page switched to " << page_number);
     switch (page_number)
     {
-        case BEZIER_CUBIC:
+        case CURVE_BEZIER_CUBIC:
         {
             DEBUG_MSG("- Cubic Bézier curve selected");
             m_bspline_CoordBox->clear();
             m_bspline_CoordBox->add_cubic_curve();
             break;
         }
-        case BSPLINE:
+        case CURVE_BSPLINE:
         {
             DEBUG_MSG("- B-Spline curve selected");
             m_bezier_CoordBox->clear();
@@ -211,4 +211,24 @@ void CreateCurveDialog::show_unfilled_entries_dialog(const std::string &secondar
             true);  // Modal
     dialog.set_secondary_text(secondary_message);
     dialog.run();
+}
+
+
+ShapeType CreateCurveDialog::selected_curve_type() const
+{
+    ShapeType type;
+    switch (m_notebook->get_current_page())
+    {
+        case CURVE_BEZIER_CUBIC:
+        {
+            type = ShapeType::BEZIER_CUBIC;
+            break;
+        }
+        case CURVE_BSPLINE:
+        {
+            type = ShapeType::BSPLINE;
+            break;
+        }
+    }
+    return type;
 }
