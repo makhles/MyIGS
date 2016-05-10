@@ -36,6 +36,7 @@ public:
 
     //ShapeType get_type() const {return m_type;}
     std::string name() const { return m_name; }
+    ShapeType type() const { return m_type; }
     const DCoordVector& normalized_coords() const { return m_ncCoord; }
     const ICoordVector& viewport_coordinates() const { return m_vpCoord; }
     virtual const Coord<double> get_centroid() = 0;

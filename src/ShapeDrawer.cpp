@@ -16,7 +16,7 @@
 #include "Line.hpp"
 #include "Wireframe.hpp"
 #include "Coord.hpp"
-#include "BezierCurve.hpp"
+#include "Curve2D.hpp"
 
 typedef std::vector<const Coord<int>*> ICoordVector;
 
@@ -85,8 +85,8 @@ void ShapeDrawer::draw(Wireframe &wf) {
 }
 
 
-void ShapeDrawer::draw(BezierCurve &bc) {
-    const ICoordVector& coords = bc.viewport_coordinates();
+void ShapeDrawer::draw(Curve2D &curve) {
+    const ICoordVector& coords = curve.viewport_coordinates();
 
     if (!coords.empty()) {
         m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);

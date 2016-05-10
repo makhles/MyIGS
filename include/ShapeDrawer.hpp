@@ -26,7 +26,7 @@ public:
     void draw(Point &point) override;
     void draw(Line &line) override;
     void draw(Wireframe &wireframe) override;
-    void draw(BezierCurve &bc) override;
+    void draw(Curve2D &curve) override;
 
     // Own functions
     void set_cairo_context(const CairoCtx &cr) { m_cr = cr; }

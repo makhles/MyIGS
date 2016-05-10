@@ -8,7 +8,7 @@
 #include "Point.hpp"
 #include "Line.hpp"
 #include "Wireframe.hpp"
-#include "BezierCurve.hpp"
+#include "Curve2D.hpp"
 #include "DeleteList.hpp"
 
 // Global static pointer to ensure a single instance of the class.
@@ -67,7 +67,12 @@ Shape* ShapeBuilder::create_shape(ShapeType type) {
         }
         case ShapeType::BEZIER_CUBIC:
         {
-            shape = ShapeBuilder::create_bezier_curve();
+            shape = ShapeBuilder::create_curve2d(type);
+            break;
+        }
+        case ShapeType::BSPLINE:
+        {
+            shape = ShapeBuilder::create_curve2d(type);
             break;
         }
     }
@@ -95,12 +100,12 @@ Wireframe* ShapeBuilder::create_wireframe() {
 }
 
 
-BezierCurve* ShapeBuilder::create_bezier_curve() {
-    BezierCurve *bc = new BezierCurve(m_name);
+Curve2D* ShapeBuilder::create_curve2d(ShapeType type) {
+    Curve2D *curve = new Curve2D(m_name, type);
     for (unsigned i = 0; i < m_points.size(); i++) {
-        bc->add_point(m_points[i]);
+        curve->add_point(m_points[i]);
     }
-    return bc;
+    return curve;
 }
 
 

@@ -20,7 +20,7 @@ public:
     void write_to_file(Point &p) override;
     void write_to_file(Line &l) override;
     void write_to_file(Wireframe &w) override;
-    void write_to_file(BezierCurve &bc) override;
+    void write_to_file(Curve2D &curve) override;
     void write_to_file() override;
 
     // Own methods

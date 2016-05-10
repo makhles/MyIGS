@@ -17,7 +17,7 @@ class Shape;
 class Point;
 class Line;
 class Wireframe;
-class BezierCurve;
+class Curve2D;
 
 class ShapeBuilder {
 
@@ -36,7 +36,7 @@ private:
     Point* create_point();
     Line* create_line();
     Wireframe* create_wireframe();
-    BezierCurve* create_bezier_curve();
+    Curve2D* create_curve2d(ShapeType type);
 
 public:
     static ShapeBuilder* instance();

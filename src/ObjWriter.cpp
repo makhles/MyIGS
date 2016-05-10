@@ -6,7 +6,7 @@
 #include "Point.hpp"
 #include "Line.hpp"
 #include "Wireframe.hpp"
-#include "BezierCurve.hpp"
+#include "Curve2D.hpp"
 
 ObjWriter::ObjWriter() :
     m_vCount(0)
@@ -77,7 +77,7 @@ void ObjWriter::write_to_file(Wireframe &w) {
 }
 
 
-void ObjWriter::write_to_file(BezierCurve &bc) {
+void ObjWriter::write_to_file(Curve2D &curve) {
     // TODO
 }
 
