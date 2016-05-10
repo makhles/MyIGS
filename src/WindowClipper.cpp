@@ -16,17 +16,20 @@
 #include "Point.hpp"
 #include "Line.hpp"
 #include "Wireframe.hpp"
-#include "BezierCurve.hpp"
+#include "Curve2D.hpp"
 
-
+/* ============================================================================================= */
 WindowClipper::WindowClipper() :
+/* ============================================================================================= */
     m_lineClipping(LineClipping::CS),
     m_polygonClipping(PolygonClipping::SH)
 {   
 }
 
-
-void WindowClipper::clip_to_area(Point &p) {
+/* ============================================================================================= */
+void WindowClipper::clip_to_area(Point &p)
+/* ============================================================================================= */
+{
     double x = p.xnc();
     double y = p.ync();
     DCoordVector newVertice;
@@ -40,8 +43,10 @@ void WindowClipper::clip_to_area(Point &p) {
     p.update_normalized_coords(newVertice);
 }
 
-
-void WindowClipper::clip_to_area(Line &line) {
+/* ============================================================================================= */
+void WindowClipper::clip_to_area(Line &line)
+/* ============================================================================================= */
+{
     switch(m_lineClipping) {
         case LineClipping::CS: this->cohen_sutherland_clipping(line); break;
         case LineClipping::LB: this->liang_barsky_clipping(line); break;
@@ -49,20 +54,36 @@ void WindowClipper::clip_to_area(Line &line) {
     }
 }
 
-
-void WindowClipper::clip_to_area(Wireframe &wf) {
+/* ============================================================================================= */
+void WindowClipper::clip_to_area(Wireframe &wf)
+/* ============================================================================================= */
+{
     switch(m_polygonClipping) {
         case PolygonClipping::SH: this->SH_clipping(wf); break;
         case PolygonClipping::WA: this->weiler_atherton_clipping(wf); break;
     }
 }
 
-
-void WindowClipper::clip_to_area(BezierCurve &bc) {
-    const DCoordVector norm_coords = bc.normalized_coords();
+/* ============================================================================================= */
+void WindowClipper::clip_to_area(Curve2D &curve)
+/* ============================================================================================= */
+{
+    const DCoordVector inVertices = curve.normalized_coords();
     DCoordVector outVertices;
 
-    bool previous_inside = false;    // Whether the last point was inside the window
+    switch (curve.type()) {
+        case ShapeType::BEZIER_CUBIC: this->clip_bezier_curve(inVertices, outVertices); break;
+        case ShapeType::BSPLINE:      this->clip_bspline(inVertices, outVertices);      break;
+    }
+    curve.update_normalized_coords(outVertices);
+}
+
+/* ============================================================================================= */
+void WindowClipper::clip_bezier_curve(const DCoordVector &inVertices, DCoordVector &outVertices)
+/* ============================================================================================= */
+{
+    DEBUG_MSG("Clipping Bézier curve...");
+    bool previous_inside = false;
     const int steps = 100;
     const double dt = 1.0 / (double) steps;
     double t;
@@ -76,20 +97,17 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
     Coord<double> previous;
     Coord<double> *new_coord;  // Intersection at an edge
 
-    DEBUG_MSG("Clipping Bézier curve...");
-
-    // Loop over the control points
-    for (unsigned i = 0; i < norm_coords.size(); i+=4) {
+    for (unsigned i = 0; i < inVertices.size(); i+=4) {
         DEBUG_MSG("  First curve:");
 
-        x0 = norm_coords[i+0]->x();
-        x1 = norm_coords[i+1]->x();
-        x2 = norm_coords[i+2]->x();
-        x3 = norm_coords[i+3]->x();
-        y0 = norm_coords[i+0]->y();
-        y1 = norm_coords[i+1]->y();
-        y2 = norm_coords[i+2]->y();
-        y3 = norm_coords[i+3]->y();
+        x0 = inVertices[i+0]->x();
+        x1 = inVertices[i+1]->x();
+        x2 = inVertices[i+2]->x();
+        x3 = inVertices[i+3]->x();
+        y0 = inVertices[i+0]->y();
+        y1 = inVertices[i+1]->y();
+        y2 = inVertices[i+2]->y();
+        y3 = inVertices[i+3]->y();
 
         DEBUG_MSG("  > Bernstein points read:");
         DEBUG_MSG("    - p0 = (" << x0 << "," << y0 << ")");
@@ -163,12 +181,19 @@ void WindowClipper::clip_to_area(BezierCurve &bc) {
             t += dt;
         }
     }
-
-    bc.update_normalized_coords(outVertices);
 }
 
+/* ============================================================================================= */
+void WindowClipper::clip_bspline(const DCoordVector &inVertices, DCoordVector &outVertices)
+/* ============================================================================================= */
+{
+    DEBUG_MSG("Clipping B-Spline curve...");
+}
 
-bool WindowClipper::coord_inside(double x, double y) {
+/* ============================================================================================= */
+bool WindowClipper::coord_inside(double x, double y)
+/* ============================================================================================= */
+{
     bool inside = false;
     // If the point is outside the clipping window, then
     // set which edge is closer to it in counterclockwise fashion.
@@ -192,19 +217,24 @@ bool WindowClipper::coord_inside(double x, double y) {
     return inside;
 }
 
-
-
-void WindowClipper::set_line_clipping_method(LineClipping type) {
+/* ============================================================================================= */
+void WindowClipper::set_line_clipping_method(LineClipping type)
+/* ============================================================================================= */
+{
     m_lineClipping = type;
 }
 
-
-void WindowClipper::set_polygon_clipping_method(PolygonClipping type) {
+/* ============================================================================================= */
+void WindowClipper::set_polygon_clipping_method(PolygonClipping type)
+/* ============================================================================================= */
+{
     m_polygonClipping = type;
 }
 
-
-void WindowClipper::cohen_sutherland_clipping(Line &line) {
+/* ============================================================================================= */
+void WindowClipper::cohen_sutherland_clipping(Line &line)
+/* ============================================================================================= */
+{
     int outcode1 = computeOutcode(line.p1()->xnc(), line.p1()->ync());
     int outcode2 = computeOutcode(line.p2()->xnc(), line.p2()->ync());
     bool accept = false;
@@ -263,8 +293,10 @@ void WindowClipper::cohen_sutherland_clipping(Line &line) {
     line.update_normalized_coords(newVertices);
 }
 
-
-int WindowClipper::computeOutcode(double x, double y) {
+/* ============================================================================================= */
+int WindowClipper::computeOutcode(double x, double y)
+/* ============================================================================================= */
+{
     int code;
 
     code = INSIDE;
@@ -280,12 +312,10 @@ int WindowClipper::computeOutcode(double x, double y) {
     return code;
 }
 
-
-
-
-
-
-void WindowClipper::liang_barsky_clipping(Line &line) {
+/* ============================================================================================= */
+void WindowClipper::liang_barsky_clipping(Line &line)
+/* ============================================================================================= */
+{
     double t0 = 0.0;
     double t1 = 1.0;
     double xdelta = line.p2()->xnc() - line.p1()->xnc();
@@ -344,15 +374,17 @@ void WindowClipper::liang_barsky_clipping(Line &line) {
     line.update_normalized_coords(newVertices);
 }
 
-
-
-void WindowClipper::nicholl_lee_nicholl_clipping(Line &line) {
+/* ============================================================================================= */
+void WindowClipper::nicholl_lee_nicholl_clipping(Line &line)
+/* ============================================================================================= */
+{
     // TODO
 }
 
-
-void WindowClipper::SH_clipping(Wireframe &wf) {
-
+/* ============================================================================================= */
+void WindowClipper::SH_clipping(Wireframe &wf)
+/* ============================================================================================= */
+{
     const DCoordVector coords = wf.normalized_coords();
     DCoordVector inVertices(coords);
     DCoordVector outVertices;
@@ -382,13 +414,14 @@ void WindowClipper::SH_clipping(Wireframe &wf) {
             }
         }
     }
-
     // Clipped polygon is stored in inVertices
     wf.update_normalized_coords(inVertices);
 }
 
-
-void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVector &outVertices) {
+/* ============================================================================================= */
+void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVector &outVertices)
+/* ============================================================================================= */
+{
     Coord<double> *s;
     Coord<double> *p;
     Coord<double> *i;
@@ -427,8 +460,10 @@ void WindowClipper::SH_polygon_clipping(const DCoordVector &inVertices, DCoordVe
     }
 }
 
-
-bool WindowClipper::SH_inside(Coord<double> *p) {
+/* ============================================================================================= */
+bool WindowClipper::SH_inside(Coord<double> *p)
+/* ============================================================================================= */
+{
     bool inside = false;
     switch(m_edge) {
         case WindowClipper::Boundary::LEFT_EDGE:
@@ -455,8 +490,10 @@ bool WindowClipper::SH_inside(Coord<double> *p) {
     return inside;
 }
 
-
-Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s) {
+/* ============================================================================================= */
+Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s)
+/* ============================================================================================= */
+{
     double x, y;
     double x0 = s->x();
     double y0 = s->y();
@@ -495,7 +532,9 @@ Coord<double>* WindowClipper::SH_intersect(Coord<double> *p, Coord<double> *s) {
     return new Coord<double>(x, y);
 }
 
-
-void WindowClipper::weiler_atherton_clipping(Wireframe &wf) {
+/* ============================================================================================= */
+void WindowClipper::weiler_atherton_clipping(Wireframe &wf)
+/* ============================================================================================= */
+{
     // TODO
 }

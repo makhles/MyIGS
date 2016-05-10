@@ -28,7 +28,7 @@ public:
     void clip_to_area(Point &p) override;
     void clip_to_area(Line &line) override;
     void clip_to_area(Wireframe &wf) override;
-    void clip_to_area(BezierCurve &bc) override;
+    void clip_to_area(Curve2D &curve) override;
     void set_line_clipping_method(LineClipping type) override;
     void set_polygon_clipping_method(PolygonClipping type) override;
 
@@ -77,6 +77,9 @@ private:
     WindowClipper::Boundary m_edge;
     LineClipping m_lineClipping;        // Type of line clipping
     PolygonClipping m_polygonClipping;  // Type of polygon clipping
+
+    void clip_bezier_curve(const DCoordVector &inVertices, DCoordVector &outVertices);
+    void clip_bspline(const DCoordVector &inVertices, DCoordVector &outVertices);
 };
 
 #endif  // WINDOW_CLIPPER_HPP
