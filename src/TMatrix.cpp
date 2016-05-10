@@ -5,6 +5,13 @@
 #include <iostream>
 #include "TMatrix.hpp"
 
+// For debugging, uncomment the following define
+#define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
 
 /* ============================================================================================= */
 TMatrix::TMatrix(int order) : m_order(order)
@@ -60,10 +67,28 @@ void TMatrix::operator*(std::vector<double> &rhs)
 void TMatrix::multiply_by_vector(const std::vector<double> &rhs, std::vector<double> &result)
 /* ============================================================================================= */
 {
+    DEBUG_MSG("Matrix multiplication by vector");
+    DEBUG_MSG("Matrix order: " << m_order);
+    DEBUG_MSG("Vector order: " << result.size());
+    double tmp;
     for (unsigned i = 0; i < m_order; i++) {
-        result[i] = 0.0;
+        tmp = 0.0;
         for (unsigned j = 0; j < m_order; j++) {
-            result[i] += this->m_matrix[i][j] * rhs[j];
+            tmp += this->m_matrix[i][j] * rhs[j];
+            DEBUG_MSG("tmp = " << tmp);
+        }
+        result.push_back(tmp);
+    }
+}
+
+
+/* ============================================================================================= */
+void TMatrix::multiply_by_scalar(double factor)
+/* ============================================================================================= */
+{
+    for (unsigned i = 0; i < m_order; i++) {
+        for (unsigned j = 0; j < m_order; j++) {
+            this->m_matrix[i][j] *= factor;
         }
     }
 }

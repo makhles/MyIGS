@@ -101,6 +101,7 @@ Wireframe* ShapeBuilder::create_wireframe() {
 
 
 Curve2D* ShapeBuilder::create_curve2d(ShapeType type) {
+    std::cout << "Creating 2D curve..." << std::endl;
     Curve2D *curve = new Curve2D(m_name, type);
     for (unsigned i = 0; i < m_points.size(); i++) {
         curve->add_point(m_points[i]);

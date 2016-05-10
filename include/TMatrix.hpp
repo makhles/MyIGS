@@ -26,6 +26,7 @@ public:
     const double& operator()(const unsigned &row, const unsigned &col) const;
     void operator*(std::vector<double> &rhs);
     void multiply_by_vector(const std::vector<double>&, std::vector<double>&);
+    void multiply_by_scalar(double factor);
 };
 
 #endif  // TMATRIX_HPP

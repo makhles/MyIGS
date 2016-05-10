@@ -17,6 +17,7 @@ template <class T> class Coord;
 
 // Definitions
 typedef std::vector<Coord<double>*> DCoordVector;
+typedef std::vector<double> DVector;
 
 
 class WindowClipper : public AbstractClipper {
@@ -78,8 +79,9 @@ private:
     LineClipping m_lineClipping;        // Type of line clipping
     PolygonClipping m_polygonClipping;  // Type of polygon clipping
 
-    void clip_bezier_curve(const DCoordVector &inVertices, DCoordVector &outVertices);
-    void clip_bspline(const DCoordVector &inVertices, DCoordVector &outVertices);
+    void clip_bezier_curve(const DCoordVector &, DCoordVector &);
+    void clip_bspline(const DCoordVector &, DCoordVector &);
+    void forward_diff(unsigned, const DVector &, const DVector &, DCoordVector &);
 };
 
 #endif  // WINDOW_CLIPPER_HPP

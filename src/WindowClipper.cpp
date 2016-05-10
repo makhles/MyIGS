@@ -17,6 +17,7 @@
 #include "Line.hpp"
 #include "Wireframe.hpp"
 #include "Curve2D.hpp"
+#include "TMatrix.hpp"
 
 /* ============================================================================================= */
 WindowClipper::WindowClipper() :
@@ -188,6 +189,141 @@ void WindowClipper::clip_bspline(const DCoordVector &inVertices, DCoordVector &o
 /* ============================================================================================= */
 {
     DEBUG_MSG("Clipping B-Spline curve...");
+
+    const double delta = 0.01;
+    const unsigned n = 100;     // n = 1 / delta
+    double d2 = delta * delta;
+    double d3 = delta * d2;
+
+    DVector Gx, Gy;  // Geometry vectors
+    DVector Cx, Cy;  // Coefficients vectors
+    DVector Dx, Dy;  // Initial differences vectors
+
+    TMatrix Mbs(4);  // B-Spline matrix
+    TMatrix DD(4);   // Initial differences matrix
+
+    Mbs(0,0) = -1.0;  Mbs(0,1) = +3.0;  Mbs(0,2) = -3.0;  Mbs(0,3) = +1.0;
+    Mbs(1,0) = +3.0;  Mbs(1,1) = -6.0;  Mbs(1,2) = +3.0;  Mbs(1,3) = +0.0;
+    Mbs(2,0) = -3.0;  Mbs(2,1) = +0.0;  Mbs(2,2) = +3.0;  Mbs(2,3) = +0.0;
+    Mbs(3,0) = +1.0;  Mbs(3,1) = +4.0;  Mbs(3,2) = +1.0;  Mbs(3,3) = +0.0;
+    Mbs.multiply_by_scalar(1.0 / 6.0);
+
+    DD(0,0) = 0.0;    DD(0,1) = 0.0;    DD(0,2) = 0.0;    DD(0,3) = 1.0;
+    DD(1,0) = d3;     DD(1,1) = d2 ;    DD(1,2) = delta;  DD(1,3) = 0.0;
+    DD(2,0) = 6*d3;   DD(2,1) = 2*d2;   DD(2,2) = 0.0;    DD(2,3) = 0.0;
+    DD(3,0) = 6*d3;   DD(3,1) = 0.0;    DD(3,2) = 0.0;    DD(3,3) = 0.0;
+
+    // Compute number of curves
+    unsigned number_of_segments = inVertices.size() - 3;
+    DEBUG_MSG("Number of segments: " << number_of_segments);
+
+    for (unsigned i = 0; i < number_of_segments; i++) {
+        
+        // Mount geometry vectors for the current curve segment
+        Gx.push_back(inVertices[i+0]->x());  Gy.push_back(inVertices[i+0]->y());
+        Gx.push_back(inVertices[i+1]->x());  Gy.push_back(inVertices[i+1]->y());
+        Gx.push_back(inVertices[i+2]->x());  Gy.push_back(inVertices[i+2]->y());
+        Gx.push_back(inVertices[i+3]->x());  Gy.push_back(inVertices[i+3]->y());
+
+        DEBUG_MSG("Geometry vectors: ");
+        for (unsigned j = 0; j <  Gx.size(); j++) {
+            DEBUG_MSG("Gx[" << j << "] = " << Gx[j] << "\t" << "Gy[" << j << "] = " << Gy[j]);
+        }
+
+        // Compute coefficients
+        Mbs.multiply_by_vector(Gx, Cx);
+        Mbs.multiply_by_vector(Gy, Cy);
+
+        DEBUG_MSG("Coefficients vectors: ");
+        for (unsigned j = 0; j <  Cx.size(); j++) {
+            DEBUG_MSG("Cx[" << j << "] = " << Cx[j] << "\t" << "Cy[" << j << "] = " << Cy[j]);
+        }
+
+        // Compute initial differences vectors
+        DD.multiply_by_vector(Cx, Dx);
+        DD.multiply_by_vector(Cy, Dy);
+
+        DEBUG_MSG("Initial differences vectors: ");
+        for (unsigned j = 0; j <  Dx.size(); j++) {
+            DEBUG_MSG("Dx[" << j << "] = " << Dx[j] << "\t" << "Dy[" << j << "] = " << Dy[j]);
+        }
+
+        this->forward_diff(n, Dx, Dy, outVertices);
+    }
+}
+
+/* ============================================================================================= */
+void WindowClipper::forward_diff(unsigned n, const DVector &Dx, const DVector &Dy,
+        DCoordVector &outVertices)
+/* ============================================================================================= */
+{
+    bool begin = true;
+    bool previous_inside = false;
+    double x, dx, d2x, d3x;
+    double y, dy, d2y, d3y;
+
+    Coord<double> current;
+    Coord<double> previous;
+    Coord<double> *new_coord;  // Intersection at an edge
+
+    x = Dx[0];  dx = Dx[1];  d2x = Dx[2]; d3x = Dx[3];
+    y = Dy[0];  dy = Dy[1];  d2y = Dy[2]; d3y = Dy[3];
+
+    for (unsigned i = 0; i < n; i++) {
+
+        if (coord_inside(x, y)) {
+            if (begin) {
+                // First point doesn't have a previous point, so we set it to true.
+                previous_inside = true;
+                begin = false;
+            }
+            if (previous_inside) {
+                // Both current and previous points are inside the clipping window.
+                new_coord = new Coord<double>(x, y);
+                outVertices.push_back(new_coord);
+                DEBUG_MSG("  > Current point is inside.");
+                DEBUG_MSG("  > Previous point was inside.");
+            } else {
+                // Line is entering the window.
+                current.set_x(x);
+                current.set_y(y);
+                new_coord = WindowClipper::SH_intersect(&current, &previous);
+                outVertices.push_back(new_coord);
+                new_coord = new Coord<double>(x, y);
+                outVertices.push_back(new_coord);
+                previous_inside = true;
+                DEBUG_MSG("  > Current point is inside.");
+                DEBUG_MSG("  > Previous point was outside.");
+                DEBUG_MSG("  > New intersection at (" << new_coord->x() << ","
+                                                      << new_coord->y() << ")");
+            }
+        } else {
+            if (begin) {
+                // First point doesn't have a previous point, so we set it to false.
+                previous_inside = false;
+                begin = false;
+            }
+            if (previous_inside) {
+                // Line is leaving the window
+                current.set_x(x);
+                current.set_y(y);
+                new_coord = WindowClipper::SH_intersect(&current, &previous);
+                outVertices.push_back(new_coord);
+                previous_inside = false;
+                DEBUG_MSG("  > Current point is outside.");
+                DEBUG_MSG("  > Previous point was inside.");
+                DEBUG_MSG("  > New intersection at (" << new_coord->x() << ","
+                                                      << new_coord->y() << ")");
+            } else {
+                DEBUG_MSG("  > Current point is outside.");
+                DEBUG_MSG("  > Previous point was outside.");
+            }
+        }
+        previous.set_x(x);
+        previous.set_y(y);
+        x = x + dx;  dx = dx + d2x;  d2x = d2x + d3x;
+        y = y + dy;  dy = dy + d2y;  d2y = d2y + d3y;
+    }
 }
 
 /* ============================================================================================= */
