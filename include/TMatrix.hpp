@@ -14,14 +14,18 @@ protected:
     std::vector<std::vector<double>> m_matrix;
     unsigned m_order; // Number of rows and columns
 
+    void resize_matrix();
+
 public:
-    TMatrix();
-    virtual ~TMatrix();
+    TMatrix() : TMatrix(3) {}
+    TMatrix(int order);
+    virtual ~TMatrix() {}
 
     // Operators overloading
-    double& operator()(const unsigned &row, const unsigned &col);              // Accessor
-    const double& operator()(const unsigned &row, const unsigned &col) const;  // Accessor
-    void operator*(std::vector<double> &rhs);  // Multiplication by vector
+    double& operator()(const unsigned &row, const unsigned &col);
+    const double& operator()(const unsigned &row, const unsigned &col) const;
+    void operator*(std::vector<double> &rhs);
+    void multiply_by_vector(const std::vector<double>&, std::vector<double>&);
 };
 
 #endif  // TMATRIX_HPP
