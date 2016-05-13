@@ -8,8 +8,9 @@
 #include "Wireframe.hpp"
 #include "Curve2D.hpp"
 
-ObjWriter::ObjWriter() :
-    m_vCount(0)
+/* ============================================================================================= */
+ObjWriter::ObjWriter() : m_vCount(0)
+/* ============================================================================================= */
 {
     m_file.open("Wavefront.obj", std::ios::out);
     if (!m_file.is_open()) {
@@ -17,15 +18,19 @@ ObjWriter::ObjWriter() :
     }
 }
 
-
-ObjWriter::~ObjWriter() {
+/* ============================================================================================= */
+ObjWriter::~ObjWriter()
+/* ============================================================================================= */
+{
     if (m_file.is_open()) {
         m_file.close();
     }
 }
 
-
-void ObjWriter::write_to_file(Point &p) {
+/* ============================================================================================= */
+void ObjWriter::write_to_file(Point &p)
+/* ============================================================================================= */
+{
     int idx = this->find_point(p);
     if (idx == -1) {
         m_points.push_back(&p);
@@ -35,8 +40,10 @@ void ObjWriter::write_to_file(Point &p) {
     }
 }
 
-
-void ObjWriter::write_to_file(Line &l) {
+/* ============================================================================================= */
+void ObjWriter::write_to_file(Line &l)
+/* ============================================================================================= */
+{
     std::cout << "Writing line to obj file..." << std::endl;
     Point *p;
     int idx;
@@ -58,8 +65,10 @@ void ObjWriter::write_to_file(Line &l) {
     m_linePoints.push_back(idx);
 }
 
-
-void ObjWriter::write_to_file(Wireframe &w) {
+/* ============================================================================================= */
+void ObjWriter::write_to_file(Wireframe &w)
+/* ============================================================================================= */
+{
     std::vector<unsigned> points;
     int idx;
     const std::vector<Point*> vertices = w.vertices();
@@ -76,14 +85,17 @@ void ObjWriter::write_to_file(Wireframe &w) {
     m_wPoints.push_back(points);
 }
 
-
-void ObjWriter::write_to_file(Curve2D &curve) {
+/* ============================================================================================= */
+void ObjWriter::write_to_file(Curve2D &curve)
+/* ============================================================================================= */
+{
     // TODO
 }
 
-
-void ObjWriter::write_to_file() {
-
+/* ============================================================================================= */
+void ObjWriter::write_to_file()
+/* ============================================================================================= */
+{
     // Write points
     for (unsigned i = 0; i < m_points.size(); i++) {
         m_file << "v " << m_points[i]->xwc() << " " << m_points[i]->ywc() << "\n";
@@ -105,10 +117,12 @@ void ObjWriter::write_to_file() {
     m_file.flush();
 }
 
-
-// Searches for a point in the points vector.
-// If it is found, its index is return, otherwise -1.
-int ObjWriter::find_point(const Point &p_toFind) const {
+/* ============================================================================================= */
+int ObjWriter::find_point(const Point &p_toFind) const
+/* ============================================================================================= */
+{
+    // Searches for a point in the points vector.
+    // If it is found, its index is return, otherwise -1.
     int idx = -1;
     for (unsigned i = 0; i < m_points.size(); i++) {
         if (*m_points[i] == p_toFind) {
