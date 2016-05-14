@@ -376,7 +376,45 @@ void MyIGS::append_object(const Glib::ustring obj)
 void MyIGS::on_action_file_import_obj_file()
 /* ============================================================================================= */
 {
-    
+    Gtk::FileChooserDialog dialog("Choose a Wavefront file to be loaded.",
+            Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+    dialog.set_select_multiple(true);
+
+    // Response buttons
+    dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+    dialog.add_button("_Open", Gtk::RESPONSE_OK);
+
+    // Filters
+    auto obj_filter = Gtk::FileFilter::create();
+    obj_filter->set_name("OBJ files");
+    obj_filter->add_pattern("*.obj");
+    dialog.add_filter(obj_filter);
+
+    int response = dialog.run();
+    switch (response) {
+        case (Gtk::RESPONSE_CANCEL):
+        {
+            DEBUG_MSG("User has cancelled the operation.");
+            break;
+        }
+        case (Gtk::RESPONSE_OK):
+        {
+            std::vector<std::string> filenames = dialog.get_filenames();
+            m_controller->import_obj_files(filenames);
+            break;
+        }
+        case (Gtk::RESPONSE_DELETE_EVENT):
+        {
+            DEBUG_MSG("User has shut the window.");
+            break;
+        }
+        default:
+        {
+            DEBUG_MSG("User has clicked on a mysterious button...");
+            break;
+        }
+    }
 }
 
 /* ============================================================================================= */
