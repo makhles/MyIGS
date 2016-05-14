@@ -31,8 +31,9 @@
 
 typedef std::vector<Coord<double>*> DCoordVector;
 
-
+/* ============================================================================================= */
 InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
+/* ============================================================================================= */
     m_interface(interface),
     m_viewport(viewport),
     m_writer(nullptr),
@@ -41,8 +42,10 @@ InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
     m_viewport->set_controller(this);
 }
 
-
-InterfaceController::~InterfaceController() {
+/* ============================================================================================= */
+InterfaceController::~InterfaceController()
+/* ============================================================================================= */
+{
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
         delete *shape;
@@ -52,22 +55,28 @@ InterfaceController::~InterfaceController() {
     delete m_clipper;
 }
 
-
-// Create a new shape based on its type.
-void InterfaceController::create_shape(ShapeType type) {
+/* ============================================================================================= */
+void InterfaceController::create_shape(ShapeType type)
+/* ============================================================================================= */
+{
+    // Create a new shape based on its type.
     Shape *shape = ShapeBuilder::instance()->create_shape(type);
     this->finalize_shape(shape);
 }
 
-
-void InterfaceController::finalize_shape(Shape *shape) {
+/* ============================================================================================= */
+void InterfaceController::finalize_shape(Shape *shape)
+/* ============================================================================================= */
+{
     m_shapes.push_back(shape);
     m_interface->append_object(shape->name());
     this->update(shape);
 }
 
-
-void InterfaceController::update(Shape *shape) {
+/* ============================================================================================= */
+void InterfaceController::update(Shape *shape)
+/* ============================================================================================= */
+{
     this->update_gtm();
     shape->normalize(m_gtm);
     shape->clip_to_window(*m_clipper);
@@ -75,8 +84,10 @@ void InterfaceController::update(Shape *shape) {
     m_viewport->invalidate();
 }
 
-
-void InterfaceController::update_gtm() {
+/* ============================================================================================= */
+void InterfaceController::update_gtm()
+/* ============================================================================================= */
+{
     double dx = - m_window.x_center();
     double dy = - m_window.y_center();
     double sx = 2.0 / m_window.width();
@@ -102,10 +113,11 @@ void InterfaceController::update_gtm() {
     DEBUG_MSG("------------------------------");
 }
 
-
-
-// Called whenever the Window is translated, scaled or rotated.
-void InterfaceController::update_shapes() {
+/* ============================================================================================= */
+void InterfaceController::update_shapes()
+/* ============================================================================================= */
+{
+    // Called whenever the Window is translated, scaled or rotated.
     this->update_gtm();
     DEBUG_MSG("m_shapes.size = " << m_shapes.size());
     auto shape = m_shapes.begin();
@@ -118,8 +130,10 @@ void InterfaceController::update_shapes() {
     m_viewport->invalidate();
 }
 
-
-void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
+/* ============================================================================================= */
+void InterfaceController::draw_shapes(ShapeDrawer &drawer)
+/* ============================================================================================= */
+{
     auto shape = m_shapes.begin();
     while (shape != m_shapes.end()) {
         (*shape)->accept(&drawer);
@@ -127,9 +141,10 @@ void InterfaceController::draw_shapes(ShapeDrawer &drawer) {
     }
 }
 
-
-
-void InterfaceController::to_viewport(Shape *shape) {
+/* ============================================================================================= */
+void InterfaceController::to_viewport(Shape *shape)
+/* ============================================================================================= */
+{
     DEBUG_MSG("Converting to viewport coordinates.");
 
     shape->clear_viewport_coordinates();
@@ -170,28 +185,36 @@ void InterfaceController::to_viewport(Shape *shape) {
     }
 }
 
-
-void InterfaceController::move_window(int rightOrLeft, int upOrDown) {
+/* ============================================================================================= */
+void InterfaceController::move_window(int rightOrLeft, int upOrDown)
+/* ============================================================================================= */
+{
     double dx = DEVICE_DISPLACEMENT * m_window.width() / m_viewport->vp_width();
     double dy = DEVICE_DISPLACEMENT * m_window.height() / m_viewport->vp_height();
     m_window.translate(rightOrLeft * dx, upOrDown * dy);
     this->update_shapes();
 }
 
-
-void InterfaceController::scale_window(double factor) {
+/* ============================================================================================= */
+void InterfaceController::scale_window(double factor)
+/* ============================================================================================= */
+{
     m_window.scale(factor);
     this->update_shapes();
 }
 
-
-void InterfaceController::rotate_window(double angle) {
+/* ============================================================================================= */
+void InterfaceController::rotate_window(double angle)
+/* ============================================================================================= */
+{
     m_window.rotate(-angle);  // The window and viewport rotate to opposing directions
     this->update_shapes();
 }
 
-
-Shape* InterfaceController::find_shape(const std::string &obj) {
+/* ============================================================================================= */
+Shape* InterfaceController::find_shape(const std::string &obj)
+/* ============================================================================================= */
+{
     Shape *shapeToReturn = nullptr;
     auto shape = m_shapes.cbegin();
     while (shape != m_shapes.cend()) {
@@ -203,8 +226,10 @@ Shape* InterfaceController::find_shape(const std::string &obj) {
     return shapeToReturn;
 }
 
-
-void InterfaceController::translate(const TransformationDialog &dialog) {
+/* ============================================================================================= */
+void InterfaceController::translate(const TransformationDialog &dialog)
+/* ============================================================================================= */
+{
     double dx = dialog.get_dx();
     double dy = dialog.get_dy();
     std::string obj_name = dialog.get_selected_object();
@@ -218,8 +243,10 @@ void InterfaceController::translate(const TransformationDialog &dialog) {
     }
 }
 
-
-void InterfaceController::scale(const TransformationDialog &dialog) {
+/* ============================================================================================= */
+void InterfaceController::scale(const TransformationDialog &dialog)
+/* ============================================================================================= */
+{
     double sx = dialog.get_sx();
     double sy = dialog.get_sy();
     std::string obj_name = dialog.get_selected_object();
@@ -234,9 +261,11 @@ void InterfaceController::scale(const TransformationDialog &dialog) {
     }
 }
 
-
-// Apply a rotation about the origin or some arbitrary point
-void InterfaceController::rotate(const TransformationDialog &dialog) {
+/* ============================================================================================= */
+void InterfaceController::rotate(const TransformationDialog &dialog)
+/* ============================================================================================= */
+{
+    // Apply a rotation about the origin or some arbitrary point
     double angle = dialog.get_angle();
     double x = dialog.get_refX();
     double y = dialog.get_refY();
@@ -251,8 +280,10 @@ void InterfaceController::rotate(const TransformationDialog &dialog) {
     }
 }
 
-
-void InterfaceController::rotate_about_centroid(const TransformationDialog &dialog) {
+/* ============================================================================================= */
+void InterfaceController::rotate_about_centroid(const TransformationDialog &dialog)
+/* ============================================================================================= */
+{
     double angle = dialog.get_angle();
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
@@ -266,8 +297,10 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
     }
 }
 
-
-void InterfaceController::export_obj_file() {
+/* ============================================================================================= */
+void InterfaceController::export_obj_file()
+/* ============================================================================================= */
+{
     DEBUG_MSG("Exporting shapes to Wavefront .obj file");
     if (m_shapes.empty()) {
         DEBUG_MSG(" nothing to export.");
@@ -285,13 +318,17 @@ void InterfaceController::export_obj_file() {
     }
 }
 
-
-void InterfaceController::set_line_clipping_method(LineClipping type) {
+/* ============================================================================================= */
+void InterfaceController::set_line_clipping_method(LineClipping type)
+/* ============================================================================================= */
+{
     m_clipper->set_line_clipping_method(type);
 }
 
-
-void InterfaceController::set_polygon_clipping_method(PolygonClipping type) {
+/* ============================================================================================= */
+void InterfaceController::set_polygon_clipping_method(PolygonClipping type)
+/* ============================================================================================= */
+{
     m_clipper->set_polygon_clipping_method(type);
 }
 
