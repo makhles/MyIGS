@@ -12,6 +12,14 @@
 #include "ObjectsTreeView.hpp"
 #include "ClippingType.hpp"
 
+// For debugging, uncomment the following define
+#define DEBUG
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
 /* ============================================================================================= */
 MyIGS::MyIGS() :
 /* ============================================================================================= */
@@ -309,7 +317,7 @@ void MyIGS::rotate_window()
 void MyIGS::create_point()
 /* ============================================================================================= */
 {
-    std::cout << "Creating point..." << std::endl;
+    DEBUG_MSG("Creating point...");
     CreatePointDialog dialog("Create a new point");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
@@ -321,7 +329,7 @@ void MyIGS::create_point()
 void MyIGS::create_line()
 /* ============================================================================================= */
 {
-    std::cout << "Creating line..." << std::endl;
+    DEBUG_MSG("Creating line...");
     CreateLineDialog dialog("Create a new line");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK) {
@@ -333,7 +341,7 @@ void MyIGS::create_line()
 void MyIGS::create_wireframe()
 /* ============================================================================================= */
 {
-    std::cout << "Creating wireframe..." << std::endl;
+    DEBUG_MSG("Creating wireframe...");
     CreateWireframeDialog dialog("Create a new wireframe");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK && dialog.minimum_vertices()) {
@@ -345,7 +353,7 @@ void MyIGS::create_wireframe()
 void MyIGS::create_curve2d()
 /* ============================================================================================= */
 {
-    std::cout << "Creating 2D curve..." << std::endl;
+    DEBUG_MSG("Creating 2D curve...");
     CreateCurveDialog dialog("Create a new 2D curve");
     int response = dialog.run();
     if (response == Gtk::RESPONSE_OK && dialog.minimum_vertices()) {
@@ -368,7 +376,7 @@ void MyIGS::append_object(const Glib::ustring obj)
 void MyIGS::on_action_file_import_obj_file()
 /* ============================================================================================= */
 {
-    std::cout << "Loading .OBJ file..." << std::endl;
+    
 }
 
 /* ============================================================================================= */
@@ -389,7 +397,7 @@ void MyIGS::on_action_file_quit()
 void MyIGS::on_cs_radio_toggled()
 /* ============================================================================================= */
 {
-    std::cout << "CS radio toggled!" << std::endl;
+    DEBUG_MSG("CS radio toggled!");
     m_csActive ^= true;
     if (m_csActive) {
         m_controller->set_line_clipping_method(LineClipping::CS);
@@ -400,7 +408,7 @@ void MyIGS::on_cs_radio_toggled()
 void MyIGS::on_lb_radio_toggled()
 /* ============================================================================================= */
 {
-    std::cout << "LB radio toggled!" << std::endl;
+    DEBUG_MSG("LB radio toggled!");
     m_lbActive ^= true;
     if (m_lbActive) {
         m_controller->set_line_clipping_method(LineClipping::LB);
@@ -411,7 +419,7 @@ void MyIGS::on_lb_radio_toggled()
 void MyIGS::on_nln_radio_toggled()
 /* ============================================================================================= */
 {
-    std::cout << "NLN radio toggled!" << std::endl;
+    DEBUG_MSG("NLN radio toggled!");
     m_nlnActive ^= true;
     if (m_nlnActive) {
         m_controller->set_line_clipping_method(LineClipping::NLN);
@@ -422,7 +430,7 @@ void MyIGS::on_nln_radio_toggled()
 void MyIGS::on_sh_radio_toggled()
 /* ============================================================================================= */
 {
-    std::cout << "SH radio toggled!" << std::endl;
+    DEBUG_MSG("SH radio toggled!");
     m_shActive ^= true;
     if (m_shActive) {
         m_controller->set_polygon_clipping_method(PolygonClipping::SH);
@@ -433,7 +441,7 @@ void MyIGS::on_sh_radio_toggled()
 void MyIGS::on_wa_radio_toggled()
 /* ============================================================================================= */
 {
-    std::cout << "WA radio toggled!" << std::endl;
+    DEBUG_MSG("WA radio toggled!");
     m_waActive ^= true;
     if (m_waActive) {
         m_controller->set_polygon_clipping_method(PolygonClipping::WA);
