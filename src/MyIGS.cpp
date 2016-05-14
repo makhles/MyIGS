@@ -12,7 +12,9 @@
 #include "ObjectsTreeView.hpp"
 #include "ClippingType.hpp"
 
+/* ============================================================================================= */
 MyIGS::MyIGS() :
+/* ============================================================================================= */
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_canvas(Gtk::manage(new Canvas())),
     m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25)),
@@ -245,38 +247,52 @@ MyIGS::MyIGS() :
     show_all_children();
 }
 
-
-MyIGS::~MyIGS() {
+/* ============================================================================================= */
+MyIGS::~MyIGS()
+/* ============================================================================================= */
+{
     delete m_controller;
 }
 
-
-void MyIGS::on_window_adjustment_value_changed() {
+/* ============================================================================================= */
+void MyIGS::on_window_adjustment_value_changed()
+/* ============================================================================================= */
+{
     m_controller->scale_window(m_scaleAdjustment->get_value());
 }
 
-
-void MyIGS::move_window_up() {
+/* ============================================================================================= */
+void MyIGS::move_window_up()
+/* ============================================================================================= */
+{
     m_controller->move_window(0,1);
 }
 
-
-void MyIGS::move_window_right() {
+/* ============================================================================================= */
+void MyIGS::move_window_right()
+/* ============================================================================================= */
+{
     m_controller->move_window(1,0);
 }
 
-
-void MyIGS::move_window_down() {
+/* ============================================================================================= */
+void MyIGS::move_window_down()
+/* ============================================================================================= */
+{
     m_controller->move_window(0,-1);
 }
 
-
-void MyIGS::move_window_left() {
+/* ============================================================================================= */
+void MyIGS::move_window_left()
+/* ============================================================================================= */
+{
     m_controller->move_window(-1,0);
 }
 
-
-void MyIGS::rotate_window() {
+/* ============================================================================================= */
+void MyIGS::rotate_window()
+/* ============================================================================================= */
+{
     double angle;
     std::stringstream angle_stream;
     angle_stream << m_angleEntry->get_text().raw();
@@ -289,8 +305,10 @@ void MyIGS::rotate_window() {
     }
 }
 
-
-void MyIGS::create_point() {
+/* ============================================================================================= */
+void MyIGS::create_point()
+/* ============================================================================================= */
+{
     std::cout << "Creating point..." << std::endl;
     CreatePointDialog dialog("Create a new point");
     int response = dialog.run();
@@ -299,8 +317,10 @@ void MyIGS::create_point() {
     }
 }
 
-
-void MyIGS::create_line() {
+/* ============================================================================================= */
+void MyIGS::create_line()
+/* ============================================================================================= */
+{
     std::cout << "Creating line..." << std::endl;
     CreateLineDialog dialog("Create a new line");
     int response = dialog.run();
@@ -309,8 +329,10 @@ void MyIGS::create_line() {
     }
 }
 
-
-void MyIGS::create_wireframe() {
+/* ============================================================================================= */
+void MyIGS::create_wireframe()
+/* ============================================================================================= */
+{
     std::cout << "Creating wireframe..." << std::endl;
     CreateWireframeDialog dialog("Create a new wireframe");
     int response = dialog.run();
@@ -319,8 +341,10 @@ void MyIGS::create_wireframe() {
     }
 }
 
-
-void MyIGS::create_curve2d() {
+/* ============================================================================================= */
+void MyIGS::create_curve2d()
+/* ============================================================================================= */
+{
     std::cout << "Creating 2D curve..." << std::endl;
     CreateCurveDialog dialog("Create a new 2D curve");
     int response = dialog.run();
@@ -329,8 +353,10 @@ void MyIGS::create_curve2d() {
     }
 }
 
-
-void MyIGS::append_object(const Glib::ustring obj) {
+/* ============================================================================================= */
+void MyIGS::append_object(const Glib::ustring obj)
+/* ============================================================================================= */
+{
     m_objectsView->append_object(obj);
 }
 
@@ -338,22 +364,31 @@ void MyIGS::append_object(const Glib::ustring obj) {
 // --------------------------------------------------------------------------------------------- //
 // -------------------------------- Menu Action handlers --------------------------------------- //
 
-void MyIGS::on_action_file_load_obj_file() {
+/* ============================================================================================= */
+void MyIGS::on_action_file_load_obj_file()
+/* ============================================================================================= */
+{
     std::cout << "Loading .OBJ file..." << std::endl;
 }
 
-
-void MyIGS::on_action_file_export_obj_file() {
+/* ============================================================================================= */
+void MyIGS::on_action_file_export_obj_file()
+/* ============================================================================================= */
+{
     m_controller->export_obj_file();
 }
 
-
-void MyIGS::on_action_file_quit() {
+/* ============================================================================================= */
+void MyIGS::on_action_file_quit()
+/* ============================================================================================= */
+{
     hide(); //Closes the main window to stop the app->run().
 }
 
-
-void MyIGS::on_cs_radio_toggled() {
+/* ============================================================================================= */
+void MyIGS::on_cs_radio_toggled()
+/* ============================================================================================= */
+{
     std::cout << "CS radio toggled!" << std::endl;
     m_csActive ^= true;
     if (m_csActive) {
@@ -361,8 +396,10 @@ void MyIGS::on_cs_radio_toggled() {
     }
 }
 
-
-void MyIGS::on_lb_radio_toggled() {
+/* ============================================================================================= */
+void MyIGS::on_lb_radio_toggled()
+/* ============================================================================================= */
+{
     std::cout << "LB radio toggled!" << std::endl;
     m_lbActive ^= true;
     if (m_lbActive) {
@@ -370,8 +407,10 @@ void MyIGS::on_lb_radio_toggled() {
     }
 }
 
-
-void MyIGS::on_nln_radio_toggled() {
+/* ============================================================================================= */
+void MyIGS::on_nln_radio_toggled()
+/* ============================================================================================= */
+{
     std::cout << "NLN radio toggled!" << std::endl;
     m_nlnActive ^= true;
     if (m_nlnActive) {
@@ -379,8 +418,10 @@ void MyIGS::on_nln_radio_toggled() {
     }
 }
 
-
-void MyIGS::on_sh_radio_toggled() {
+/* ============================================================================================= */
+void MyIGS::on_sh_radio_toggled()
+/* ============================================================================================= */
+{
     std::cout << "SH radio toggled!" << std::endl;
     m_shActive ^= true;
     if (m_shActive) {
@@ -388,8 +429,10 @@ void MyIGS::on_sh_radio_toggled() {
     }
 }
 
-
-void MyIGS::on_wa_radio_toggled() {
+/* ============================================================================================= */
+void MyIGS::on_wa_radio_toggled()
+/* ============================================================================================= */
+{
     std::cout << "WA radio toggled!" << std::endl;
     m_waActive ^= true;
     if (m_waActive) {
