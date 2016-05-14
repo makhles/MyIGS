@@ -41,7 +41,7 @@ protected:
     void create_curve2d();
 
     // Action handlers
-    void on_action_file_load_obj_file();
+    void on_action_file_import_obj_file();
     void on_action_file_export_obj_file();
     void on_action_file_quit();
     void on_cs_radio_toggled();

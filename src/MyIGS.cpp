@@ -63,7 +63,7 @@ MyIGS::MyIGS() :
     fileMenu->append(*xportItem);
     fileMenu->append(*quitItem);
 
-    loadItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_load_obj_file));
+    loadItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_import_obj_file));
     xportItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_export_obj_file));
     quitItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_quit));
 
@@ -365,7 +365,7 @@ void MyIGS::append_object(const Glib::ustring obj)
 // -------------------------------- Menu Action handlers --------------------------------------- //
 
 /* ============================================================================================= */
-void MyIGS::on_action_file_load_obj_file()
+void MyIGS::on_action_file_import_obj_file()
 /* ============================================================================================= */
 {
     std::cout << "Loading .OBJ file..." << std::endl;
