@@ -65,6 +65,7 @@ public:
     void rotate_about_centroid(const TransformationDialog &dialog);
 
     void export_obj_file();
+    void import_obj_files(std::vector<std::string> &filenames);
     void set_line_clipping_method(LineClipping type);
     void set_polygon_clipping_method(PolygonClipping type);
 };

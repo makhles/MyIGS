@@ -26,6 +26,7 @@
 #include "TMatrixBuilder.hpp"
 #include "Writer.hpp"
 #include "ObjWriter.hpp"
+#include "ObjReader.hpp"
 #include "WindowClipper.hpp"
 
 
@@ -315,6 +316,21 @@ void InterfaceController::export_obj_file()
         DEBUG_MSG(" done.");
         delete m_writer;
         m_writer = nullptr;
+    }
+}
+
+/* ============================================================================================= */
+void InterfaceController::import_obj_files(std::vector<std::string> &filenames)
+/* ============================================================================================= */
+{
+    ObjReader reader;
+    std::vector<Shape*> shapes;
+    reader.read_shapes(shapes, filenames);
+    if (shapes.size() > 0) {
+        m_shapes.insert(std::begin(m_shapes), std::begin(shapes), std::end(shapes));
+        DEBUG_MSG("... " << shapes.size() << " shapes were added successfully!");
+    } else {
+        DEBUG_MSG("... nothing to be read.");
     }
 }
 
