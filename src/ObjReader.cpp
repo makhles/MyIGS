@@ -2,6 +2,8 @@
 // Authors: Leonardo Vailatti Eichstaedt
 //          Makhles Reuter Lange
 
+#include <fstream>
+#include <iostream>
 #include "ObjReader.hpp"
 #include "Coord.hpp"
 #include "Shape.hpp"
@@ -31,16 +33,29 @@ void ObjReader::read_shapes(ShapePVector &shapes, StringVector &filenames)
 {
     // Opens several files and read all the shapes
     for (auto filename : filenames) {
-        m_file.open(filename, std::ios::in);
-        if (m_file.is_open()) {
+        StringVector contents;
+        this->get_file_contents(contents, filename);
+        if (contents.size() > 0) {
             this->read_vertices();
             this->create_lines(shapes);
             this->create_wireframes(shapes);
             this->create_points(shapes);
-            m_file.close();
-        } else {
-            DEBUG_MSG("Could not open " << filename << " file.");
         }
+    }
+}
+
+/* ============================================================================================= */
+void ObjReader::get_file_contents(StringVector &contents, std::string &filename) const
+/* ============================================================================================= */
+{
+    std::ifstream in(filename, std::ios::in | std::ios::binary);
+    if (in) {
+        std::string line;
+        while (std::getline(in, line)) {
+            contents.push_back(line);
+        }
+    } else {
+        DEBUG_MSG("Could not open " << filename << " file.");
     }
 }
 

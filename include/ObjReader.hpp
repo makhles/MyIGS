@@ -5,8 +5,6 @@
 #ifndef OBJ_READER_HPP
 #define OBJ_READER_HPP
 
-#include <fstream>
-#include <iostream>
 #include <vector>
 #include "Writer.hpp"
 
@@ -38,7 +36,8 @@ private:
     int m_vCount;          // Total number of vertices read.
     CoordVector m_coords;  // Vertices definitions.
     BoolVector m_points;   // Points to be stored as standalone shapes.
-    std::ifstream m_file;
+
+    void get_file_contents(StringVector&, std::string&) const;
 };
 
 #endif  // OBJ_READER_HPP
