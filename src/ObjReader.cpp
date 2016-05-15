@@ -79,7 +79,9 @@ void ObjReader::get_file_contents(StringVector &contents, std::string &filename)
 bool ObjReader::read_vertices(StringVector &contents)
 /* ============================================================================================= */
 {
-    // Reads all the vertices definitions and store them as Points in m_coords.
+    // Reads all the vertices definitions and store them as Coord<double> in m_vertices.
+    // It is made the assumption that all vertices definitions were in the beginning of
+    // the file. All vertices definitions will be erased from contents.
     StringVector vstring;       // Vector that holds each substring in line.
     std::string str;            // Current substring.
     bool read_ok = true;
@@ -111,7 +113,8 @@ bool ObjReader::read_vertices(StringVector &contents)
             vstring.clear();
             line = contents.erase(line);
         } else {
-            line++;
+            // All vertices definitions are in the beginning of the file.
+            break;
         }
     }
     return read_ok;
