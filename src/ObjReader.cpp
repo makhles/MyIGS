@@ -4,6 +4,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <stdexcept>      // std::invalid_argument
+#include <sstream>        // std::istringstream
 #include "ObjReader.hpp"
 #include "Coord.hpp"
 #include "Shape.hpp"
@@ -28,6 +30,18 @@ ObjReader::ObjReader() : m_vCount(0)
 }
 
 /* ============================================================================================= */
+ObjReader::~ObjReader()
+/* ============================================================================================= */
+{
+    auto vertex = m_vertices.begin();
+    while (vertex != m_vertices.end()) {
+        delete *vertex;
+        vertex++;
+    }
+    m_vertices.clear();
+}
+
+/* ============================================================================================= */
 void ObjReader::read_shapes(ShapePVector &shapes, StringVector &filenames)
 /* ============================================================================================= */
 {
@@ -36,7 +50,9 @@ void ObjReader::read_shapes(ShapePVector &shapes, StringVector &filenames)
         StringVector contents;
         this->get_file_contents(contents, filename);
         if (contents.size() > 0) {
-            this->read_vertices();
+            if (!this->read_vertices(contents)) {
+                break;
+            }
             this->create_lines(shapes);
             this->create_wireframes(shapes);
             this->create_points(shapes);
@@ -60,12 +76,45 @@ void ObjReader::get_file_contents(StringVector &contents, std::string &filename)
 }
 
 /* ============================================================================================= */
-void ObjReader::read_vertices()
+bool ObjReader::read_vertices(StringVector &contents)
 /* ============================================================================================= */
 {
-    // Reads all the vertices definitions and store them as Coord<double> in m_coords.
-    // Also populates m_points with bool true for every coord created in m_coords.
-    // TODO
+    // Reads all the vertices definitions and store them as Points in m_coords.
+    StringVector vstring;       // Vector that holds each substring in line.
+    std::string str;            // Current substring.
+    bool read_ok = true;
+
+    auto line = contents.begin();
+    while (line != contents.end()) {
+        if ((*line)[0] == 'v') {
+            std::istringstream iss(*line);
+            while (std::getline(iss, str, ' ')) {
+                vstring.push_back(str);
+            }
+            if (vstring.size() == 3) {
+                try {
+                    double x = std::stod(vstring[1]);
+                    double y = std::stod(vstring[2]);
+                    m_vertices.push_back(new Coord<double>(x, y));
+                    DEBUG_MSG("New vertex read: (" << x << "," << y << ").");
+                }
+                catch (const std::invalid_argument& ia) {
+                    std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    read_ok = false;
+                    break;
+                }
+            } else {
+                DEBUG_MSG("Could not read vertex.");
+                read_ok = false;
+                break;
+            }
+            vstring.clear();
+            line = contents.erase(line);
+        } else {
+            line++;
+        }
+    }
+    return read_ok;
 }
 
 /* ============================================================================================= */
@@ -94,7 +143,6 @@ Point* ObjReader::new_point(int idx) const
 /* ============================================================================================= */
 {
     // Creates a new point. The index refers to the Coord<double> element in m_coords.
-    // Also sets the corresponding m_points[idx] value to bool false.
     // TODO
     return new Point("", 10, 10);  // to be changed
 }
