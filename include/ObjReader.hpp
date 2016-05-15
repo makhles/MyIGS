@@ -14,7 +14,7 @@ class Shape;
 class Point;
 
 typedef std::vector<Coord<double>*> CoordVector;
-typedef std::vector<Shape*> ShapePVector;
+typedef std::vector<Shape*> ShapeVector;
 typedef std::vector<Point*> PointVector;
 typedef std::vector<std::string> StringVector;
 
@@ -23,11 +23,11 @@ public:
     ObjReader();
     ~ObjReader();
 
-    void read_shapes(ShapePVector &shapes, StringVector &filenames);
+    void read_shapes(ShapeVector &shapes, StringVector &filenames);
     bool read_vertices(StringVector&);
-    void create_lines(ShapePVector &shapes);
-    void create_wireframes(ShapePVector &shapes);
-    void create_points(ShapePVector &shapes);
+    bool create_points(StringVector &contents, ShapeVector &shapes);
+    void create_lines(StringVector &contents, ShapeVector &shapes);
+    void create_wireframes(StringVector &contents, ShapeVector &shapes);
 
     // Own methods
     Point* new_point(int idx) const;

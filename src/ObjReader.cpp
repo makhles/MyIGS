@@ -42,7 +42,7 @@ ObjReader::~ObjReader()
 }
 
 /* ============================================================================================= */
-void ObjReader::read_shapes(ShapePVector &shapes, StringVector &filenames)
+void ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
 /* ============================================================================================= */
 {
     // Opens several files and read all the shapes
@@ -53,9 +53,11 @@ void ObjReader::read_shapes(ShapePVector &shapes, StringVector &filenames)
             if (!this->read_vertices(contents)) {
                 break;
             }
-            this->create_lines(shapes);
-            this->create_wireframes(shapes);
-            this->create_points(shapes);
+            if (!this->create_points(contents, shapes)) {
+                break;
+            }
+            this->create_lines(contents, shapes);
+            this->create_wireframes(contents, shapes);
         }
     }
 }
@@ -121,21 +123,61 @@ bool ObjReader::read_vertices(StringVector &contents)
 }
 
 /* ============================================================================================= */
-void ObjReader::create_lines(ShapePVector &shapes)
+bool ObjReader::create_points(StringVector &contents, ShapeVector &shapes)
+/* ============================================================================================= */
+{
+    StringVector vstring;  // Vector that holds each substring in line.
+    std::string str;       // Current substring.
+    std::string obj_name;
+    bool read_ok = true;
+
+    auto line = contents.begin();
+    while (line != contents.end()) {
+        if ((*line)[0] == 'o') {
+            obj_name = (*line).substr(2);
+            line = contents.erase(line);
+        } else if ((*line)[0] == 'p') {
+            std::istringstream iss(*line);
+            while (std::getline(iss, str, ' ')) {
+                vstring.push_back(str);
+            }
+            if (vstring.size() == 2) {
+                try {
+                    unsigned int vertex = std::stoi(vstring[1]);
+                    double x = m_vertices[vertex-1]->x();
+                    double y = m_vertices[vertex-1]->y();
+                    shapes.push_back(new Point(obj_name, x, y));
+                    DEBUG_MSG("New point created: " << obj_name << "(" << x << "," << y << ").");
+                }
+                catch (const std::invalid_argument& ia) {
+                    std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    read_ok = false;
+                    break;
+                }
+            } else {
+                DEBUG_MSG("Could not read point.");
+                read_ok = false;
+                break;
+            }
+            vstring.clear();
+            line = contents.erase(line);
+        } else {
+            // We're not interested in other kinds of definitions now.
+            break;
+        }
+    }
+    return read_ok;
+}
+
+/* ============================================================================================= */
+void ObjReader::create_lines(StringVector &contents, ShapeVector &shapes)
 /* ============================================================================================= */
 {
     // TODO
 }
 
 /* ============================================================================================= */
-void ObjReader::create_wireframes(ShapePVector &shapes)
-/* ============================================================================================= */
-{
-    // TODO
-}
-
-/* ============================================================================================= */
-void ObjReader::create_points(ShapePVector &shapes)
+void ObjReader::create_wireframes(StringVector &contents, ShapeVector &shapes)
 /* ============================================================================================= */
 {
     // TODO
