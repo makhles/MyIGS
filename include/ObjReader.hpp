@@ -30,12 +30,12 @@ public:
     void create_lines(StringVector &contents, ShapeVector &shapes);
     void create_wireframes(StringVector &contents, ShapeVector &shapes);
     Point* new_point(int idx) const;
-    std::string get_error_msg() const { return m_error_msg; }
+    std::string get_status_msg() const { return m_status_msg; }
 
 private:
     PointVector m_points;
     CoordVector m_vertices;
-    std::string m_error_msg;
+    std::string m_status_msg;
 
 private:
     void get_file_contents(StringVector&, const std::string&);

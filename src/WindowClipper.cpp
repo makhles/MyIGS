@@ -3,7 +3,7 @@
 //          Makhles R. Lange
 
 // For debugging, uncomment the following define
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else

@@ -75,8 +75,6 @@ MyIGS::MyIGS() :
     xportItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_export_obj_file));
     quitItem->signal_activate().connect(sigc::mem_fun(*this, &MyIGS::on_action_file_quit));
 
-    loadItem->set_sensitive(false);
-
     // Window menu
     Gtk::MenuItem * const windowItem = Gtk::manage(new Gtk::MenuItem("Window"));
     Gtk::Menu * const windowMenu = Gtk::manage(new Gtk::Menu());
@@ -376,6 +374,22 @@ void MyIGS::append_object(const Glib::ustring obj)
 void MyIGS::on_action_file_import_obj_file()
 /* ============================================================================================= */
 {
+    if (MyIGS::import_obj_dialog()) {
+        const std::string &status_msg = m_controller->get_status_msg();
+        Gtk::MessageDialog status_dialog(status_msg, false, Gtk::MessageType::MESSAGE_INFO,
+                Gtk::ButtonsType::BUTTONS_OK, true);
+        status_dialog.run();
+        m_canvas->invalidate();
+    }
+}
+
+/* ============================================================================================= */
+bool MyIGS::import_obj_dialog()
+/* ============================================================================================= */
+{
+    bool import_successful = false;
+    
+    // Create the dialog
     Gtk::FileChooserDialog dialog("Choose a Wavefront file to be loaded.",
             Gtk::FILE_CHOOSER_ACTION_OPEN);
     dialog.set_transient_for(*this);
@@ -401,10 +415,7 @@ void MyIGS::on_action_file_import_obj_file()
         case (Gtk::RESPONSE_OK):
         {
             std::vector<std::string> filenames = dialog.get_filenames();
-            std::string status = m_controller->import_obj_files(filenames);
-            Gtk::MessageDialog status_dialog(status, false, Gtk::MessageType::MESSAGE_INFO,
-                    Gtk::ButtonsType::BUTTONS_OK, true);
-            status_dialog.run();
+            import_successful = m_controller->import_obj_files(filenames);
             break;
         }
         case (Gtk::RESPONSE_DELETE_EVENT):
@@ -418,6 +429,7 @@ void MyIGS::on_action_file_import_obj_file()
             break;
         }
     }
+    return import_successful;
 }
 
 /* ============================================================================================= */

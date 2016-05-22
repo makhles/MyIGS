@@ -41,6 +41,7 @@ InterfaceController::InterfaceController(MyIGS *interface, Canvas *viewport) :
     m_clipper(new WindowClipper())
 {
     m_viewport->set_controller(this);
+    this->update_gtm();
 }
 
 /* ============================================================================================= */
@@ -62,27 +63,26 @@ void InterfaceController::create_shape(ShapeType type)
 {
     // Create a new shape based on its type.
     Shape *shape = ShapeBuilder::instance()->create_shape(type);
-    this->finalize_shape(shape);
+    this->add(shape);
+    this->update(shape);
+    m_viewport->invalidate();
 }
 
 /* ============================================================================================= */
-void InterfaceController::finalize_shape(Shape *shape)
+void InterfaceController::add(Shape *shape)
 /* ============================================================================================= */
 {
     m_shapes.push_back(shape);
     m_interface->append_object(shape->name());
-    this->update(shape);
 }
 
 /* ============================================================================================= */
 void InterfaceController::update(Shape *shape)
 /* ============================================================================================= */
 {
-    this->update_gtm();
     shape->normalize(m_gtm);
     shape->clip_to_window(*m_clipper);
     this->to_viewport(shape);
-    m_viewport->invalidate();
 }
 
 /* ============================================================================================= */
@@ -236,9 +236,11 @@ void InterfaceController::translate(const TransformationDialog &dialog)
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
-        TMatrixBuilder::instance()->translation_matrix(m_gtm, dx, dy);
-        shape->transform(m_gtm);
+        TMatrix trans_mtx(3);
+        TMatrixBuilder::instance()->translation_matrix(trans_mtx, dx, dy);
+        shape->transform(trans_mtx);
         this->update(shape);
+        m_viewport->invalidate();
     } else {
         DEBUG_MSG("Couldn't find specified object!");
     }
@@ -253,10 +255,12 @@ void InterfaceController::scale(const TransformationDialog &dialog)
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
+        TMatrix scale_mtx(3);
         const Coord<double> c = shape->get_centroid();
-        TMatrixBuilder::instance()->scaling_matrix(m_gtm, sx, sy, c.x(), c.y());
-        shape->transform(m_gtm);
+        TMatrixBuilder::instance()->scaling_matrix(scale_mtx, sx, sy, c.x(), c.y());
+        shape->transform(scale_mtx);
         this->update(shape);
+        m_viewport->invalidate();
     } else {
         DEBUG_MSG("Couldn't find specified object!");
     }
@@ -273,9 +277,11 @@ void InterfaceController::rotate(const TransformationDialog &dialog)
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
-        TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, x, y);
-        shape->transform(m_gtm);
+        TMatrix rot_mtx(3);
+        TMatrixBuilder::instance()->rotation_matrix(rot_mtx, angle, x, y);
+        shape->transform(rot_mtx);
         this->update(shape);
+        m_viewport->invalidate();
     } else {
         DEBUG_MSG("Couldn't find specified object!");
     }
@@ -289,10 +295,12 @@ void InterfaceController::rotate_about_centroid(const TransformationDialog &dial
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
+        TMatrix rot_mtx(3);
         const Coord<double> c = shape->get_centroid();
-        TMatrixBuilder::instance()->rotation_matrix(m_gtm, angle, c.x(), c.y());
-        shape->transform(m_gtm);
+        TMatrixBuilder::instance()->rotation_matrix(rot_mtx, angle, c.x(), c.y());
+        shape->transform(rot_mtx);
         this->update(shape);
+        m_viewport->invalidate();
     } else {
         DEBUG_MSG("Couldn't find specified object!");
     }
@@ -320,23 +328,21 @@ void InterfaceController::export_obj_file()
 }
 
 /* ============================================================================================= */
-std::string InterfaceController::import_obj_files(std::vector<std::string> &filenames)
+bool InterfaceController::import_obj_files(std::vector<std::string> &filenames)
 /* ============================================================================================= */
 {
     ObjReader reader;
     std::vector<Shape*> shapes;
-    std::string status_msg;
     bool read_ok = reader.read_shapes(shapes, filenames);
     if (read_ok) {
-        std::stringstream ss;
-        m_shapes.insert(std::begin(m_shapes), std::begin(shapes), std::end(shapes));
+        for (Shape *s : shapes) {
+            this->add(s);
+            this->update(s);
+        }
         DEBUG_MSG("... " << shapes.size() << " shapes were added successfully!");
-        ss << shapes.size() << " shapes were added successfully!";
-        status_msg = ss.str();
-    } else {
-        status_msg = reader.get_error_msg();
     }
-    return status_msg;
+    m_status_msg = reader.get_status_msg();
+    return read_ok;
 }
 
 /* ============================================================================================= */

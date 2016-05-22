@@ -50,6 +50,8 @@ protected:
     void on_sh_radio_toggled();
     void on_wa_radio_toggled();
 
+    bool import_obj_dialog();
+
 public:
     MyIGS();
     virtual ~MyIGS();

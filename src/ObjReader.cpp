@@ -23,7 +23,7 @@
 #endif
 
 /* ============================================================================================= */
-ObjReader::ObjReader() : m_vCount(0)
+ObjReader::ObjReader()
 /* ============================================================================================= */
 {
     
@@ -64,7 +64,11 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
             this->create_wireframes(contents, shapes);
         }
     }
-    if (!read_ok) {
+    if (read_ok) {
+        std::stringstream ss;
+        ss << shapes.size() << " shapes were added successfully!";
+        m_status_msg = ss.str();
+    } else {
         ObjReader::clean_shapes(shapes);
     }
     return read_ok;
@@ -82,7 +86,7 @@ void ObjReader::get_file_contents(StringVector &contents, const std::string &fil
         }
     } else {
         DEBUG_MSG("Could not open " << filename << " file.");
-        m_error_msg = "Could not open " + filename;
+        m_status_msg = "Could not open " + filename;
     }
 }
 
@@ -114,13 +118,13 @@ bool ObjReader::read_vertices(StringVector &contents)
                 }
                 catch (const std::invalid_argument& ia) {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    m_error_msg = "Could not read vertex - invalid argument.";
+                    m_status_msg = "Could not read vertex - invalid argument.";
                     read_ok = false;
                     break;
                 }
             } else {
                 DEBUG_MSG("Could not read vertex - wrong number of line arguments.");
-                m_error_msg = "Could not read vertex - wrong number of line arguments.";
+                m_status_msg = "Could not read vertex - wrong number of line arguments.";
                 read_ok = false;
                 break;
             }
@@ -163,13 +167,13 @@ bool ObjReader::create_points(StringVector &contents, ShapeVector &shapes)
                 }
                 catch (const std::invalid_argument& ia) {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    m_error_msg = "Could not read point - invalid argument.";
+                    m_status_msg = "Could not read point - invalid argument.";
                     read_ok = false;
                     break;
                 }
             } else {
                 DEBUG_MSG("Could not read point - wrong number of line arguments.");
-                m_error_msg = "Could not read point - wrong number of line arguments.";
+                m_status_msg = "Could not read point - wrong number of line arguments.";
                 read_ok = false;
                 break;
             }

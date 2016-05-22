@@ -35,6 +35,7 @@ protected:
     AbstractClipper *m_clipper;
 
     TMatrix m_gtm;  // Global Transformation Matrix
+    std::string m_status_msg;
 
 public:
     InterfaceController(MyIGS *interface, Canvas *canvas);
@@ -42,7 +43,7 @@ public:
 
     // Shape editing
     void create_shape(ShapeType);
-    void finalize_shape(Shape *shape);
+    void add(Shape *shape);
     void update(Shape *shape);
     void update_gtm();
     void update_shapes();
@@ -65,7 +66,8 @@ public:
     void rotate_about_centroid(const TransformationDialog &dialog);
 
     void export_obj_file();
-    std::string import_obj_files(std::vector<std::string> &filenames);
+    bool import_obj_files(std::vector<std::string> &filenames);
+    const std::string& get_status_msg() const { return m_status_msg; }
     void set_line_clipping_method(LineClipping type);
     void set_polygon_clipping_method(PolygonClipping type);
 };
