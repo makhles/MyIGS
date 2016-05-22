@@ -1,4 +1,6 @@
-/* Coord.h */
+// Coord.hpp
+// Authors: Leonardo Vailatti Eichstaedt
+//          Makhles Reuter Lange
 
 #ifndef COORD_H
 #define COORD_H
@@ -16,6 +18,15 @@ public:
     const T y() const { return m_y; }
     void set_x(T x) { m_x = x; }
     void set_y(T y) { m_y = y; }
+
+    bool operator==(const Coord<T> &rhs) const {
+        return (rhs.m_x == m_x &&
+                rhs.m_y == m_y);
+    }
+
+    bool operator!=(const Coord<T> &rhs) const {
+        return !(*this == rhs);
+    }
 };
 
 #endif  // COORD_H
