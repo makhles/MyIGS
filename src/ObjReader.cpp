@@ -30,40 +30,48 @@ ObjReader::ObjReader() : m_vCount(0)
 }
 
 /* ============================================================================================= */
-ObjReader::~ObjReader()
+void ObjReader::clean_shapes(ShapeVector &shapes)
 /* ============================================================================================= */
 {
-    auto vertex = m_vertices.begin();
-    while (vertex != m_vertices.end()) {
-        delete *vertex;
-        vertex++;
+    auto shape = shapes.begin();
+    while (shape != shapes.end()) {
+        delete *shape;
+        shape++;
     }
-    m_vertices.clear();
+    shapes.clear();
 }
 
 /* ============================================================================================= */
-void ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
+bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
 /* ============================================================================================= */
 {
+    bool read_ok = true;
+
     // Opens several files and read all the shapes
     for (auto filename : filenames) {
         StringVector contents;
         this->get_file_contents(contents, filename);
         if (contents.size() > 0) {
             if (!this->read_vertices(contents)) {
+                read_ok = false;
                 break;
             }
             if (!this->create_points(contents, shapes)) {
+                read_ok = false;
                 break;
             }
             this->create_lines(contents, shapes);
             this->create_wireframes(contents, shapes);
         }
     }
+    if (!read_ok) {
+        ObjReader::clean_shapes(shapes);
+    }
+    return read_ok;
 }
 
 /* ============================================================================================= */
-void ObjReader::get_file_contents(StringVector &contents, std::string &filename) const
+void ObjReader::get_file_contents(StringVector &contents, const std::string &filename)
 /* ============================================================================================= */
 {
     std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -74,6 +82,7 @@ void ObjReader::get_file_contents(StringVector &contents, std::string &filename)
         }
     } else {
         DEBUG_MSG("Could not open " << filename << " file.");
+        m_error_msg = "Could not open " + filename;
     }
 }
 
@@ -99,16 +108,19 @@ bool ObjReader::read_vertices(StringVector &contents)
                 try {
                     double x = std::stod(vstring[1]);
                     double y = std::stod(vstring[2]);
-                    m_vertices.push_back(new Coord<double>(x, y));
+                    Coord<double> coord(x, y);
+                    m_vertices.push_back(coord);
                     DEBUG_MSG("New vertex read: (" << x << "," << y << ").");
                 }
                 catch (const std::invalid_argument& ia) {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    m_error_msg = "Could not read vertex - invalid argument.";
                     read_ok = false;
                     break;
                 }
             } else {
-                DEBUG_MSG("Could not read vertex.");
+                DEBUG_MSG("Could not read vertex - wrong number of line arguments.");
+                m_error_msg = "Could not read vertex - wrong number of line arguments.";
                 read_ok = false;
                 break;
             }
@@ -144,18 +156,20 @@ bool ObjReader::create_points(StringVector &contents, ShapeVector &shapes)
             if (vstring.size() == 2) {
                 try {
                     unsigned int vertex = std::stoi(vstring[1]);
-                    double x = m_vertices[vertex-1]->x();
-                    double y = m_vertices[vertex-1]->y();
+                    double x = m_vertices[vertex-1].x();
+                    double y = m_vertices[vertex-1].y();
                     shapes.push_back(new Point(obj_name, x, y));
                     DEBUG_MSG("New point created: " << obj_name << "(" << x << "," << y << ").");
                 }
                 catch (const std::invalid_argument& ia) {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    m_error_msg = "Could not read point - invalid argument.";
                     read_ok = false;
                     break;
                 }
             } else {
-                DEBUG_MSG("Could not read point.");
+                DEBUG_MSG("Could not read point - wrong number of line arguments.");
+                m_error_msg = "Could not read point - wrong number of line arguments.";
                 read_ok = false;
                 break;
             }

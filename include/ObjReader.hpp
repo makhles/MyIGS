@@ -13,7 +13,7 @@ template <class T> class Coord;
 class Shape;
 class Point;
 
-typedef std::vector<Coord<double>*> CoordVector;
+typedef std::vector<Coord<double>> CoordVector;
 typedef std::vector<Shape*> ShapeVector;
 typedef std::vector<Point*> PointVector;
 typedef std::vector<std::string> StringVector;
@@ -21,24 +21,24 @@ typedef std::vector<std::string> StringVector;
 class ObjReader {
 public:
     ObjReader();
-    ~ObjReader();
+    ~ObjReader() {}
 
-    void read_shapes(ShapeVector &shapes, StringVector &filenames);
+    void clean_shapes(ShapeVector &shapes);
+    bool read_shapes(ShapeVector &shapes, StringVector &filenames);
     bool read_vertices(StringVector&);
     bool create_points(StringVector &contents, ShapeVector &shapes);
     void create_lines(StringVector &contents, ShapeVector &shapes);
     void create_wireframes(StringVector &contents, ShapeVector &shapes);
-
-    // Own methods
     Point* new_point(int idx) const;
+    std::string get_error_msg() const { return m_error_msg; }
 
 private:
-    int m_vCount;          // Total number of vertices read.
     PointVector m_points;
     CoordVector m_vertices;
+    std::string m_error_msg;
 
 private:
-    void get_file_contents(StringVector&, std::string&) const;
+    void get_file_contents(StringVector&, const std::string&);
 
 };
 

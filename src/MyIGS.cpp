@@ -401,7 +401,10 @@ void MyIGS::on_action_file_import_obj_file()
         case (Gtk::RESPONSE_OK):
         {
             std::vector<std::string> filenames = dialog.get_filenames();
-            m_controller->import_obj_files(filenames);
+            std::string status = m_controller->import_obj_files(filenames);
+            Gtk::MessageDialog status_dialog(status, false, Gtk::MessageType::MESSAGE_INFO,
+                    Gtk::ButtonsType::BUTTONS_OK, true);
+            status_dialog.run();
             break;
         }
         case (Gtk::RESPONSE_DELETE_EVENT):

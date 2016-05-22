@@ -320,18 +320,23 @@ void InterfaceController::export_obj_file()
 }
 
 /* ============================================================================================= */
-void InterfaceController::import_obj_files(std::vector<std::string> &filenames)
+std::string InterfaceController::import_obj_files(std::vector<std::string> &filenames)
 /* ============================================================================================= */
 {
     ObjReader reader;
     std::vector<Shape*> shapes;
-    reader.read_shapes(shapes, filenames);
-    if (shapes.size() > 0) {
+    std::string status_msg;
+    bool read_ok = reader.read_shapes(shapes, filenames);
+    if (read_ok) {
+        std::stringstream ss;
         m_shapes.insert(std::begin(m_shapes), std::begin(shapes), std::end(shapes));
         DEBUG_MSG("... " << shapes.size() << " shapes were added successfully!");
+        ss << shapes.size() << " shapes were added successfully!";
+        status_msg = ss.str();
     } else {
-        DEBUG_MSG("... nothing to be read.");
+        status_msg = reader.get_error_msg();
     }
+    return status_msg;
 }
 
 /* ============================================================================================= */

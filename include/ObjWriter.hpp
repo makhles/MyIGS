@@ -9,9 +9,21 @@
 #include <iostream>
 #include <vector>
 #include "Writer.hpp"
+#include "Coord.hpp"
 
+// Definitions
+typedef std::vector<Coord<double>> CoordVector;
 
 class ObjWriter : public Writer {
+private:
+    struct shape_t {
+        std::vector<unsigned> indexes;
+        std::string name;
+        std::string token;
+        shape_t(std::vector<unsigned> idx, std::string n, std::string t)
+            : indexes(idx), name(n), token(t) {}
+    };
+
 public:
     ObjWriter();
     ~ObjWriter();
@@ -23,15 +35,17 @@ public:
     void write_to_file(Curve2D &curve) override;
     void write_to_file() override;
 
+    void write_to_file(const std::vector<shape_t> &shapes);
+
     // Own methods
-    int find_point(const Point &p_toFind) const;
+    std::size_t vertex_index(const Point &p_toFind);
 
 private:
     std::ofstream m_file;
-    int m_vCount;
-    std::vector<Point*> m_points;
-    std::vector<unsigned> m_linePoints;  // List of line points
-    std::vector<std::vector<unsigned>> m_wPoints;     // List of wireframe points
+    CoordVector m_vertices;
+    std::vector<shape_t> m_points;
+    std::vector<shape_t> m_lines;
+    std::vector<shape_t> m_wireframes;
 };
 
 #endif  // OBJ_WRITER_HPP

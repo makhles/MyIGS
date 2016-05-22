@@ -9,7 +9,7 @@
 #include "Curve2D.hpp"
 
 /* ============================================================================================= */
-ObjWriter::ObjWriter() : m_vCount(0)
+ObjWriter::ObjWriter()
 /* ============================================================================================= */
 {
     m_file.open("Wavefront.obj", std::ios::out);
@@ -31,58 +31,50 @@ ObjWriter::~ObjWriter()
 void ObjWriter::write_to_file(Point &p)
 /* ============================================================================================= */
 {
-    int idx = this->find_point(p);
-    if (idx == -1) {
-        m_points.push_back(&p);
-        m_vCount++;
-    } else {
-        std::cout << "Point already included." << std::endl;
-    }
+    std::vector<unsigned> indexes;
+    indexes.push_back(this->vertex_index(p));
+    ObjWriter::shape_t s(indexes, p.name(), "p");
+    m_points.push_back(s);
 }
 
 /* ============================================================================================= */
-void ObjWriter::write_to_file(Line &l)
+void ObjWriter::write_to_file(Line &line)
 /* ============================================================================================= */
 {
     std::cout << "Writing line to obj file..." << std::endl;
     Point *p;
-    int idx;
-    // -------- First point ----------------
-    p = l.p1();
-    idx = this->find_point(*p);
-    if (idx == -1) {
-        m_points.push_back(p);
-        idx = m_vCount++;
-    }
-    m_linePoints.push_back(idx);
-    // -------- Second point ----------------
-    p = l.p2();
-    idx = this->find_point(*p);
-    if (idx == -1) {
-        m_points.push_back(p);
-        idx = m_vCount++;
-    }
-    m_linePoints.push_back(idx);
+    std::size_t idx;
+    std::vector<unsigned> indexes;
+
+    // First point
+    p = line.p1();
+    idx = this->vertex_index(*p);
+    indexes.push_back(idx);
+
+    // Second point
+    p = line.p2();
+    idx = this->vertex_index(*p);
+    indexes.push_back(idx);
+
+    ObjWriter::shape_t s(indexes, line.name(), "l");
+    m_lines.push_back(s);
 }
 
 /* ============================================================================================= */
 void ObjWriter::write_to_file(Wireframe &w)
 /* ============================================================================================= */
 {
-    std::vector<unsigned> points;
     int idx;
     const std::vector<Point*> vertices = w.vertices();
+    std::vector<unsigned> indexes;
+
     for (unsigned i = 0; i < vertices.size(); i++) {
-        idx = this->find_point(*vertices[i]);
-        if (idx == -1) {
-            m_points.push_back(vertices[i]);
-            idx = ++m_vCount;
-        } else {
-            idx++;
-        }
-        points.push_back(idx);
+        idx = this->vertex_index(*vertices[i]);
+        indexes.push_back(idx);
     }
-    m_wPoints.push_back(points);
+
+    ObjWriter::shape_t s(indexes, w.name(), "f");
+    m_wireframes.push_back(s);
 }
 
 /* ============================================================================================= */
@@ -96,38 +88,52 @@ void ObjWriter::write_to_file(Curve2D &curve)
 void ObjWriter::write_to_file()
 /* ============================================================================================= */
 {
-    // Write points
-    for (unsigned i = 0; i < m_points.size(); i++) {
-        m_file << "v " << m_points[i]->xwc() << " " << m_points[i]->ywc() << "\n";
+    for (Coord<double> vertex : m_vertices) {
+        m_file << "v " << vertex.x() << " " << vertex.y() << "\n";
     }
-
-    // Write lines
-    for (unsigned i = 0; i < m_linePoints.size(); i += 2) {
-        m_file << "l " << m_linePoints[i] << " " << m_linePoints[i+1] << "\n";
-    }
-
-    // Write wireframes
-    for (unsigned i = 0; i < m_wPoints.size(); i++) {
-        m_file << "f";
-        for (unsigned j = 0; j < m_wPoints[i].size(); j++) {
-            m_file << " " << m_wPoints[i][j];
-        }
-        m_file << "\n";
-    }
+    ObjWriter::write_to_file(m_points);
+    ObjWriter::write_to_file(m_lines);
+    ObjWriter::write_to_file(m_wireframes);
     m_file.flush();
 }
 
 /* ============================================================================================= */
-int ObjWriter::find_point(const Point &p_toFind) const
+void ObjWriter::write_to_file(const std::vector<shape_t> &shapes)
 /* ============================================================================================= */
 {
-    // Searches for a point in the points vector.
-    // If it is found, its index is return, otherwise -1.
-    int idx = -1;
-    for (unsigned i = 0; i < m_points.size(); i++) {
-        if (*m_points[i] == p_toFind) {
-            idx = i;
+    for (auto &s : shapes) {
+        m_file << "o " << s.name << "\n";
+        m_file << s.token;
+        for (auto index : s.indexes) {
+            m_file << " " << index;
+        }
+        m_file << "\n";
+    }
+}
+
+/* ============================================================================================= */
+std::size_t ObjWriter::vertex_index(const Point &p_toFind)
+/* ============================================================================================= */
+{
+    // Searches for the coordinates of the point in the vertices vector and returns its index +1
+    // (vertex indexation starts at 1 in the wavefront file). If it is not found, a new vertex is
+    // added to the vertices vector.
+    std::size_t index;
+    bool found = false;
+    for (std::size_t i = 0; i < m_vertices.size(); i++) {
+        if (m_vertices[i].x() == p_toFind.xwc() && 
+            m_vertices[i].y() == p_toFind.ywc())
+        {
+            found = true;
+            index = i+1;
+            break;
         }
     }
-    return idx;
+    if (!found) {
+        // Adds this point's coordinates to the list of vertices.
+        Coord<double> vertex(p_toFind.xwc(), p_toFind.ywc());
+        m_vertices.push_back(vertex);
+        index = m_vertices.size();
+    }
+    return index;
 }
