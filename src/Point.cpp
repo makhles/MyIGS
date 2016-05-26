@@ -18,30 +18,24 @@
 #define DEBUG_MSG(str) do { } while ( false )
 #endif
 
-
-Point::Point(const std::string name, const double x, const double y) :
-        Shape(name, ShapeType::POINT),
-        m_xwc(x),
-        m_ywc(y) {
-}
-
-
-Point::~Point() {
-}
-
-
-const Coord<double> Point::get_centroid() {
+/* ============================================================================================= */
+const Coord<double> Point::get_centroid()
+/* ============================================================================================= */
+{
     return Coord<double>(m_xwc, m_ywc);
 }
 
-
-// Visitor
-void Point::accept(AbstractDrawer *drawer) {
+/* ============================================================================================= */
+void Point::accept(AbstractDrawer *drawer)
+/* ============================================================================================= */
+{
     drawer->draw(*this);
 }
 
-
-void Point::transform(TMatrix &matrix) {
+/* ============================================================================================= */
+void Point::transform(TMatrix &matrix)
+/* ============================================================================================= */
+{
     std::vector<double> v;
     v.push_back(m_xwc);
     v.push_back(m_ywc);
@@ -51,8 +45,10 @@ void Point::transform(TMatrix &matrix) {
     m_ywc = v[1];
 }
 
-
-void Point::normalize(TMatrix &matrix) {
+/* ============================================================================================= */
+void Point::normalize(TMatrix &matrix)
+/* ============================================================================================= */
+{
     DEBUG_MSG("Normalizing point...");
     DEBUG_MSG("xwc = " << m_xwc);
     DEBUG_MSG("ywc = " << m_ywc);
@@ -70,23 +66,31 @@ void Point::normalize(TMatrix &matrix) {
     m_ncCoord.push_back(new Coord<double>(m_xnc, m_ync));
 }
 
-
-void Point::clip_to_window(AbstractClipper &clipper) {
+/* ============================================================================================= */
+void Point::clip_to_window(AbstractClipper &clipper)
+/* ============================================================================================= */
+{
     DEBUG_MSG("Clipping to window.");
     clipper.clip_to_area(*this);
 }
 
-
-void Point::write_to_file(Writer *w) {
+/* ============================================================================================= */
+void Point::write_to_file(Writer *w)
+/* ============================================================================================= */
+{
     w->write_to_file(*this);
 }
 
-
-bool Point::operator==(const Point &rhs) const {
+/* ============================================================================================= */
+bool Point::operator==(const Point &rhs) const
+/* ============================================================================================= */
+{
     return ((rhs.m_xwc == m_xwc) && (rhs.m_ywc == m_ywc));
 }
 
-
-bool Point::operator!=(const Point &rhs) const {
+/* ============================================================================================= */
+bool Point::operator!=(const Point &rhs) const
+/* ============================================================================================= */
+{
     return !(*this == rhs);
 }

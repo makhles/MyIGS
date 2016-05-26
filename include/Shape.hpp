@@ -29,12 +29,10 @@ protected:
     ICoordVector m_vpCoord;  // Viewport coordinates
     const Colour m_colour;
 
-    Shape(const std::string name, const ShapeType type, const Colour colour = Colour()) :
+    Shape(const std::string name, const ShapeType type, const Colour &colour) :
         m_name(name),
         m_type(type),
-        m_colour(colour)
-    {
-    }
+        m_colour(colour) {}
     void clear_normalized_coords();
 
 public:

@@ -11,13 +11,6 @@
 #include "AbstractClipper.hpp"
 #include "Writer.hpp"
 
-
-Curve2D::Curve2D(const std::string name, ShapeType type) :
-    Shape(name, type)
-{
-}
-
-
 Curve2D::~Curve2D() {
     auto point = m_vertices.begin();
     while (point != m_vertices.end()) {

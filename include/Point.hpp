@@ -16,8 +16,11 @@ private:
     double m_ync;  // Normalized coordinate
 
 public:
-    Point(const std::string name, const double x, const double y);
-    ~Point();
+    Point(const std::string &name, double x, double y, const Colour colour = Colour()) :
+        Shape(name, ShapeType::POINT, colour),
+        m_xwc(x),
+        m_ywc(y) {}
+    ~Point() {}
 
     // Getters
     double xwc() const { return m_xwc; }

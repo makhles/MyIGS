@@ -15,7 +15,9 @@ protected:
     bool m_filled;  // Whether it should be painted.
 
 public:
-    Wireframe(const std::string name, bool filled);
+    Wireframe(const std::string name, bool filled, const Colour colour = Colour()) :
+        Shape(name, ShapeType::WIREFRAME, colour),
+        m_filled(filled) {}
     ~Wireframe();
 
     bool filled() const { return m_filled; }

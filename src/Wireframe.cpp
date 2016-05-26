@@ -11,13 +11,6 @@
 #include "Writer.hpp"
 
 
-Wireframe::Wireframe(const std::string name, bool filled) :
-        Shape(name, ShapeType::WIREFRAME),
-        m_filled(filled)
-{
-}
-
-
 Wireframe::~Wireframe() {
     auto point = m_vertices.begin();
     while (point != m_vertices.end()) {

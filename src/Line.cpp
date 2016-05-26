@@ -11,16 +11,6 @@
 #include "TMatrix.hpp"
 #include "Writer.hpp"
 
-Line::Line(const std::string name, Point *p1, Point *p2) :
-        Shape(name, ShapeType::LINE),
-        m_p1(p1),
-        m_p2(p2) {
-}
-
-
-Line::~Line() {
-}
-
 
 const Coord<double> Line::get_centroid() {
     double x = (m_p1->xwc() + m_p2->xwc()) / 2.0;

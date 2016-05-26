@@ -17,8 +17,11 @@ protected:
     Point *m_p2;
 
 public:
-    Line(const std::string name, Point *p1, Point *p2);
-    ~Line();
+    Line(const std::string name, Point *p1, Point *p2, const Colour colour = Colour()) :
+        Shape(name, ShapeType::LINE, colour),
+        m_p1(p1),
+        m_p2(p2) {}
+    ~Line() {}
     Point* p1() const { return m_p1; }
     Point* p2() const { return m_p2; }
     const Coord<double> get_centroid() override;

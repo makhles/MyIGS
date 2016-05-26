@@ -15,7 +15,8 @@ protected:
     std::vector<Point*> m_vertices;
 
 public:
-    Curve2D(const std::string name, ShapeType type);
+    Curve2D(const std::string name, ShapeType type, const Colour colour = Colour()) :
+        Shape(name, type, colour) {}
     ~Curve2D();
 
     const Coord<double> get_centroid() override;
