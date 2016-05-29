@@ -45,23 +45,29 @@ void ObjReader::clean_shapes(ShapeVector &shapes)
 bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
 /* ============================================================================================= */
 {
-    bool read_ok = true;
-
     // Opens several files and read all the shapes
+    bool read_ok = false;
+
     for (auto filename : filenames) {
-        StringVector contents;
-        this->get_file_contents(contents, filename);
-        if (contents.size() > 0) {
-            if (!this->read_vertices(contents)) {
-                read_ok = false;
+        if (this->read_file_contents(filename)) {
+            if (m_contents.empty()) {
+                m_status_msg = filename + " is empty.";
+                DEBUG_MSG(filename << " is empty.");
+                continue;
+            }
+
+            if (!this->read_vertices()) {
                 break;
             }
-            if (!this->create_points(contents, shapes)) {
-                read_ok = false;
+
+            if (!this->create_points(shapes)) {
                 break;
             }
-            this->create_lines(contents, shapes);
-            this->create_wireframes(contents, shapes);
+
+            this->create_lines(shapes);
+            this->create_wireframes(shapes);
+            m_contents.clear();
+            read_ok = true;
         }
     }
     if (read_ok) {
@@ -75,43 +81,55 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
 }
 
 /* ============================================================================================= */
-void ObjReader::get_file_contents(StringVector &contents, const std::string &filename)
+bool ObjReader::read_file_contents(const std::string &filename)
 /* ============================================================================================= */
 {
+    // Reads all the lines from the input file and split them into words.
+    bool read_ok = true;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {
-        std::string line;
+        std::string line, str;
+        StringVector split_line;
         while (std::getline(in, line)) {
-            contents.push_back(line);
+            std::istringstream iss(line);
+            while (std::getline(iss, str, ' ')) {
+                split_line.push_back(str);
+            }
+            m_contents.push_back(split_line);
+            split_line.clear();
         }
+        DEBUG_MSG("----------------------");
+        DEBUG_MSG("Reading file contents:");
+        for (auto line : m_contents) {
+            for (unsigned j = 0; j < line.size(); j++) {
+                std::cout << " " << line[j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        DEBUG_MSG("----------------------");
     } else {
-        DEBUG_MSG("Could not open " << filename << " file.");
+        read_ok = false;
         m_status_msg = "Could not open " + filename;
+        DEBUG_MSG("Could not open " << filename << " file.");
     }
+    return read_ok;
 }
 
 /* ============================================================================================= */
-bool ObjReader::read_vertices(StringVector &contents)
+bool ObjReader::read_vertices()
 /* ============================================================================================= */
 {
     // Reads all the vertices definitions and store them as Coord<double> in m_vertices.
-    // It is made the assumption that all vertices definitions were in the beginning of
-    // the file. All vertices definitions will be erased from contents.
-    StringVector vstring;       // Vector that holds each substring in line.
-    std::string str;            // Current substring.
+    // All vertices definitions will be erased from contents.
     bool read_ok = true;
 
-    auto line = contents.begin();
-    while (line != contents.end()) {
-        if ((*line)[0] == 'v') {
-            std::istringstream iss(*line);
-            while (std::getline(iss, str, ' ')) {
-                vstring.push_back(str);
-            }
-            if (vstring.size() == 3) {
+    auto line = m_contents.begin();
+    while (line != m_contents.end()) {
+        if ((*line)[0] == "v") {
+            if ((*line).size() == 3) {
                 try {
-                    double x = std::stod(vstring[1]);
-                    double y = std::stod(vstring[2]);
+                    double x = std::stod((*line)[1]);
+                    double y = std::stod((*line)[2]);
                     Coord<double> coord(x, y);
                     m_vertices.push_back(coord);
                     DEBUG_MSG("New vertex read: (" << x << "," << y << ").");
@@ -128,38 +146,32 @@ bool ObjReader::read_vertices(StringVector &contents)
                 read_ok = false;
                 break;
             }
-            vstring.clear();
-            line = contents.erase(line);
+            line = m_contents.erase(line);
         } else {
-            // All vertices definitions are in the beginning of the file.
-            break;
+            line++;
         }
     }
     return read_ok;
 }
 
 /* ============================================================================================= */
-bool ObjReader::create_points(StringVector &contents, ShapeVector &shapes)
+bool ObjReader::create_points(ShapeVector &shapes)
 /* ============================================================================================= */
 {
-    StringVector vstring;  // Vector that holds each substring in line.
-    std::string str;       // Current substring.
     std::string obj_name;
     bool read_ok = true;
 
-    auto line = contents.begin();
-    while (line != contents.end()) {
-        if ((*line)[0] == 'o') {
-            obj_name = (*line).substr(2);
-            line = contents.erase(line);
-        } else if ((*line)[0] == 'p') {
-            std::istringstream iss(*line);
-            while (std::getline(iss, str, ' ')) {
-                vstring.push_back(str);
-            }
-            if (vstring.size() == 2) {
+    for (unsigned i = 0; i < m_contents.size(); i++) {
+        auto line = m_contents[i];
+        if (line[0] == "p") {
+            if (line.size() == 2) {
+                if (i > 0 && m_contents[i-1][0] == "o" && m_contents[i-1].size() >= 2) {
+                    obj_name = m_contents[i-1][1];
+                } else {
+                    obj_name = "Nameless_point_" + std::to_string(i);
+                }
                 try {
-                    unsigned int vertex = std::stoi(vstring[1]);
+                    unsigned int vertex = std::stoi(line[1]);
                     double x = m_vertices[vertex-1].x();
                     double y = m_vertices[vertex-1].y();
                     shapes.push_back(new Point(obj_name, x, y));
@@ -177,35 +189,21 @@ bool ObjReader::create_points(StringVector &contents, ShapeVector &shapes)
                 read_ok = false;
                 break;
             }
-            vstring.clear();
-            line = contents.erase(line);
-        } else {
-            // We're not interested in other kinds of definitions now.
-            break;
         }
     }
     return read_ok;
 }
 
 /* ============================================================================================= */
-void ObjReader::create_lines(StringVector &contents, ShapeVector &shapes)
+void ObjReader::create_lines(ShapeVector &shapes)
 /* ============================================================================================= */
 {
     // TODO
 }
 
 /* ============================================================================================= */
-void ObjReader::create_wireframes(StringVector &contents, ShapeVector &shapes)
+void ObjReader::create_wireframes(ShapeVector &shapes)
 /* ============================================================================================= */
 {
     // TODO
-}
-
-/* ============================================================================================= */
-Point* ObjReader::new_point(int idx) const
-/* ============================================================================================= */
-{
-    // Creates a new point. The index refers to the Coord<double> element in m_coords.
-    // TODO
-    return new Point("", 10, 10);  // to be changed
 }

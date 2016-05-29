@@ -25,20 +25,19 @@ public:
 
     void clean_shapes(ShapeVector &shapes);
     bool read_shapes(ShapeVector &shapes, StringVector &filenames);
-    bool read_vertices(StringVector&);
-    bool create_points(StringVector &contents, ShapeVector &shapes);
-    void create_lines(StringVector &contents, ShapeVector &shapes);
-    void create_wireframes(StringVector &contents, ShapeVector &shapes);
-    Point* new_point(int idx) const;
+    bool read_vertices();
+    bool create_points(ShapeVector &shapes);
+    void create_lines(ShapeVector &shapes);
+    void create_wireframes(ShapeVector &shapes);
     std::string get_status_msg() const { return m_status_msg; }
 
 private:
-    PointVector m_points;
+    std::vector<StringVector> m_contents;
     CoordVector m_vertices;
     std::string m_status_msg;
 
 private:
-    void get_file_contents(StringVector&, const std::string&);
+    bool read_file_contents(const std::string&);
 
 };
 
