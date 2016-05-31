@@ -42,11 +42,14 @@ public:
 
 private:
     std::vector<StringVector> m_contents;
+    std::vector<material_t> m_materials;
     CoordVector m_vertices;
     std::string m_status_msg;
+    std::string m_mtl_filename;
 
 private:
     bool read_wavefront_file(const std::string&);
+    bool read_materials_file(const std::string&);
 
 };
 

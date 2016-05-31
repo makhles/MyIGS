@@ -23,7 +23,8 @@
 #endif
 
 /* ============================================================================================= */
-ObjReader::ObjReader()
+ObjReader::ObjReader() :
+    m_mtl_filename("")
 /* ============================================================================================= */
 {
     
@@ -56,6 +57,10 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
                 continue;
             }
 
+            if (!this->read_materials_file(m_mtl_filename)) {
+                break;
+            }
+
             if (!this->read_vertices()) {
                 break;
             }
@@ -86,6 +91,7 @@ bool ObjReader::read_wavefront_file(const std::string &filename)
 {
     // Reads all the lines from the input file and split them into words.
     bool read_ok = true;
+
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {
         std::string line, str;
@@ -95,16 +101,136 @@ bool ObjReader::read_wavefront_file(const std::string &filename)
             while (std::getline(iss, str, ' ')) {
                 split_line.push_back(str);
             }
+            if (split_line[0] == "mtllib" && split_line.size() == 2) {
+                m_mtl_filename = split_line[1];
+            }
             m_contents.push_back(split_line);
             split_line.clear();
         }
+        if (m_mtl_filename == "") {
+            read_ok = false;
+            m_status_msg = "No material library file was specified.";
+            DEBUG_MSG(m_status_msg);
+        }
+    } else {
+        read_ok = false;
+        m_status_msg = "Could not open " + filename;
+        DEBUG_MSG("Could not open " << filename << " file.");
+    }
+    return read_ok;
+}
+
+/* ============================================================================================= */
+bool ObjReader::read_materials_file(const std::string &filename)
+/* ============================================================================================= */
+{
+    bool read_ok = true;
+    bool mat_under_construction = false;
+    bool diffuse_colours_read = false;
+    bool transparency_read = false;
+    float red, green, blue, alpha;
+    std::string name;
+
+    std::ifstream in(filename, std::ios::in | std::ios::binary);
+    if (in) {
+        std::string line, str;
+        StringVector split_line;
+
         DEBUG_MSG("----------------------");
-        DEBUG_MSG("Reading file contents:");
-        for (auto line : m_contents) {
-            for (unsigned j = 0; j < line.size(); j++) {
-                std::cout << " " << line[j] << " ";
+        DEBUG_MSG("READING MATERIALS:");
+
+        while (std::getline(in, line)) {
+            std::istringstream iss(line);
+            while (std::getline(iss, str, ' ')) {
+                split_line.push_back(str);
             }
-            std::cout << std::endl;
+
+            // NEW MATERIAL
+            if (split_line[0] == "newmtl") {
+                if(mat_under_construction) {
+                    if (diffuse_colours_read && transparency_read) {
+                        ObjReader::material_t mat(name, Colour(red, green, blue, alpha));
+                        m_materials.push_back(mat);
+
+                        // Reset control flags
+                        mat_under_construction = false;
+                        diffuse_colours_read = false;
+                        transparency_read = false;
+                    } else {
+                        m_status_msg = "Could not create material - insufficient number of properties.";
+                        DEBUG_MSG(m_status_msg);
+                        read_ok = false;
+                        break;
+                    }
+                } else {
+                    if (split_line.size() == 2) {
+                        name = split_line[1];
+                        mat_under_construction = true;
+                    } else {
+                        m_status_msg = "Could not read material definition - wrong number of line arguments.";
+                        DEBUG_MSG(m_status_msg);
+                        read_ok = false;
+                        break;
+                    }
+                }
+            }
+
+            // DIFFUSE COLOUR
+            else if (split_line[0] == "Kd") {
+                if (mat_under_construction) {
+                    if (split_line.size() == 4) {
+                        try {
+                            red = std::stod(split_line[1]);
+                            green = std::stod(split_line[2]);
+                            blue = std::stod(split_line[3]);
+                            diffuse_colours_read = true;
+                        } catch (const std::invalid_argument& ia) {
+                            m_status_msg = "Could not read diffuse colour - invalid argument.";
+                            DEBUG_MSG(m_status_msg);
+                            read_ok = false;
+                            break;
+                        }
+                    } else {
+                        m_status_msg = "Could not read diffuse colour - wrong number of line arguments.";
+                        DEBUG_MSG(m_status_msg);
+                        read_ok = false;
+                        break;
+                    }
+                } else {
+                    m_status_msg = "Could not read diffuse colour - a new material must be defined first.";
+                    DEBUG_MSG(m_status_msg);
+                    read_ok = false;
+                    break;
+                }
+            }
+
+            // TRANSPARENCY
+            else if (split_line[0] == "d") {
+                if (mat_under_construction) {
+                    if (split_line.size() == 2) {
+                        try {
+                            alpha = std::stod(split_line[1]);
+                            transparency_read = true;
+                        } catch (const std::invalid_argument& ia) {
+                            m_status_msg = "Could not read transparency - invalid argument.";
+                            DEBUG_MSG(m_status_msg);
+                            read_ok = false;
+                            break;
+                        }
+                    } else {
+                        m_status_msg = "Could not read transparency - wrong number of line arguments.";
+                        DEBUG_MSG(m_status_msg);
+                        read_ok = false;
+                        break;
+                    }
+                } else {
+                    m_status_msg = "Could not read transparency - a new material must be defined first.";
+                    DEBUG_MSG(m_status_msg);
+                    read_ok = false;
+                    break;
+                }
+            }
+            split_line.clear();
         }
         DEBUG_MSG("----------------------");
     } else {
