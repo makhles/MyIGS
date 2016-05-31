@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Writer.hpp"
+#include "Colour.hpp"
 
 // Forward declarations
 template <class T> class Coord;
@@ -19,6 +20,14 @@ typedef std::vector<Point*> PointVector;
 typedef std::vector<std::string> StringVector;
 
 class ObjReader {
+private:
+    struct material_t {
+        std::string s_name;
+        Colour s_colour;
+        material_t(std::string name, Colour colour) :
+            s_name(name), s_colour(colour) {}
+    };
+
 public:
     ObjReader();
     ~ObjReader() {}
@@ -27,7 +36,7 @@ public:
     bool read_shapes(ShapeVector &shapes, StringVector &filenames);
     bool read_vertices();
     bool create_points(ShapeVector &shapes);
-    void create_lines(ShapeVector &shapes);
+    bool create_lines(ShapeVector &shapes);
     void create_wireframes(ShapeVector &shapes);
     std::string get_status_msg() const { return m_status_msg; }
 
