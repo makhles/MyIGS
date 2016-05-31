@@ -31,10 +31,7 @@ private:
 public:
     ObjReader();
     ~ObjReader() {}
-
-    void clean_shapes(ShapeVector &shapes);
     bool read_shapes(ShapeVector &shapes, StringVector &filenames);
-    bool read_vertices();
     std::string get_status_msg() const { return m_status_msg; }
 
 private:
@@ -45,6 +42,8 @@ private:
     std::string m_mtl_filename;
 
 private:
+    void clean_shapes(ShapeVector &shapes);
+    bool read_vertices();
     bool read_wavefront_file(const std::string&);
     bool read_materials_file(const std::string&);
     bool create_shapes(ShapeVector&);
