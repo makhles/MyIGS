@@ -42,9 +42,6 @@ public:
     void clean_shapes(ShapeVector &shapes);
     bool read_shapes(ShapeVector &shapes, StringVector &filenames);
     bool read_vertices();
-    bool create_points(ShapeVector &shapes);
-    void create_lines(ShapeVector &shapes);
-    void create_wireframes(ShapeVector &shapes);
     std::string get_status_msg() const { return m_status_msg; }
 
 private:

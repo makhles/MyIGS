@@ -65,13 +65,11 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
                 break;
             }
 
-            if (!this->create_points(shapes)) {
+            if (!this->create_shapes(shapes)) {
                 break;
             }
-
-            this->create_lines(shapes);
-            this->create_wireframes(shapes);
             m_contents.clear();
+            m_materials.clear();
             read_ok = true;
         }
     }
@@ -385,58 +383,4 @@ bool ObjReader::search_material(const std::string &mat_name, unsigned &index)
         }
     }
     return found;
-}
-
-/* ============================================================================================= */
-bool ObjReader::create_points(ShapeVector &shapes)
-/* ============================================================================================= */
-{
-    std::string obj_name;
-    bool read_ok = true;
-
-    for (unsigned i = 0; i < m_contents.size(); i++) {
-        auto line = m_contents[i];
-        if (line[0] == "p") {
-            if (line.size() == 2) {
-                if (i > 0 && m_contents[i-1][0] == "o" && m_contents[i-1].size() >= 2) {
-                    obj_name = m_contents[i-1][1];
-                } else {
-                    obj_name = "Nameless_point_" + std::to_string(i);
-                }
-                try {
-                    unsigned int vertex = std::stoi(line[1]);
-                    double x = m_vertices[vertex-1].x();
-                    double y = m_vertices[vertex-1].y();
-                    shapes.push_back(new Point(obj_name, x, y));
-                    DEBUG_MSG("New point created: " << obj_name << "(" << x << "," << y << ").");
-                }
-                catch (const std::invalid_argument& ia) {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    m_status_msg = "Could not read point - invalid argument.";
-                    read_ok = false;
-                    break;
-                }
-            } else {
-                DEBUG_MSG("Could not read point - wrong number of line arguments.");
-                m_status_msg = "Could not read point - wrong number of line arguments.";
-                read_ok = false;
-                break;
-            }
-        }
-    }
-    return read_ok;
-}
-
-/* ============================================================================================= */
-void ObjReader::create_lines(ShapeVector &shapes)
-/* ============================================================================================= */
-{
-    // TODO
-}
-
-/* ============================================================================================= */
-void ObjReader::create_wireframes(ShapeVector &shapes)
-/* ============================================================================================= */
-{
-    // TODO
 }
