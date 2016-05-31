@@ -27,6 +27,13 @@ private:
         material_t(std::string name, Colour colour) :
             s_name(name), s_colour(colour) {}
     };
+    struct shape_t {
+        std::vector<unsigned> indexes;
+        std::string name;
+        std::string token;
+        shape_t(std::vector<unsigned> idx, std::string n, std::string t)
+            : indexes(idx), name(n), token(t) {}
+    };
 
 public:
     ObjReader();
@@ -50,6 +57,8 @@ private:
 private:
     bool read_wavefront_file(const std::string&);
     bool read_materials_file(const std::string&);
+    bool create_shapes(ShapeVector&);
+    bool search_material(const std::string&, unsigned&);
 
 };
 

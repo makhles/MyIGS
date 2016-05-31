@@ -281,6 +281,113 @@ bool ObjReader::read_vertices()
 }
 
 /* ============================================================================================= */
+bool ObjReader::create_shapes(ShapeVector &shapes)
+/* ============================================================================================= */
+{
+    bool read_ok = true;
+    bool obj_under_construction = false;
+    bool mat_read = false;
+    unsigned mat_index;
+    std::string token, obj_name, mat_name;
+    StringVector line;
+
+    for (unsigned i = 0; i < m_contents.size(); i++) {
+        line = m_contents[i];
+        token = line[0];
+
+        // NEW OBJECT
+        if (token == "o") {
+            if (obj_under_construction) {
+                m_status_msg = "Could not read object declaration - "
+                               "another object is under construction.";
+                read_ok = false;
+            } else {
+                if (line.size() == 2) {
+                    obj_name = line[1];
+                    obj_under_construction = true;
+                } else {
+                    m_status_msg = "Wrong number of arguments at line " + i;
+                    read_ok = false;
+                }
+            }
+        }
+
+        // MATERIAL
+        else if (token == "usemtl") {
+            if (obj_under_construction) {
+                if (line.size() == 2) {
+                    mat_name = line[1];
+                    if (ObjReader::search_material(mat_name, mat_index)) {
+                        mat_read = true;
+                    } else {
+                        m_status_msg = "Could not find the material specified: " + mat_name;
+                        read_ok = false;
+                    }
+                } else {
+                    m_status_msg = "Wrong number of arguments at line " + i;
+                    read_ok = false;
+                }
+            } else {
+                m_status_msg = "An object declaration is necessary before declaring a material name.";
+                read_ok = false;
+            }
+        }
+
+        // NEW POINT
+        else if (token == "p") {
+            if (obj_under_construction && mat_read) {
+                if (line.size() == 2) {
+                    try {
+                        unsigned int vertex = std::stoi(line[1]);
+                        double x = m_vertices[vertex-1].x();
+                        double y = m_vertices[vertex-1].y();
+                        shapes.push_back(new Point(obj_name, x, y, m_materials[mat_index].s_colour));
+                        DEBUG_MSG("New point created: " << obj_name << "(" << x << "," << y <<
+                                  "," << mat_name << ").");
+
+                        // Reset control flags
+                        obj_under_construction = false;
+                        mat_read = false;
+                    }
+                    catch (const std::invalid_argument& ia) {
+                        m_status_msg = "Could not read point - invalid argument.";
+                        read_ok = false;
+                    }
+                } else {
+                    m_status_msg = "Wrong number of arguments at line " + i;
+                    read_ok = false;
+                }
+            } else {
+                m_status_msg = "An object and a material declaration are "
+                               "necessary before declaring a shape.";
+                read_ok = false;
+            }
+        }
+
+        if (!read_ok) {
+            DEBUG_MSG(m_status_msg);
+            break;
+        }
+    }
+    return read_ok;
+}
+
+/* ============================================================================================= */
+bool ObjReader::search_material(const std::string &mat_name, unsigned &index)
+/* ============================================================================================= */
+{
+    bool found = false;
+    for (unsigned i = 0; i < m_materials.size(); i++) {
+        if (m_materials[i].s_name == mat_name) {
+            found = true;
+            index = i;
+            break;
+        }
+    }
+    return found;
+}
+
+/* ============================================================================================= */
 bool ObjReader::create_points(ShapeVector &shapes)
 /* ============================================================================================= */
 {
