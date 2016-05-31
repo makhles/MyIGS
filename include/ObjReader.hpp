@@ -27,13 +27,6 @@ private:
         material_t(std::string name, Colour colour) :
             s_name(name), s_colour(colour) {}
     };
-    struct shape_t {
-        std::vector<unsigned> indexes;
-        std::string name;
-        std::string token;
-        shape_t(std::vector<unsigned> idx, std::string n, std::string t)
-            : indexes(idx), name(n), token(t) {}
-    };
 
 public:
     ObjReader();

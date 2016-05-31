@@ -42,6 +42,14 @@ void ObjReader::clean_shapes(ShapeVector &shapes)
     shapes.clear();
 }
 
+/**
+ * @brief      Reads all the files and create the shapes declared in them.
+ *
+ * @param      shapes     The vector where pointers to the shapes will be stored.
+ * @param      filenames  The filenames to be opened.
+ *
+ * @return     true is all the readings are successfull.
+ */
 /* ============================================================================================= */
 bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
 /* ============================================================================================= */
@@ -83,11 +91,18 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
     return read_ok;
 }
 
+/**
+ * @brief      Reads all the lines in the specified .obj file, splits them into space-separated
+ *             strings and stores them in a vector.
+ *
+ * @param[in]  filename  The name of the file to be read.
+ *
+ * @return     true is all the readings are successfull.
+ */
 /* ============================================================================================= */
 bool ObjReader::read_wavefront_file(const std::string &filename)
 /* ============================================================================================= */
 {
-    // Reads all the lines from the input file and split them into words.
     bool read_ok = true;
 
     std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -118,6 +133,17 @@ bool ObjReader::read_wavefront_file(const std::string &filename)
     return read_ok;
 }
 
+/**
+ * @brief      Reads all the materials in the .mtl file declared in the .obj file.
+ *             Format currently being considered for each material:
+ *             newmtl material_name
+ *             Kd red green blue
+ *             d alpha
+ *
+ * @param[in]  filename  The .obj filename.
+ *
+ * @return     true if all readings are successfull.
+ */
 /* ============================================================================================= */
 bool ObjReader::read_materials_file(const std::string &filename)
 /* ============================================================================================= */
@@ -239,12 +265,16 @@ bool ObjReader::read_materials_file(const std::string &filename)
     return read_ok;
 }
 
+/**
+ * @brief      Reads all the vertices definitions and store them as Coord<double> in m_vertices.
+ *             All vertices definitions will be erased from contents.
+ *
+ * @return     true if all readings are successfull.
+ */
 /* ============================================================================================= */
 bool ObjReader::read_vertices()
 /* ============================================================================================= */
 {
-    // Reads all the vertices definitions and store them as Coord<double> in m_vertices.
-    // All vertices definitions will be erased from contents.
     bool read_ok = true;
 
     auto line = m_contents.begin();
@@ -278,6 +308,13 @@ bool ObjReader::read_vertices()
     return read_ok;
 }
 
+/**
+ * @brief      Reads the m_contents vector and creates all the shapes.
+ *
+ * @param      shapes  The vector where pointers to the shapes will be stored.
+ *
+ * @return     true if all readings are successfull.
+ */
 /* ============================================================================================= */
 bool ObjReader::create_shapes(ShapeVector &shapes)
 /* ============================================================================================= */
@@ -370,6 +407,14 @@ bool ObjReader::create_shapes(ShapeVector &shapes)
     return read_ok;
 }
 
+/**
+ * @brief      Searches the materials vector for the specified material name.
+ *
+ * @param[in]  mat_name  The material name to be searched for.
+ * @param      index     The index at which the material was found.
+ *
+ * @return     true if there is at least one material with the given name.
+ */
 /* ============================================================================================= */
 bool ObjReader::search_material(const std::string &mat_name, unsigned &index)
 /* ============================================================================================= */
