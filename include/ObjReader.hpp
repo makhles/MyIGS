@@ -36,7 +36,7 @@ public:
     bool read_shapes(ShapeVector &shapes, StringVector &filenames);
     bool read_vertices();
     bool create_points(ShapeVector &shapes);
-    bool create_lines(ShapeVector &shapes);
+    void create_lines(ShapeVector &shapes);
     void create_wireframes(ShapeVector &shapes);
     std::string get_status_msg() const { return m_status_msg; }
 
@@ -46,7 +46,7 @@ private:
     std::string m_status_msg;
 
 private:
-    bool read_file_contents(const std::string&);
+    bool read_wavefront_file(const std::string&);
 
 };
 

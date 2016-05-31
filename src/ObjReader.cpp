@@ -49,7 +49,7 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
     bool read_ok = false;
 
     for (auto filename : filenames) {
-        if (this->read_file_contents(filename)) {
+        if (this->read_wavefront_file(filename)) {
             if (m_contents.empty()) {
                 m_status_msg = filename + " is empty.";
                 DEBUG_MSG(filename << " is empty.");
@@ -81,7 +81,7 @@ bool ObjReader::read_shapes(ShapeVector &shapes, StringVector &filenames)
 }
 
 /* ============================================================================================= */
-bool ObjReader::read_file_contents(const std::string &filename)
+bool ObjReader::read_wavefront_file(const std::string &filename)
 /* ============================================================================================= */
 {
     // Reads all the lines from the input file and split them into words.
