@@ -5,6 +5,7 @@ build/
 # Compiled Object files
 *.o
 *.obj
+*.mtl
 
 # Executables
 *.exe
