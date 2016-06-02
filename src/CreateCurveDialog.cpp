@@ -140,7 +140,7 @@ void CreateCurveDialog::create_shape() {
                 m_minVertices = true;
                 builder->add_name(name);
                 for (unsigned i = 0; i < coords.size(); i++) {
-                    builder->add_point(coords[i]->x(), coords[i]->y());
+                    builder->add_point(coords[i]->x(), coords[i]->y(), coords[i]->z());
                 }
                 std::cout << "Added curve to ShapeBuilder." << std::endl;
             } else {

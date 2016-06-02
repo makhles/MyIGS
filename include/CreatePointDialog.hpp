@@ -20,9 +20,11 @@ private:
     Gtk::Label * const m_nameLabel;
     Gtk::Label * const m_xLabel;
     Gtk::Label * const m_yLabel;
+    Gtk::Label * const m_zLabel;
     Gtk::Entry * const m_nameEntry;
     Gtk::Entry * const m_xEntry;
     Gtk::Entry * const m_yEntry;
+    Gtk::Entry * const m_zEntry;
 
     // Signal handler
     void on_my_response(int response_id);

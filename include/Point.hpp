@@ -10,23 +10,28 @@
 
 class Point : public Shape {
 private:
-    double m_xwc;  // Window coordinate
-    double m_ywc;  // Window coordinate
-    double m_xnc;  // Normalized coordinate
-    double m_ync;  // Normalized coordinate
+    double m_xwc;  // Window x coordinate
+    double m_ywc;  // Window y coordinate
+    double m_zwc;  // Window z coordinate
+    double m_xnc;  // Normalized x coordinate
+    double m_ync;  // Normalized y coordinate
+    double m_znc;  // Normalized z coordinate
 
 public:
-    Point(const std::string &name, double x, double y, const Colour colour = Colour()) :
+    Point(const std::string &name, double x, double y, double z, const Colour colour = Colour()) :
         Shape(name, ShapeType::POINT, colour),
         m_xwc(x),
-        m_ywc(y) {}
+        m_ywc(y),
+        m_zwc(z) {}
     ~Point() {}
 
     // Getters
     double xwc() const { return m_xwc; }
     double ywc() const { return m_ywc; }
+    double zwc() const { return m_zwc; }
     double xnc() const { return m_xnc; }
     double ync() const { return m_ync; }
+    double znc() const { return m_znc; }
     const Coord<double> get_centroid() override;
 
     // Visitors

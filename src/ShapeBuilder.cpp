@@ -29,20 +29,20 @@ void ShapeBuilder::add_name(const std::string &name) {
 
 
 // Called when the Shape is made up of several Points.
-void ShapeBuilder::add_point(const double x, const double y) {
+void ShapeBuilder::add_point(double x, double y, double z) {
     if (m_name.empty()) {
         m_name = "Nameless";
     }
     int pNumber = m_points.size();
     std::string pName = m_name + "_p" + std::to_string(pNumber);
-    Point *p = new Point(pName, x, y);
+    Point *p = new Point(pName, x, y, z);
     m_points.push_back(p);
 }
 
 
 // Called when the Shape is just a Point.
-void ShapeBuilder::add_point(const std::string &name, const double x, const double y) {
-    Point *p = new Point(name, x, y);
+void ShapeBuilder::add_point(const std::string &name, double x, double y, double z) {
+    Point *p = new Point(name, x, y, z);
     m_points.push_back(p);
 }
 

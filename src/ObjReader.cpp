@@ -280,13 +280,14 @@ bool ObjReader::read_vertices()
     auto line = m_contents.begin();
     while (line != m_contents.end()) {
         if ((*line)[0] == "v") {
-            if ((*line).size() == 3) {
+            if ((*line).size() == 4) {
                 try {
                     double x = std::stod((*line)[1]);
                     double y = std::stod((*line)[2]);
-                    Coord<double> coord(x, y);
+                    double z = std::stod((*line)[3]);
+                    Coord<double> coord(x, y, z);
                     m_vertices.push_back(coord);
-                    DEBUG_MSG("New vertex read: (" << x << "," << y << ").");
+                    DEBUG_MSG("New vertex read: (" << x << "," << y << "," << z << ").");
                 }
                 catch (const std::invalid_argument& ia) {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
@@ -376,9 +377,10 @@ bool ObjReader::create_shapes(ShapeVector &shapes)
                         unsigned int vertex = std::stoi(line[1]);
                         double x = m_vertices[vertex-1].x();
                         double y = m_vertices[vertex-1].y();
-                        shapes.push_back(new Point(obj_name, x, y, m_materials[mat_index].s_colour));
+                        double z = m_vertices[vertex-1].z();
+                        shapes.push_back(new Point(obj_name, x, y, z, m_materials[mat_index].s_colour));
                         DEBUG_MSG("New point created: " << obj_name << "(" << x << "," << y <<
-                                  "," << mat_name << ").");
+                                 "," << z << "," << mat_name << ").");
 
                         // Reset control flags
                         obj_under_construction = false;

@@ -15,7 +15,8 @@
 const Coord<double> Line::get_centroid() {
     double x = (m_p1->xwc() + m_p2->xwc()) / 2.0;
     double y = (m_p1->ywc() + m_p2->ywc()) / 2.0;
-    return Coord<double>(x, y);
+    double z = (m_p1->zwc() + m_p2->zwc()) / 2.0;
+    return Coord<double>(x, y, z);
 }
 
 
@@ -35,8 +36,8 @@ void Line::normalize(TMatrix &matrix) {
     m_p1->normalize(matrix);
     m_p2->normalize(matrix);
     m_ncCoord.clear();
-    m_ncCoord.push_back(new Coord<double>(m_p1->xnc(), m_p1->ync()));
-    m_ncCoord.push_back(new Coord<double>(m_p2->xnc(), m_p2->ync()));
+    m_ncCoord.push_back(new Coord<double>(m_p1->xnc(), m_p1->ync(), m_p1->znc()));
+    m_ncCoord.push_back(new Coord<double>(m_p2->xnc(), m_p2->ync(), m_p2->znc()));
 }
 
 

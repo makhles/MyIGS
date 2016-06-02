@@ -14,9 +14,11 @@ CreatePointDialog::CreatePointDialog(const Glib::ustring & title) :
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_xLabel(Gtk::manage(new Gtk::Label("x: "))),
     m_yLabel(Gtk::manage(new Gtk::Label("y: "))),
+    m_zLabel(Gtk::manage(new Gtk::Label("z: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry())),
     m_xEntry(Gtk::manage(new Gtk::Entry())),
-    m_yEntry(Gtk::manage(new Gtk::Entry()))
+    m_yEntry(Gtk::manage(new Gtk::Entry())),
+    m_zEntry(Gtk::manage(new Gtk::Entry()))
 {
     set_resizable(false);
     set_border_width(10);
@@ -24,6 +26,7 @@ CreatePointDialog::CreatePointDialog(const Glib::ustring & title) :
     /* Entries size */
     m_xEntry->set_width_chars(6);
     m_yEntry->set_width_chars(6);
+    m_zEntry->set_width_chars(6);
     
     Gtk::HBox * const name_hbox = Gtk::manage(new Gtk::HBox());
     name_hbox->pack_start(*m_nameLabel, Gtk::PACK_SHRINK, 0);
@@ -35,6 +38,8 @@ CreatePointDialog::CreatePointDialog(const Glib::ustring & title) :
     coord_hbox->pack_start(*m_xEntry, Gtk::PACK_SHRINK, 0);
     coord_hbox->pack_start(*m_yLabel, Gtk::PACK_EXPAND_PADDING, 0);
     coord_hbox->pack_start(*m_yEntry, Gtk::PACK_SHRINK, 0);
+    coord_hbox->pack_start(*m_zLabel, Gtk::PACK_EXPAND_PADDING, 0);
+    coord_hbox->pack_start(*m_zEntry, Gtk::PACK_SHRINK, 0);
     coord_hbox->set_homogeneous(false);
 
     get_content_area()->pack_start(*name_hbox);
@@ -54,22 +59,27 @@ void CreatePointDialog::on_my_response(int response_id) {
     switch (response_id) {
         case Gtk::RESPONSE_OK:
         {
-            double x, y;
+            double x, y, z;
             std::string name;
-            std::stringstream stringX, stringY;
+            std::stringstream stringX, stringY, stringZ;
 
             /* Get input data from dialog box entries */
             name = m_nameEntry->get_text().raw();
             stringX << m_xEntry->get_text().raw();
             stringY << m_yEntry->get_text().raw();
+            stringZ << m_zEntry->get_text().raw();
             
             /* Check for empty entries */
-            if (!name.empty() && stringX.str().size() != 0 && stringY.str().size() != 0) {
+            if (!name.empty() &&
+                    stringX.str().size() != 0 &&
+                    stringY.str().size() != 0 &&
+                    stringZ.str().size() != 0) {
                 stringX >> x;
                 stringY >> y;
+                stringZ >> z;
 
                 /* Create the new point */
-                ShapeBuilder::instance()->add_point(name, x, y);
+                ShapeBuilder::instance()->add_point(name, x, y, z);
                 std::cout << "Added point to ShapeBuilder." << std::endl;
             }
             break;

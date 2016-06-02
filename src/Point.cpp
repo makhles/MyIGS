@@ -22,7 +22,7 @@
 const Coord<double> Point::get_centroid()
 /* ============================================================================================= */
 {
-    return Coord<double>(m_xwc, m_ywc);
+    return Coord<double>(m_xwc, m_ywc, m_zwc);
 }
 
 /* ============================================================================================= */
@@ -39,10 +39,12 @@ void Point::transform(TMatrix &matrix)
     std::vector<double> v;
     v.push_back(m_xwc);
     v.push_back(m_ywc);
+    v.push_back(m_zwc);
     v.push_back(1.0);
     matrix * v;  // Result is stored in v
     m_xwc = v[0];
     m_ywc = v[1];
+    m_zwc = v[2];
 }
 
 /* ============================================================================================= */
@@ -52,18 +54,22 @@ void Point::normalize(TMatrix &matrix)
     DEBUG_MSG("Normalizing point...");
     DEBUG_MSG("xwc = " << m_xwc);
     DEBUG_MSG("ywc = " << m_ywc);
+    DEBUG_MSG("zwc = " << m_zwc);
     std::vector<double> v;
     v.push_back(m_xwc);
     v.push_back(m_ywc);
+    v.push_back(m_zwc);
     v.push_back(1.0);
     matrix * v;  // Result is stored in v
     m_xnc = v[0];
     m_ync = v[1];
+    m_znc = v[2];
     DEBUG_MSG("xnc = " << m_xnc);
     DEBUG_MSG("ync = " << m_ync);
+    DEBUG_MSG("znc = " << m_znc);
     DEBUG_MSG("-----------------------------");
     m_ncCoord.clear();
-    m_ncCoord.push_back(new Coord<double>(m_xnc, m_ync));
+    m_ncCoord.push_back(new Coord<double>(m_xnc, m_ync, m_znc));
 }
 
 /* ============================================================================================= */
@@ -85,7 +91,7 @@ void Point::write_to_file(Writer *w)
 bool Point::operator==(const Point &rhs) const
 /* ============================================================================================= */
 {
-    return ((rhs.m_xwc == m_xwc) && (rhs.m_ywc == m_ywc));
+    return ((rhs.m_xwc == m_xwc) && (rhs.m_ywc == m_ywc) && (rhs.m_zwc == m_zwc));
 }
 
 /* ============================================================================================= */

@@ -107,7 +107,7 @@ void CreateWireframeDialog::create_shape() {
                 builder->add_name(name);
                 builder->set_filled(m_filled);
                 for (unsigned i = 0; i < coords.size(); i++) {
-                    builder->add_point(coords[i]->x(), coords[i]->y());
+                    builder->add_point(coords[i]->x(), coords[i]->y(), coords[i]->z());
                 }
                 std::cout << "Added wireframe to ShapeBuilder." << std::endl;
             } else {
