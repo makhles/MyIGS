@@ -93,7 +93,7 @@ void InterfaceController::update_gtm()
     double dy = - m_window.y_center();
     double sx = 2.0 / m_window.width();
     double sy = 2.0 / m_window.height();
-    double angle = - m_window.angle();
+    double angle = m_window.angle();
 
     DEBUG_MSG("------------------------------");
     DEBUG_MSG("Parameters for GTM:");
