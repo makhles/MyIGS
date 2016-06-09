@@ -11,7 +11,7 @@
 
 // Forward declarations
 class TMatrix;
-
+template <class T> class Coord;
 
 class TMatrixBuilder {
 
@@ -25,8 +25,8 @@ private:
 
 public:
     static TMatrixBuilder* instance();
-    void translation_matrix(TMatrix &m, double dx, double dy);
-    void scaling_matrix(TMatrix &m, double sx, double sy, double x, double y);
+    void translation_matrix(TMatrix &m, Coord<double> &t);
+    void scaling_matrix(TMatrix &m, Coord<double> &s, Coord<double> &p);
     void rotation_matrix(TMatrix &m, double angleZ, double x, double y);
     void normalizing_matrix(TMatrix &m, double dx, double dy, double sx,
             double sy, double angle);

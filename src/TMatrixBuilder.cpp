@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "TMatrixBuilder.hpp"
 #include "TMatrix.hpp"
+#include "Coord.hpp"
 
 #define PI acos(-1.0)
 
@@ -20,36 +21,32 @@ TMatrixBuilder* TMatrixBuilder::instance() {
     return m_pInstance;
 }
 
-
-void TMatrixBuilder::translation_matrix(TMatrix &m, double dx, double dy) {
-    // Foley (p. 205)
-    m(0,0) = 1.0;
-    m(0,1) = 0.0;
-    m(0,2) = dx;
-    m(1,0) = 0.0;
-    m(1,1) = 1.0;
-    m(1,2) = dy;
-    m(2,0) = 0.0;
-    m(2,1) = 0.0;
-    m(2,2) = 1.0;
+/* ============================================================================================= */
+void TMatrixBuilder::translation_matrix(TMatrix &m, Coord<double> &t)
+/* ============================================================================================= */
+{
+    // Creates a translation matrix with translation factors t.
+    m(0,0) = 1.0;    m(0,1) = 0.0;    m(0,2) = 0.0;    m(0,3) = t.x();
+    m(1,0) = 0.0;    m(1,1) = 1.0;    m(1,2) = 1.0;    m(1,3) = t.y();
+    m(2,0) = 0.0;    m(2,1) = 0.0;    m(2,2) = 1.0;    m(2,3) = t.z();
+    m(3,0) = 0.0;    m(3,1) = 0.0;    m(3,2) = 0.0;    m(3,3) = 1.0;
 }
 
-
-void TMatrixBuilder::scaling_matrix(TMatrix &m, double sx, double sy, double x, double y) {
-    // Foley (p. 209)
-    m(0,0) = sx;
-    m(0,1) = 0.0;
-    m(0,2) = x * (1 - sx);
-    m(1,0) = 0.0;
-    m(1,1) = sy;
-    m(1,2) = y * (1 - sy);
-    m(2,0) = 0.0;
-    m(2,1) = 0.0;
-    m(2,2) = 1.0;
+/* ============================================================================================= */
+void TMatrixBuilder::scaling_matrix(TMatrix &m, Coord<double> &s, Coord<double> &p)
+/* ============================================================================================= */
+{
+    // Creates a scaling matrix with scaling factors s about a point p.
+    m(0,0) = s.x();   m(0,1) = 0.0;     m(0,2) = 0.0;    m(0,3) = p.x() * (1 - s.x());
+    m(1,0) = 0.0;     m(1,1) = s.y();   m(1,2) = 0.0;    m(1,3) = p.y() * (1 - s.y());
+    m(2,0) = 0.0;     m(2,1) = 0.0;     m(2,2) = s.z();  m(2,3) = p.z() * (1 - s.z());
+    m(3,0) = 0.0;     m(3,1) = 0.0;     m(3,2) = 0.0;    m(3,3) = 1.0;
 }
 
-
-void TMatrixBuilder::rotation_matrix(TMatrix &m, double angle, double x, double y) {
+/* ============================================================================================= */
+void TMatrixBuilder::rotation_matrix(TMatrix &m, double angle, double x, double y)
+/* ============================================================================================= */
+{
     double radians = angle * PI / 180.0;
     double cos_angle = cos (radians);
     double sin_angle = sin (radians);
@@ -66,10 +63,11 @@ void TMatrixBuilder::rotation_matrix(TMatrix &m, double angle, double x, double 
     m(2,2) = 1.0;
 }
 
-
+/* ============================================================================================= */
 void TMatrixBuilder::normalizing_matrix(TMatrix &m, double dx, double dy, double sx,
-            double sy, double angle) {
-
+            double sy, double angle)
+/* ============================================================================================= */
+{
     double radians = angle * PI / 180.0;
     double cos_angle = cos (radians);
     double sin_angle = sin (radians);
