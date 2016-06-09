@@ -9,6 +9,7 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
+#include "Coord.hpp"
 
 // Forward declarations
 class InterfaceController;
@@ -18,16 +19,16 @@ class ObjectsTreeView;
 class TransformationDialog : public Gtk::Dialog {
 
 protected:
-
     InterfaceController * const m_controller;
     ObjectsTreeView * const m_objTreeView;
-
     Gtk::Notebook * const m_notebook;  // The tabbed pane
 
     Gtk::Entry * const m_dxEntry;     // Translation in x
     Gtk::Entry * const m_dyEntry;     // Translation in y
-    Gtk::Entry * const m_sxEntry;     // Scalilng in x
-    Gtk::Entry * const m_syEntry;     // Scalilng in y
+    Gtk::Entry * const m_dzEntry;     // Translation in z
+    Gtk::Entry * const m_sxEntry;     // Scaling in x
+    Gtk::Entry * const m_syEntry;     // Scaling in y
+    Gtk::Entry * const m_szEntry;     // Scaling in z
     Gtk::Entry * const m_xEntry;      // Reference point x-coord for rotation
     Gtk::Entry * const m_yEntry;      // Reference point x-coord for rotation
     Gtk::Entry * const m_angleEntry;  // Angle of rotation about the Z axis
@@ -40,8 +41,10 @@ protected:
 
     double m_dx;     // Translation in x
     double m_dy;     // Translation in y
+    double m_dz;     // Translation in z
     double m_sx;     // Scaling in x
     double m_sy;     // Scaling in y
+    double m_sz;     // Scaling in z
     double m_angle;  // Rotation angle
     double m_refX;   // Reference point x-coord
     double m_refY;   // Reference point y-coord
@@ -64,6 +67,8 @@ public:
     virtual ~TransformationDialog() {}
 
     // Getters
+    Coord<double> translation_coord() const { return Coord<double>(m_dx, m_dy, m_dz); }
+    Coord<double> scaling_coord() const { return Coord<double>(m_sx, m_sy, m_sz); }
     double get_dx() const {return m_dx;}
     double get_dy() const {return m_dy;}
     double get_sx() const {return m_sx;}

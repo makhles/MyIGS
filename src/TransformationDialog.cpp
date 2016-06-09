@@ -9,16 +9,20 @@
 #include "TransformationType.hpp"
 #include "ObjectsTreeView.hpp"
 
+/* ============================================================================================= */
 TransformationDialog::TransformationDialog(const Glib::ustring &title,
         InterfaceController *controller, ObjectsTreeView *objTreeView) :
+/* ============================================================================================= */
     Dialog(title, true),
     m_controller(controller),
     m_objTreeView(objTreeView),
     m_notebook(Gtk::manage(new Gtk::Notebook())),
     m_dxEntry(Gtk::manage(new Gtk::Entry())),
     m_dyEntry(Gtk::manage(new Gtk::Entry())),
+    m_dzEntry(Gtk::manage(new Gtk::Entry())),
     m_sxEntry(Gtk::manage(new Gtk::Entry())),
     m_syEntry(Gtk::manage(new Gtk::Entry())),
+    m_szEntry(Gtk::manage(new Gtk::Entry())),
     m_xEntry(Gtk::manage(new Gtk::Entry())),
     m_yEntry(Gtk::manage(new Gtk::Entry())),
     m_angleEntry(Gtk::manage(new Gtk::Entry())),
@@ -53,14 +57,18 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title,
     Gtk::HBox * const delta_box = Gtk::manage(new Gtk::HBox());
     Gtk::Label * const dxLabel = Gtk::manage(new Gtk::Label("dx:"));
     Gtk::Label * const dyLabel = Gtk::manage(new Gtk::Label("dy:"));
+    Gtk::Label * const dzLabel = Gtk::manage(new Gtk::Label("dz:"));
 
     m_dxEntry->set_width_chars(6);
     m_dyEntry->set_width_chars(6);
+    m_dzEntry->set_width_chars(6);
 
     delta_box->pack_start(*dxLabel, Gtk::PACK_SHRINK, 5);
     delta_box->pack_start(*m_dxEntry, Gtk::PACK_SHRINK, 5);
     delta_box->pack_start(*dyLabel, Gtk::PACK_SHRINK, 5);
     delta_box->pack_start(*m_dyEntry, Gtk::PACK_SHRINK, 5);
+    delta_box->pack_start(*dzLabel, Gtk::PACK_SHRINK, 5);
+    delta_box->pack_start(*m_dzEntry, Gtk::PACK_SHRINK, 5);
 
     translation_box->pack_start(*delta_box, Gtk::PACK_SHRINK, 10);
 
@@ -70,14 +78,18 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title,
     Gtk::HBox * const sfactor_box = Gtk::manage(new Gtk::HBox());  // Scaling factor box
     Gtk::Label * const sxLabel = Gtk::manage(new Gtk::Label("sx:"));
     Gtk::Label * const syLabel = Gtk::manage(new Gtk::Label("sy:"));
+    Gtk::Label * const szLabel = Gtk::manage(new Gtk::Label("sz:"));
 
     m_sxEntry->set_width_chars(6);
     m_syEntry->set_width_chars(6);
+    m_szEntry->set_width_chars(6);
 
     sfactor_box->pack_start(*sxLabel, Gtk::PACK_SHRINK, 5);
     sfactor_box->pack_start(*m_sxEntry, Gtk::PACK_SHRINK, 5);
     sfactor_box->pack_start(*syLabel, Gtk::PACK_SHRINK, 5);
     sfactor_box->pack_start(*m_syEntry, Gtk::PACK_SHRINK, 5);
+    sfactor_box->pack_start(*szLabel, Gtk::PACK_SHRINK, 5);
+    sfactor_box->pack_start(*m_szEntry, Gtk::PACK_SHRINK, 5);
 
     scaling_box->pack_start(*sfactor_box, Gtk::PACK_SHRINK, 10);
 
@@ -138,8 +150,10 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title,
     this->hide_reference_point();
 }
 
-
-void TransformationDialog::on_my_response(int response_id) {
+/* ============================================================================================= */
+void TransformationDialog::on_my_response(int response_id)
+/* ============================================================================================= */
+{
     switch (response_id) {
         case Gtk::RESPONSE_OK:
         {
@@ -163,46 +177,56 @@ void TransformationDialog::on_my_response(int response_id) {
     }
 }
 
-
-bool TransformationDialog::translate() {
+/* ============================================================================================= */
+bool TransformationDialog::translate()
+/* ============================================================================================= */
+{
     bool success = false;
-    std::stringstream str_dx, str_dy;
+    std::stringstream str_dx, str_dy, str_dz;
 
     // Get input data from dialog box entries
     str_dx << m_dxEntry->get_text().raw();
     str_dy << m_dyEntry->get_text().raw();
+    str_dz << m_dzEntry->get_text().raw();
     
     /* Check for empty entries */
-    if (str_dx.str().size() != 0 && str_dy.str().size() != 0) {
+    if (str_dx.str().size() != 0 && str_dy.str().size() != 0 && str_dz.str().size() != 0) {
         str_dx >> m_dx;
         str_dy >> m_dy;
+        str_dy >> m_dz;
         success = true;
         m_controller->translate(*this);
     }
     return success;
 }
 
-
-bool TransformationDialog::scale() {
+/* ============================================================================================= */
+bool TransformationDialog::scale()
+/* ============================================================================================= */
+{
     bool success = false;
-    std::stringstream str_sx, str_sy;
+    std::stringstream str_sx, str_sy, str_sz;
 
     // Get input data from dialog box entries
     str_sx << m_sxEntry->get_text().raw();
     str_sy << m_syEntry->get_text().raw();
+    str_sz << m_szEntry->get_text().raw();
     
     /* Check for empty entries */
-    if (str_sx.str().size() != 0 && str_sy.str().size() != 0) {
+    if (str_sx.str().size() != 0 && str_sy.str().size() != 0 && str_sz.str().size() != 0) {
         str_sx >> m_sx;
         str_sy >> m_sy;
+        str_sz >> m_sz;
         success = true;
         m_controller->scale(*this);
     }
     return success;
 }
 
-
-bool TransformationDialog::rotate() {
+/* ============================================================================================= */
+bool TransformationDialog::rotate()
+/* ============================================================================================= */
+{
     bool success = false;
     std::stringstream str_angle, str_x, str_y;
 
@@ -235,8 +259,10 @@ bool TransformationDialog::rotate() {
     return success;
 }
 
-
-bool TransformationDialog::transform() {
+/* ============================================================================================= */
+bool TransformationDialog::transform()
+/* ============================================================================================= */
+{
     bool success = false;
     switch (m_notebook->get_current_page())
     {
@@ -259,42 +285,51 @@ bool TransformationDialog::transform() {
     return success;
 }
 
-
-void TransformationDialog::handle_origin_rbutton_toggled() {
+/* ============================================================================================= */
+void TransformationDialog::handle_origin_rbutton_toggled()
+/* ============================================================================================= */
+{
     m_origin_rbutton = true;
     m_point_rbutton = false;
     m_centroid_rbutton = false;
     this->hide_reference_point();
 }
 
-
-void TransformationDialog::handle_point_rbutton_toggled() {
+/* ============================================================================================= */
+void TransformationDialog::handle_point_rbutton_toggled()
+/* ============================================================================================= */
+{
     m_point_rbutton = true;
     m_origin_rbutton = false;
     m_centroid_rbutton = false;
     this->show_reference_point();
 }
 
-
-void TransformationDialog::handle_centroid_rbutton_toggled() {
+/* ============================================================================================= */
+void TransformationDialog::handle_centroid_rbutton_toggled()
+/* ============================================================================================= */
+{
     m_centroid_rbutton = true;
     m_point_rbutton = false;
     m_origin_rbutton = false;
     this->hide_reference_point();
 }
 
-
-void TransformationDialog::show_reference_point() {
+/* ============================================================================================= */
+void TransformationDialog::show_reference_point()
+/* ============================================================================================= */
+{
     m_angleEntry->set_text("");
     m_xEntry->show();
     m_yEntry->show();
     m_xLabel->show();
     m_yLabel->show();
-    
 }
 
-
-void TransformationDialog::hide_reference_point() {
+/* ============================================================================================= */
+void TransformationDialog::hide_reference_point()
+/* ============================================================================================= */
+{
     m_angleEntry->set_text("");
     m_xEntry->set_text("");
     m_yEntry->set_text("");
@@ -304,7 +339,9 @@ void TransformationDialog::hide_reference_point() {
     m_yLabel->hide();
 }
 
-
-std::string TransformationDialog::get_selected_object() const {
+/* ============================================================================================= */
+std::string TransformationDialog::get_selected_object() const
+/* ============================================================================================= */
+{
     return m_objTreeView->get_selected_object();
 }
