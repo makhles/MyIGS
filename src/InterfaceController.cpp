@@ -231,13 +231,12 @@ Shape* InterfaceController::find_shape(const std::string &obj)
 void InterfaceController::translate(const TransformationDialog &dialog)
 /* ============================================================================================= */
 {
-    double dx = dialog.get_dx();
-    double dy = dialog.get_dy();
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
-        TMatrix trans_mtx(3);
-        TMatrixBuilder::instance()->translation_matrix(trans_mtx, dx, dy);
+        TMatrix trans_mtx(4);
+        Coord<double> translation = dialog.translation_coord();
+        TMatrixBuilder::instance()->translation_matrix(trans_mtx, translation);
         shape->transform(trans_mtx);
         this->update(shape);
         m_viewport->invalidate();
@@ -250,14 +249,13 @@ void InterfaceController::translate(const TransformationDialog &dialog)
 void InterfaceController::scale(const TransformationDialog &dialog)
 /* ============================================================================================= */
 {
-    double sx = dialog.get_sx();
-    double sy = dialog.get_sy();
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
-        TMatrix scale_mtx(3);
-        const Coord<double> c = shape->get_centroid();
-        TMatrixBuilder::instance()->scaling_matrix(scale_mtx, sx, sy, c.x(), c.y());
+        TMatrix scale_mtx(4);
+        Coord<double> scaling = dialog.scaling_coord();
+        Coord<double> centroid = shape->get_centroid();
+        TMatrixBuilder::instance()->scaling_matrix(scale_mtx, scaling, centroid);
         shape->transform(scale_mtx);
         this->update(shape);
         m_viewport->invalidate();
