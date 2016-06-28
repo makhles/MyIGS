@@ -35,16 +35,17 @@ void ShapeDrawer::draw(Point &point) {
 }
 
 void ShapeDrawer::draw(Line &line) {
-    DEBUG_MSG("Drawing line");
-    m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-    m_cr->set_line_width(1.0);
-
     const ICoordVector& coordinates = line.viewport_coordinates();
-    auto coord = coordinates.cbegin();
-    m_cr->move_to((*coord)->x(), (*coord)->y());
-    coord++;
-    m_cr->line_to((*coord)->x(), (*coord)->y());
-    m_cr->stroke();
+    if (coordinates.size() == 2) {
+        DEBUG_MSG("Drawing line");
+        m_cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+        m_cr->set_line_width(1.0);
+        auto coord = coordinates.cbegin();
+        m_cr->move_to((*coord)->x(), (*coord)->y());
+        coord++;
+        m_cr->line_to((*coord)->x(), (*coord)->y());
+        m_cr->stroke();
+    }
 }
 
 void ShapeDrawer::draw(Wireframe &wf) {

@@ -18,7 +18,7 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
 {
-    set_size_request(-1, 230);
+    set_size_request(-1, 300);
     set_resizable(false);
     set_border_width(10);
 
@@ -41,7 +41,7 @@ CreateWireframeDialog::CreateWireframeDialog(const Glib::ustring & title) :
     Gtk::ScrolledWindow * const scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
 
     scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-    scrolled_window->set_size_request(-1, 150);
+    scrolled_window->set_size_request(400, 150);
     scrolled_window->set_border_width(5);
     scrolled_window->add(*m_coordBox);
     m_coordBox->set_spacing(0);

@@ -8,6 +8,8 @@
 #include "TransformationDialog.hpp"
 #include "TransformationType.hpp"
 #include "ObjectsTreeView.hpp"
+#include "CoordBox.hpp"
+#include "DeleteList.hpp"
 
 /* ============================================================================================= */
 TransformationDialog::TransformationDialog(const Glib::ustring &title,
@@ -23,14 +25,16 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title,
     m_sxEntry(Gtk::manage(new Gtk::Entry())),
     m_syEntry(Gtk::manage(new Gtk::Entry())),
     m_szEntry(Gtk::manage(new Gtk::Entry())),
-    m_xEntry(Gtk::manage(new Gtk::Entry())),
-    m_yEntry(Gtk::manage(new Gtk::Entry())),
+    m_axEntry(Gtk::manage(new Gtk::Entry())),
+    m_ayEntry(Gtk::manage(new Gtk::Entry())),
+    m_azEntry(Gtk::manage(new Gtk::Entry())),
+    m_bxEntry(Gtk::manage(new Gtk::Entry())),
+    m_byEntry(Gtk::manage(new Gtk::Entry())),
+    m_bzEntry(Gtk::manage(new Gtk::Entry())),
     m_angleEntry(Gtk::manage(new Gtk::Entry())),
-    m_xLabel(Gtk::manage(new Gtk::Label("x:"))),
-    m_yLabel(Gtk::manage(new Gtk::Label("y:"))),
-    m_origin_rbutton(true),
-    m_point_rbutton(false),
-    m_centroid_rbutton(false)
+    m_coordBox(Gtk::manage(new CoordBox())),
+    m_own_axis_rb(true),
+    m_rnd_axis_rb(false)
 {
     set_resizable(false);
     set_border_width(10);
@@ -98,37 +102,27 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title,
 
     Gtk::VBox * const radio_box = Gtk::manage(new Gtk::VBox());
     Gtk::HBox * const rotEntry_box = Gtk::manage(new Gtk::HBox());
-    Gtk::RadioButton * const origin_rbutton = Gtk::manage(new Gtk::RadioButton("Rotate about origin"));
-    Gtk::RadioButton * const centroid_rbutton = Gtk::manage(new Gtk::RadioButton("Rotate about centroid"));
-    Gtk::RadioButton * const point_rbutton = Gtk::manage(new Gtk::RadioButton("Rotate about an arbitrary point"));
+    Gtk::RadioButton * const own_axis_rb = Gtk::manage(new Gtk::RadioButton("Rotate about own axis"));
+    Gtk::RadioButton * const rnd_axis_rb = Gtk::manage(new Gtk::RadioButton("Rotate about given axis"));
     Gtk::Label * const angleLabel = Gtk::manage(new Gtk::Label("Angle:"));
 
-    m_xEntry->set_width_chars(6);
-    m_yEntry->set_width_chars(6);
     m_angleEntry->set_width_chars(6);
 
-    radio_box->pack_start(*origin_rbutton, Gtk::PACK_SHRINK, 5);
-    radio_box->pack_start(*centroid_rbutton, Gtk::PACK_SHRINK, 5);
-    radio_box->pack_start(*point_rbutton, Gtk::PACK_SHRINK, 5);
+    radio_box->pack_start(*own_axis_rb, Gtk::PACK_SHRINK, 5);
+    radio_box->pack_start(*rnd_axis_rb, Gtk::PACK_SHRINK, 5);
 
-    Gtk::RadioButton::Group group = origin_rbutton->get_group();
-    centroid_rbutton->set_group(group);
-    point_rbutton->set_group(group);
-    origin_rbutton->set_active();
+    Gtk::RadioButton::Group group = own_axis_rb->get_group();
+    rnd_axis_rb->set_group(group);
+    own_axis_rb->set_active();
 
-    centroid_rbutton->signal_clicked().connect((sigc::mem_fun(*this,
-            &TransformationDialog::handle_centroid_rbutton_toggled)));
-    point_rbutton->signal_clicked().connect((sigc::mem_fun(*this,
-            &TransformationDialog::handle_point_rbutton_toggled)));
-    origin_rbutton->signal_clicked().connect((sigc::mem_fun(*this,
-            &TransformationDialog::handle_origin_rbutton_toggled)));
+    rnd_axis_rb->signal_clicked().connect((sigc::mem_fun(*this,
+            &TransformationDialog::handle_rnd_axis_rbutton_toggled)));
+    own_axis_rb->signal_clicked().connect((sigc::mem_fun(*this,
+            &TransformationDialog::handle_own_axis_rbutton_toggled)));
 
     rotEntry_box->pack_start(*angleLabel, Gtk::PACK_SHRINK, 5);
     rotEntry_box->pack_start(*m_angleEntry, Gtk::PACK_SHRINK, 5);
-    rotEntry_box->pack_start(*m_xLabel, Gtk::PACK_SHRINK, 5);
-    rotEntry_box->pack_start(*m_xEntry, Gtk::PACK_SHRINK, 5);
-    rotEntry_box->pack_start(*m_yLabel, Gtk::PACK_SHRINK, 5);
-    rotEntry_box->pack_start(*m_yEntry, Gtk::PACK_SHRINK, 5);
+    rotEntry_box->pack_start(*m_coordBox, Gtk::PACK_SHRINK, 5);
 
     rotation_box->pack_start(*radio_box, Gtk::PACK_SHRINK, 10);
     rotation_box->pack_start(*rotEntry_box, Gtk::PACK_SHRINK, 10);
@@ -147,7 +141,7 @@ TransformationDialog::TransformationDialog(const Glib::ustring &title,
     show_all_children();
 
     // Rotation about an arbitrary point is not enabled by default
-    this->hide_reference_point();
+    this->hide_rnd_axis();
 }
 
 /* ============================================================================================= */
@@ -228,30 +222,39 @@ bool TransformationDialog::rotate()
 /* ============================================================================================= */
 {
     bool success = false;
-    std::stringstream str_angle, str_x, str_y;
+    std::stringstream str_angle;
 
     str_angle << m_angleEntry->get_text().raw();
 
     if (str_angle.str().size() != 0) {
         str_angle >> m_angle;
 
-        if (m_point_rbutton) {
+        if (m_rnd_axis_rb) {
 
-            str_x << m_xEntry->get_text().raw();
-            str_y << m_yEntry->get_text().raw();
-
-            // Check for empty entries
-            if (str_x.str().size() != 0 && str_y.str().size() != 0) {
-                str_x >> m_refX;
-                str_y >> m_refY;
+            std::vector<Coord<double>*> coords;
+            bool coords_filled = m_coordBox->fill_coords(coords);
+            if (coords_filled) {
+                m_rax = coords[0]->x();
+                m_ray = coords[0]->y();
+                m_raz = coords[0]->z();
+                m_rbx = coords[1]->x();
+                m_rby = coords[1]->y();
+                m_rbz = coords[1]->z();
                 success = true;
                 m_controller->rotate(*this);
             }
-
-        } else if (m_centroid_rbutton) {
-            success = true;
-            m_controller->rotate_about_centroid(*this);
+            // Clean coords
+            for_each (coords.begin(),
+                      coords.end(),
+                      DeleteList<Coord<double>*>());
         } else {
+            // Arbitrary rotation axis (unit vector along the Z axis)
+            m_rax = 0.0;
+            m_ray = 0.0;
+            m_raz = 0.0;
+            m_rbx = 0.0;
+            m_rby = 0.0;
+            m_rbz = 1.0;
             success = true;
             m_controller->rotate(*this);
         }
@@ -286,57 +289,37 @@ bool TransformationDialog::transform()
 }
 
 /* ============================================================================================= */
-void TransformationDialog::handle_origin_rbutton_toggled()
+void TransformationDialog::handle_own_axis_rbutton_toggled()
 /* ============================================================================================= */
 {
-    m_origin_rbutton = true;
-    m_point_rbutton = false;
-    m_centroid_rbutton = false;
-    this->hide_reference_point();
+    m_own_axis_rb = true;
+    m_rnd_axis_rb = false;
+    this->hide_rnd_axis();
 }
 
 /* ============================================================================================= */
-void TransformationDialog::handle_point_rbutton_toggled()
+void TransformationDialog::handle_rnd_axis_rbutton_toggled()
 /* ============================================================================================= */
 {
-    m_point_rbutton = true;
-    m_origin_rbutton = false;
-    m_centroid_rbutton = false;
-    this->show_reference_point();
+    m_rnd_axis_rb = true;
+    m_own_axis_rb = false;
+    this->show_rnd_axis();
 }
 
 /* ============================================================================================= */
-void TransformationDialog::handle_centroid_rbutton_toggled()
-/* ============================================================================================= */
-{
-    m_centroid_rbutton = true;
-    m_point_rbutton = false;
-    m_origin_rbutton = false;
-    this->hide_reference_point();
-}
-
-/* ============================================================================================= */
-void TransformationDialog::show_reference_point()
+void TransformationDialog::show_rnd_axis()
 /* ============================================================================================= */
 {
     m_angleEntry->set_text("");
-    m_xEntry->show();
-    m_yEntry->show();
-    m_xLabel->show();
-    m_yLabel->show();
+    m_coordBox->show_coords();
 }
 
 /* ============================================================================================= */
-void TransformationDialog::hide_reference_point()
+void TransformationDialog::hide_rnd_axis()
 /* ============================================================================================= */
 {
     m_angleEntry->set_text("");
-    m_xEntry->set_text("");
-    m_yEntry->set_text("");
-    m_xEntry->hide();
-    m_yEntry->hide();
-    m_xLabel->hide();
-    m_yLabel->hide();
+    m_coordBox->hide_coords();
 }
 
 /* ============================================================================================= */

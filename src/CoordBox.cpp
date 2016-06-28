@@ -88,7 +88,7 @@ void CoordBox::add_coord()
     hbox->pack_start(*zEntry, Gtk::PACK_SHRINK, 0);
     hbox->set_homogeneous(false);
 
-    pack_start(*hbox, Gtk::PACK_EXPAND_WIDGET, 5);;
+    pack_start(*hbox, Gtk::PACK_EXPAND_WIDGET, 5);
 
     // Keep track of entries to get their values
     m_entries.push_back(xEntry);
@@ -158,4 +158,19 @@ void CoordBox::clear()
         this->remove(**it);
         it++;
     }
+}
+
+/* ============================================================================================= */
+void CoordBox::show_coords()
+/* ============================================================================================= */
+{
+    this->show();
+}
+
+
+/* ============================================================================================= */
+void CoordBox::hide_coords()
+/* ============================================================================================= */
+{
+    this->hide();
 }

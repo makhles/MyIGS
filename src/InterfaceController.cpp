@@ -3,7 +3,7 @@
 //          Makhles Reuter Lange
 
 // For debugging, uncomment the following define
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else
@@ -89,29 +89,17 @@ void InterfaceController::update(Shape *shape)
 void InterfaceController::update_gtm()
 /* ============================================================================================= */
 {
-    double dx = - m_window.x_center();
-    double dy = - m_window.y_center();
-    double sx = 2.0 / m_window.width();
-    double sy = 2.0 / m_window.height();
-    double angle = m_window.angle();
-
-    DEBUG_MSG("------------------------------");
-    DEBUG_MSG("Parameters for GTM:");
-    DEBUG_MSG("dx...: " << dx);
-    DEBUG_MSG("dy...: " << dy);
-    DEBUG_MSG("sx...: " << sx);
-    DEBUG_MSG("sy...: " << sy);
-    DEBUG_MSG("angle: " << angle);
-
     // Global Transformation Matrix
-    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, dx, dy, sx, sy, angle);
+    TMatrixBuilder::instance()->normalizing_matrix(m_gtm, m_window.center(),
+            m_window.scaling(), m_window.orientation());
 
-    DEBUG_MSG("------------------------------");
+    DEBUG_MSG("--------------------------------------");
     DEBUG_MSG("GTM:");
-    DEBUG_MSG(m_gtm(0,0) << "  " << m_gtm(0,1) << "  " << m_gtm(0,2));
-    DEBUG_MSG(m_gtm(1,0) << "  " << m_gtm(1,1) << "  " << m_gtm(1,2));
-    DEBUG_MSG(m_gtm(2,0) << "  " << m_gtm(2,1) << "  " << m_gtm(2,2));
-    DEBUG_MSG("------------------------------");
+    DEBUG_MSG(m_gtm(0,0) << "  " << m_gtm(0,1) << "  " << m_gtm(0,2) << "  " << m_gtm(0,3));
+    DEBUG_MSG(m_gtm(1,0) << "  " << m_gtm(1,1) << "  " << m_gtm(1,2) << "  " << m_gtm(1,3));
+    DEBUG_MSG(m_gtm(2,0) << "  " << m_gtm(2,1) << "  " << m_gtm(2,2) << "  " << m_gtm(2,3));
+    DEBUG_MSG(m_gtm(3,0) << "  " << m_gtm(3,1) << "  " << m_gtm(3,2) << "  " << m_gtm(3,3));
+    DEBUG_MSG("--------------------------------------");
 }
 
 /* ============================================================================================= */
@@ -187,12 +175,21 @@ void InterfaceController::to_viewport(Shape *shape)
 }
 
 /* ============================================================================================= */
-void InterfaceController::move_window(int rightOrLeft, int upOrDown)
+void InterfaceController::translate_window(int rightOrLeft, int upOrDown, int backOrForth)
 /* ============================================================================================= */
 {
-    double dx = DEVICE_DISPLACEMENT * m_window.width() / m_viewport->vp_width();
-    double dy = DEVICE_DISPLACEMENT * m_window.height() / m_viewport->vp_height();
-    m_window.translate(rightOrLeft * dx, upOrDown * dy);
+    TMatrix m(4);
+    double dx = rightOrLeft * DEVICE_DISPLACEMENT * m_window.width() / m_viewport->vp_width();
+    double dy = upOrDown * DEVICE_DISPLACEMENT * m_window.height() / m_viewport->vp_height();
+    double dz = backOrForth * DEVICE_DISPLACEMENT;
+    TMatrixBuilder::instance()->window_translation(m, m_window.center(), m_window.orientation(),
+            Coord<double>(dx, dy, dz));
+    std::vector<double> window_center, res;
+    window_center.push_back(m_window.center().x());
+    window_center.push_back(m_window.center().y());
+    window_center.push_back(m_window.center().z());
+    m.multiply_by_vector(window_center, res);
+    m_window.translate(res);
     this->update_shapes();
 }
 
@@ -205,10 +202,10 @@ void InterfaceController::scale_window(double factor)
 }
 
 /* ============================================================================================= */
-void InterfaceController::rotate_window(double angle)
+void InterfaceController::rotate_window(const Coord<double> &angles)
 /* ============================================================================================= */
 {
-    m_window.rotate(-angle);  // The window and viewport rotate to opposing directions
+    m_window.rotate(angles);
     this->update_shapes();
 }
 
@@ -268,15 +265,14 @@ void InterfaceController::scale(const TransformationDialog &dialog)
 void InterfaceController::rotate(const TransformationDialog &dialog)
 /* ============================================================================================= */
 {
-    // Apply a rotation about the origin or some arbitrary point
-    double angle = dialog.get_angle();
-    double x = dialog.get_refX();
-    double y = dialog.get_refY();
     std::string obj_name = dialog.get_selected_object();
     Shape *shape = this->find_shape(obj_name);
     if (shape) {
-        TMatrix rot_mtx(3);
-        TMatrixBuilder::instance()->rotation_matrix(rot_mtx, angle, x, y);
+        TMatrix rot_mtx(4);
+        double angle = dialog.get_angle();
+        Coord<double> point_a = dialog.rotation_coord_a();
+        Coord<double> point_b = dialog.rotation_coord_b();
+        TMatrixBuilder::instance()->rotation_matrix(rot_mtx, angle, point_a, point_b);
         shape->transform(rot_mtx);
         this->update(shape);
         m_viewport->invalidate();
@@ -285,26 +281,7 @@ void InterfaceController::rotate(const TransformationDialog &dialog)
     }
 }
 
-/* ============================================================================================= */
-void InterfaceController::rotate_about_centroid(const TransformationDialog &dialog)
-/* ============================================================================================= */
-{
-    double angle = dialog.get_angle();
-    std::string obj_name = dialog.get_selected_object();
-    Shape *shape = this->find_shape(obj_name);
-    if (shape) {
-        TMatrix rot_mtx(3);
-        const Coord<double> c = shape->get_centroid();
-        TMatrixBuilder::instance()->rotation_matrix(rot_mtx, angle, c.x(), c.y());
-        shape->transform(rot_mtx);
-        this->update(shape);
-        m_viewport->invalidate();
-    } else {
-        DEBUG_MSG("Couldn't find specified object!");
-    }
-}
-
-/* ============================================================================================= */
+/* ====================================================xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx========================================= */
 void InterfaceController::export_obj_file()
 /* ============================================================================================= */
 {

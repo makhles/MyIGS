@@ -25,11 +25,17 @@ private:
 
 public:
     static TMatrixBuilder* instance();
-    void translation_matrix(TMatrix &m, Coord<double> &t);
-    void scaling_matrix(TMatrix &m, Coord<double> &s, Coord<double> &p);
-    void rotation_matrix(TMatrix &m, double angleZ, double x, double y);
-    void normalizing_matrix(TMatrix &m, double dx, double dy, double sx,
-            double sy, double angle);
+    void translation_matrix(TMatrix &m, const Coord<double> &t);
+    void scaling_matrix(TMatrix &m, const Coord<double> &s, const Coord<double> &p);
+    void rotation_matrix(TMatrix &m, double angle, const Coord<double> &A,
+            const Coord<double> &B);
+    void rotation_about_x(TMatrix &rx, double sin_, double cos_) const;
+    void rotation_about_y(TMatrix &ry, double sin_, double cos_) const;
+    void rotation_about_z(TMatrix &rz, double sin_, double cos_) const;
+    void normalizing_matrix(TMatrix &m, const Coord<double> &window_center,
+            const Coord<double> &window_scaling, const Coord<double> &window_rotation);
+    void window_translation(TMatrix &m, const Coord<double> &window_center,
+            const Coord<double> &window_rotation, const Coord<double> &window_translation);
 };
 
 #endif  // TMATRIX_BUILDER_HPP

@@ -6,7 +6,7 @@
 #define CREATE_CURVE_DIALOG_HPP
 
 #include <gtkmm.h>
-#include <ShapeType.hpp>
+#include "ShapeType.hpp"
 
 // Forward declarations
 class CoordBox;

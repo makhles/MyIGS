@@ -6,7 +6,7 @@
 #include "TMatrix.hpp"
 
 // For debugging, uncomment the following define
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
 #else
@@ -46,6 +46,25 @@ const double& TMatrix::operator()(const unsigned &row, const unsigned &col) cons
 {
     // Overloading of the () operator to access individual elements (const).
     return this->m_matrix[row][col];
+}
+
+/* ============================================================================================= */
+const TMatrix TMatrix::operator*(const TMatrix &rhs) const
+/* ============================================================================================= */
+{
+    // Overloading of * operator
+    TMatrix result(4);
+    double sum;
+    for (unsigned i = 0; i < m_order; i++) {
+        for (unsigned j = 0; j < m_order; j++) {
+            sum = 0.0;
+            for (unsigned k = 0; k < m_order; k++) {
+                sum += this->m_matrix[i][k] * rhs(k,j);
+            }
+            result(i,j) = sum;
+        }
+    }
+    return result;
 }
 
 /* ============================================================================================= */

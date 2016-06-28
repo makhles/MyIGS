@@ -12,37 +12,25 @@
 Window::Window() :
     m_xc(DEFAULT_CENTER_X),
     m_yc(DEFAULT_CENTER_Y),
+    m_zc(DEFAULT_CENTER_Z),
     m_width(DEFAULT_WIDTH),
     m_height(DEFAULT_HEIGHT),
-    m_angle(0.0)
+    m_angleX(90.0),
+    m_angleY(90.0),
+    m_angleZ(0.0)
 {
-    std::cout << "Window created. Center at (" << m_xc << "," << m_yc << ")" << std::endl;
+    std::cout << "Window created. Center at (" << m_xc << "," << m_yc << "," << m_zc << ")" << std::endl;
 }
 
 
 Window::~Window() {
 }
 
-
-// Translate the center of the window taking into
-// consideration the current window orientation.
-// The window is only translated horizontally or
-// vertically, but not both at the same time.
-// dh = horizontal displacement
-// dv = vertical displacement
-// u = right vector. u = (ux, uy)
-void Window::translate(double dh, double dv) {
-    double radians = m_angle * PI / 180.0;
-    double ux = cos (radians);
-    double uy = sin (radians);
-
-    // If (dh != 0) then (dv = 0) and vice-versa.
-    m_xc += dh * ux;
-    m_yc += dh * uy;
-    m_xc += dv * (-uy);
-    m_yc += dv * ux;
-
-    std::cout << "Window translated. Center at (" << m_xc << "," << m_yc << ")" << std::endl;
+void Window::translate(const std::vector<double> &window_center) {
+    m_xc = window_center[0];
+    m_yc = window_center[1];
+    m_zc = window_center[2];
+    std::cout << "Window translated. Center at (" << m_xc << "," << m_yc << "," << m_zc << ")" << std::endl;
 }
 
 
@@ -52,6 +40,8 @@ void Window::scale(double factor) {
 }
 
 
-void Window::rotate(double angle) {
-    m_angle += angle;
+void Window::rotate(const Coord<double> &angles) {
+    m_angleX += angles.x();
+    m_angleY += angles.y();
+    m_angleZ += angles.z();
 }

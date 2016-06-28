@@ -55,9 +55,9 @@ public:
     int ync_to_yvp(const double yWindow);
 
     // Window transformations
-    void move_window(int rightOrLeft, int upOrDown);
+    void translate_window(int rightOrLeft, int upOrDown, int backOrForth);
     void scale_window(double factor);
-    void rotate_window(double angle);
+    void rotate_window(const Coord<double> &angles);
 
     // Shape transformations
     void translate(const TransformationDialog &dialog);

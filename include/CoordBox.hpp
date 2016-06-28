@@ -26,6 +26,8 @@ public:
     void add_bezier_curve();
     void add_coord();
     void clear();
+    void show_coords();
+    void hide_coords();
 };
 
 #endif  // COORD_BOX_HPP

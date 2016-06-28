@@ -371,13 +371,14 @@ void WindowClipper::set_polygon_clipping_method(PolygonClipping type)
 void WindowClipper::cohen_sutherland_clipping(Line &line)
 /* ============================================================================================= */
 {
-    int outcode1 = computeOutcode(line.p1()->xnc(), line.p1()->ync());
-    int outcode2 = computeOutcode(line.p2()->xnc(), line.p2()->ync());
-    bool accept = false;
+    DCoordVector newVertices;
     double x1 = line.p1()->xnc();
     double x2 = line.p2()->xnc();
     double y1 = line.p1()->ync();
     double y2 = line.p2()->ync();
+    int outcode1 = computeOutcode(x1, y1);
+    int outcode2 = computeOutcode(x2, y2);
+    bool accept = false;
 
     while(true) {
         if (!(outcode1 | outcode2)) {
@@ -421,11 +422,9 @@ void WindowClipper::cohen_sutherland_clipping(Line &line)
         DEBUG_MSG("Y1: " << y1);
         DEBUG_MSG("X2: " << x2);
         DEBUG_MSG("Y2: " << y2);
+        newVertices.push_back(new Coord<double>(x1, y1));
+        newVertices.push_back(new Coord<double>(x2, y2));
     }
-
-    DCoordVector newVertices;
-    newVertices.push_back(new Coord<double>(x1, y1));
-    newVertices.push_back(new Coord<double>(x2, y2));
     line.update_normalized_coords(newVertices);
 }
 
@@ -452,11 +451,13 @@ int WindowClipper::computeOutcode(double x, double y)
 void WindowClipper::liang_barsky_clipping(Line &line)
 /* ============================================================================================= */
 {
+    DCoordVector newVertices;
     double t0 = 0.0;
     double t1 = 1.0;
     double xdelta = line.p2()->xnc() - line.p1()->xnc();
     double ydelta = line.p2()->ync() - line.p1()->ync();
     double p, q, r;
+    bool draw = true;
 
     for (int edge = 0; edge < 4; edge++) {
         if (edge == 0) {
@@ -477,36 +478,40 @@ void WindowClipper::liang_barsky_clipping(Line &line)
         }
 
         r = q/p;
-        if (p == 0 && q < 0) return;  // Don't draw line at all. (Parallel line outside)
+        if (p == 0 && q < 0) {
+            draw = false;  // Don't draw line at all. (Parallel line outside)
+            break;
+        }
 
         if (p < 0) {
             if (r > t1) {
-                return; // Don't draw line at all
+                draw = false;
+                break;
             } else if (r > t0) {
                 t0 = r;  // Line is clipped
             }
         } else if (p > 0) {
             if (r < t0) {
-                return; // Don't draw line at all
+                draw = false;
+                break;
             } else if (r < t1) {
                 t1 = r;
             }
         }
     }
 
-    double x1 = line.p1()->xnc() + t0 * xdelta;
-    double y1 = line.p1()->ync() + t0 * ydelta;
-    double x2 = line.p1()->xnc() + t1 * xdelta;
-    double y2 = line.p1()->ync() + t1 * ydelta;
-
-    DEBUG_MSG("X1: " << x1);
-    DEBUG_MSG("Y1: " << y1);
-    DEBUG_MSG("X2: " << x2);
-    DEBUG_MSG("Y2: " << y2);
-
-    DCoordVector newVertices;
-    newVertices.push_back(new Coord<double>(x1, y1));
-    newVertices.push_back(new Coord<double>(x2, y2));
+    if (draw) {
+        double x1 = line.p1()->xnc() + t0 * xdelta;
+        double y1 = line.p1()->ync() + t0 * ydelta;
+        double x2 = line.p1()->xnc() + t1 * xdelta;
+        double y2 = line.p1()->ync() + t1 * ydelta;
+        newVertices.push_back(new Coord<double>(x1, y1));
+        newVertices.push_back(new Coord<double>(x2, y2));
+        DEBUG_MSG("X1: " << x1);
+        DEBUG_MSG("Y1: " << y1);
+        DEBUG_MSG("X2: " << x2);
+        DEBUG_MSG("Y2: " << y2);
+    }
     line.update_normalized_coords(newVertices);
 }
 

@@ -24,6 +24,10 @@ public:
     void set_y(T y) { m_y = y; }
     void set_z(T z) { m_z = z; }
 
+    Coord<T> operator-() const {
+        return Coord<T>(-m_x, -m_y, -m_z);
+    }
+
     bool operator==(const Coord<T> &rhs) const {
         return (rhs.m_x == m_x &&
                 rhs.m_y == m_y &&

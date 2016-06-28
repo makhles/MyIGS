@@ -30,7 +30,7 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     m_nameLabel(Gtk::manage(new Gtk::Label("Name: "))),
     m_nameEntry(Gtk::manage(new Gtk::Entry()))
 {
-    set_size_request(300, 300);
+    set_size_request(-1, 300);
     set_resizable(false);
     set_border_width(10);
 
@@ -49,8 +49,8 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     Gtk::VBox * const bezier_vbox = Gtk::manage(new Gtk::VBox());
     Gtk::VBox * const bspline_vbox = Gtk::manage(new Gtk::VBox());
 
-    bezier_vbox->set_size_request(200, -1);
-    bspline_vbox->set_size_request(200, -1);
+    bezier_vbox->set_size_request(400, -1);
+    bspline_vbox->set_size_request(400, -1);
 
     // Add the pages to the tab pane
     m_notebook->append_page(*bezier_vbox, *bezier_label);
@@ -71,7 +71,7 @@ CreateCurveDialog::CreateCurveDialog(const Glib::ustring & title) :
     bspline_swindow->add(*m_bspline_CoordBox);
 
     Gtk::Button * const bezier_add_button = Gtk::manage(new Gtk::Button("Add curve"));
-    Gtk::Button * const bspline_add_button = Gtk::manage(new Gtk::Button("Add point"));
+    Gtk::Button * const bspline_add_button = Gtk::manage(new Gtk::Button("Add curve"));
 
     bezier_add_button->signal_clicked().connect(sigc::mem_fun(*this, &CreateCurveDialog::on_add_bezier_curve_button_clicked));
     bspline_add_button->signal_clicked().connect(sigc::mem_fun(*this, &CreateCurveDialog::on_add_bspline_point_button_clicked));

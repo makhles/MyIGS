@@ -15,7 +15,9 @@ protected:
     ObjectsTreeView * const m_objectsView;
     Canvas * const m_canvas;
     Glib::RefPtr<Gtk::Adjustment> m_scaleAdjustment;
-    Gtk::Entry * const m_angleEntry;
+    Gtk::Entry * const m_angleXEntry;
+    Gtk::Entry * const m_angleYEntry;
+    Gtk::Entry * const m_angleZEntry;
 
     // Radio buttons state
     bool m_csActive;
@@ -32,6 +34,8 @@ protected:
     void move_window_right();
     void move_window_down();
     void move_window_left();
+    void move_window_back();
+    void move_window_forth();
     void rotate_window();
 
     // Objects creation

@@ -26,7 +26,9 @@ MyIGS::MyIGS() :
     m_objectsView(Gtk::manage(new ObjectsTreeView())),
     m_canvas(Gtk::manage(new Canvas())),
     m_scaleAdjustment(Gtk::Adjustment::create(1.0, 0.25, 5.0, 0.25)),
-    m_angleEntry(Gtk::manage(new Gtk::Entry())),
+    m_angleXEntry(Gtk::manage(new Gtk::Entry())),
+    m_angleYEntry(Gtk::manage(new Gtk::Entry())),
+    m_angleZEntry(Gtk::manage(new Gtk::Entry())),
     m_csActive(true),
     m_lbActive(false),
     m_nlnActive(false),
@@ -181,24 +183,42 @@ MyIGS::MyIGS() :
     moveFrame->add(*moveGrid);
 
     // Rotation frame
-    Gtk::HBox * const rotationBox = Gtk::manage(new Gtk::HBox());
-    Gtk::Label * const angleLabel = Gtk::manage(new Gtk::Label("Angle:"));
+    Gtk::HBox * const outerRotationBox = Gtk::manage(new Gtk::HBox());
+    Gtk::VBox * const rotEntriesBox = Gtk::manage(new Gtk::VBox());
+    Gtk::HBox * const rotEntryXBox = Gtk::manage(new Gtk::HBox());
+    Gtk::HBox * const rotEntryYBox = Gtk::manage(new Gtk::HBox());
+    Gtk::HBox * const rotEntryZBox = Gtk::manage(new Gtk::HBox());
+    Gtk::Label * const angleXLabel = Gtk::manage(new Gtk::Label("About X:"));
+    Gtk::Label * const angleYLabel = Gtk::manage(new Gtk::Label("About Y:"));
+    Gtk::Label * const angleZLabel = Gtk::manage(new Gtk::Label("About Z:"));
     Gtk::Button * const rotationButton = Gtk::manage(new Gtk::Button());
 
-    m_angleEntry->set_width_chars(6);
+    m_angleXEntry->set_width_chars(7);
+    m_angleYEntry->set_width_chars(7);
+    m_angleZEntry->set_width_chars(7);
 
     rotationButton->set_image_from_icon_name("object-rotate-left");
     rotationButton->set_always_show_image();
     rotationButton->signal_clicked().connect(sigc::mem_fun(*this, &MyIGS::rotate_window));
 
-    rotationBox->pack_start(*angleLabel, Gtk::PACK_SHRINK, 2);
-    rotationBox->pack_start(*m_angleEntry, Gtk::PACK_SHRINK, 2);
-    rotationBox->pack_start(*rotationButton, Gtk::PACK_SHRINK, 2);
-    rotationBox->set_border_width(5);
+    rotEntryXBox->pack_start(*angleXLabel, Gtk::PACK_SHRINK, 2);
+    rotEntryXBox->pack_start(*m_angleXEntry, Gtk::PACK_SHRINK, 2);
+    rotEntryYBox->pack_start(*angleYLabel, Gtk::PACK_SHRINK, 2);
+    rotEntryYBox->pack_start(*m_angleYEntry, Gtk::PACK_SHRINK, 2);
+    rotEntryZBox->pack_start(*angleZLabel, Gtk::PACK_SHRINK, 2);
+    rotEntryZBox->pack_start(*m_angleZEntry, Gtk::PACK_SHRINK, 2);
+
+    rotEntriesBox->pack_start(*rotEntryXBox, Gtk::PACK_SHRINK, 2);
+    rotEntriesBox->pack_start(*rotEntryYBox, Gtk::PACK_SHRINK, 2);
+    rotEntriesBox->pack_start(*rotEntryZBox, Gtk::PACK_SHRINK, 2);
+
+    outerRotationBox->pack_start(*rotEntriesBox, Gtk::PACK_SHRINK, 2);
+    outerRotationBox->pack_start(*rotationButton, Gtk::PACK_SHRINK, 2);
+    outerRotationBox->set_border_width(5);
 
     rotateFrame->set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
     rotateFrame->set_border_width(5);
-    rotateFrame->add(*rotationBox);
+    rotateFrame->add(*outerRotationBox);
 
     controlFrame->add(*controlBox);
 
@@ -271,43 +291,67 @@ void MyIGS::on_window_adjustment_value_changed()
 void MyIGS::move_window_up()
 /* ============================================================================================= */
 {
-    m_controller->move_window(0,1);
+    m_controller->translate_window(0,1,0);
 }
 
 /* ============================================================================================= */
 void MyIGS::move_window_right()
 /* ============================================================================================= */
 {
-    m_controller->move_window(1,0);
+    m_controller->translate_window(1,0,0);
 }
 
 /* ============================================================================================= */
 void MyIGS::move_window_down()
 /* ============================================================================================= */
 {
-    m_controller->move_window(0,-1);
+    m_controller->translate_window(0,-1,0);
 }
 
 /* ============================================================================================= */
 void MyIGS::move_window_left()
 /* ============================================================================================= */
 {
-    m_controller->move_window(-1,0);
+    m_controller->translate_window(-1,0,0);
+}
+
+/* ============================================================================================= */
+void MyIGS::move_window_back()
+/* ============================================================================================= */
+{
+    m_controller->translate_window(0,0,-1);
+}
+
+/* ============================================================================================= */
+void MyIGS::move_window_forth()
+/* ============================================================================================= */
+{
+    m_controller->translate_window(0,0,1);
 }
 
 /* ============================================================================================= */
 void MyIGS::rotate_window()
 /* ============================================================================================= */
 {
-    double angle;
-    std::stringstream angle_stream;
-    angle_stream << m_angleEntry->get_text().raw();
+    double angle_x = 0.0;
+    double angle_y = 0.0;
+    double angle_z = 0.0;
+    std::stringstream ss_x, ss_y, ss_z;
+    ss_x << m_angleXEntry->get_text().raw();
+    ss_y << m_angleYEntry->get_text().raw();
+    ss_z << m_angleZEntry->get_text().raw();
 
-    if (angle_stream.str().size() != 0) {
-        angle_stream >> angle;
-        if (angle != 0.0) {
-            m_controller->rotate_window(angle);
-        }
+    if (ss_x.str().size() != 0) {
+        ss_x >> angle_x;
+    }
+    if (ss_y.str().size() != 0) {
+        ss_y >> angle_y;
+    }
+    if (ss_z.str().size() != 0) {
+        ss_z >> angle_z;
+    }
+    if (angle_x != 0.0 || angle_y != 0.0 || angle_z != 0.0) {
+        m_controller->rotate_window(Coord<double>(-angle_x, -angle_y, -angle_z));
     }
 }
 

@@ -24,6 +24,7 @@ public:
     // Operators overloading
     double& operator()(const unsigned &row, const unsigned &col);
     const double& operator()(const unsigned &row, const unsigned &col) const;
+    const TMatrix operator*(const TMatrix &rhs) const;
     void operator*(std::vector<double> &rhs);
     void multiply_by_vector(const std::vector<double>&, std::vector<double>&);
     void multiply_by_scalar(double factor);
